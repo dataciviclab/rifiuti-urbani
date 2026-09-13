@@ -32,7 +32,7 @@ def normalize_header_cell(cell: str) -> str:
 
 def detect_type(lines: list[str]) -> str:
     """Detect ISPRA CSV type from raw lines."""
-    # Find first non-empty, non-title line
+    # Find first non-empty, non-title, non-subtitle line
     for line in lines:
         stripped = strip_crlf(line).strip()
         if not stripped:
@@ -40,8 +40,11 @@ def detect_type(lines: list[str]) -> str:
         # Title lines contain "costi" or "(ISPRA)"
         if "costi" in stripped.lower() or "(ISPRA)" in stripped:
             continue
-        # Subtitle lines
+        # Subtitle lines (e.g., "Compostaggio", "(i dati sui costi...)")
         if stripped.startswith("(") and "dati" in stripped.lower():
+            continue
+        # Skip subtitle lines that don't contain semicolons (not headers)
+        if ";" not in stripped and len(stripped) < 50:
             continue
         # Header line - check columns
         cells = stripped.split(";")
@@ -50,13 +53,22 @@ def detect_type(lines: list[str]) -> str:
             return "costi"
         if first in ("regione", "\tregione"):
             # Check if it's flussi or import/export
-            if any("quantitativi" in strip_crlf(l).lower() for l in lines[:3]):
+            if any("quantitativi" in strip_crlf(l).lower() for l in lines[:5]):
                 return "flussi"
-            if any("importati" in strip_crlf(l).lower() for l in lines[:3]):
+            if any("importati" in strip_crlf(l).lower() for l in lines[:5]):
                 return "import"
-            if any("esportati" in strip_crlf(l).lower() for l in lines[:3]):
+            if any("esportati" in strip_crlf(l).lower() for l in lines[:5]):
                 return "export"
             return "regione"  # generic region-level
+        if first in ("area geografica", "\tarea geografica"):
+            # Check if it's rs produzione/gestione/impianti
+            if any("produzione" in strip_crlf(l).lower() for l in lines[:5]):
+                return "area_produzione"
+            if any("gestione" in strip_crlf(l).lower() for l in lines[:5]):
+                return "area_gestione"
+            if any("censimento" in strip_crlf(l).lower() or "impiant" in strip_crlf(l).lower() for l in lines[:5]):
+                return "area_impianti"
+            return "area_geo"
         if first == "sezione":
             return "sezione"
         if first == "regione" and "rifiuti" in stripped.lower():
@@ -70,6 +82,7 @@ def detect_type(lines: list[str]) -> str:
         cells = stripped.split(";")
         if len(cells) >= 3:
             return "unknown"
+    return "unknown"
     return "unknown"
 
 
@@ -191,6 +204,12 @@ def normalize_region_level(lines: list[str], year: int, out_cols: list[str]) -> 
         stripped = strip_crlf(line).strip()
         if not stripped:
             continue
+        # Stop at next section (title row, subtitle, or ANDAMENTO)
+        if "(ISPRA)" in stripped or "Andamento" in stripped or "Quantitativi" in stripped:
+            break
+        # Stop at tab-indicating subtitle lines (no semicolons, short)
+        if stripped.startswith("\t") and ";" not in stripped:
+            break
         cells = stripped.rstrip(";").split(";")
         row = {}
         for src_idx, out_name in col_map.items():
@@ -221,11 +240,12 @@ def normalize_rs_region(lines: list[str], year: int) -> list[dict]:
 
 def normalize_sezione(lines: list[str], year: int) -> list[dict]:
     """Normalize multi-section RS CSVs (produzione, gestione, impianti)."""
-    # Find header line (starts with sezione)
+    # Find header line (starts with sezione or area geografica)
     header_idx = None
     for i, line in enumerate(lines):
         stripped = strip_crlf(line).strip().lstrip("\t")
-        if stripped.lower().startswith("sezione"):
+        first = stripped.lower().split(";")[0].strip()
+        if first.startswith("sezione") or first.startswith("area geografica"):
             header_idx = i
             break
     if header_idx is None:
@@ -292,7 +312,7 @@ def normalize_csv(input_path: Path, output_path: Path, csv_type: str = "auto", y
         if not rows:
             return "empty"
         out_cols = list(rows[0].keys())
-    elif detected == "sezione":
+    elif detected in ("sezione", "area_produzione", "area_gestione", "area_impianti", "area_geo"):
         rows = normalize_sezione(lines, year)
         if not rows:
             return "empty"

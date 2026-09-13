@@ -1,23 +1,24 @@
 -- mart_produzione — ISPRA RS Produzione: arricchimento
 --
--- Aggiunge totali per sezione e percentuali per area.
+-- Aggiunge totali per area geografica e percentuali.
 
 SELECT
     anno,
-    sezione,
-    area,
-    valore_1 AS nord,
-    valore_2 AS centro,
-    valore_3 AS sud,
-    valore_4 AS totale_italia,
-    -- Pct area sul totale sezione
+    area_geografica,
+    rs_np_t,
+    rs_p_t,
+    rs_cer_nd_t,
+    totale_t,
+    -- Totale per area (Italia row)
+    MAX(CASE WHEN area_geografica = 'Italia' THEN totale_t END) OVER (
+        PARTITION BY anno
+    ) AS totale_italia,
+    -- Pct area sul totale Italia
     ROUND(
-        valore_4 * 100.0 / NULLIF(MAX(valore_4) OVER (
-            PARTITION BY anno, sezione
+        totale_t * 100.0 / NULLIF(MAX(CASE WHEN area_geografica = 'Italia' THEN totale_t END) OVER (
+            PARTITION BY anno
         ), 0), 2
-    ) AS pct_sezione
+    ) AS pct_italia
 FROM clean_input
-WHERE valore_4 > 0
-  AND area NOT LIKE '%Totale%'
-  AND area NOT LIKE '%Descrizione%'
-ORDER BY sezione, valore_4 DESC
+WHERE totale_t > 0
+ORDER BY anno, area_geografica

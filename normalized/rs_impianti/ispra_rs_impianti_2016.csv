@@ -1,0 +1,33 @@
+sezione;col1;col2;col3;col4
+Nord;73;205.881;187.206;393.087
+Centro;24;84.154;47.293;131.447
+Sud;39;156.517;48.059;204.576
+Italia;136;446.553;282.558;729.110
+Trattamento integrato aerobico e anaerobico;;;;
+Area geografica;Numero impianti;Fanghi (t);Altri RS (t);Totale RS (t)
+Nord;19;88.030;123.324;211.354
+Sud;2;0;699;699
+Italia;21;88.030;124.023;212.053
+Digestione anaerobica;;;;
+Area geografica;Numero impianti;Fanghi (t);Altri RS (t);Totale RS (t)
+Nord;14;308.370;80.714;389.084
+Sud;1;804;47.152;47.956
+Italia;15;309.175;127.866;437.041
+Trattamento meccanico biologico (TMB);;;;
+Area geografica;Numero impianti;RS(t);;
+Nord;16;97.292,0;;
+Centro;6;11.685,0;;
+Sud;8;10.675,0;;
+Italia;30;119.652,0;;
+Incenerimento;;;;
+Area geografica;Numero impianti;Rifiuti combustibili (EER 191210)(t);Altri RS non pericolosi (t);RS pericolosi (t)
+Coincenerimento;;;;
+Area geografica;Numero impianti;Rifiuti combustibili (EER 191210)(t);Altri RS non pericolosi (t);RS pericolosi (t)
+Smaltimento in discarica;;;;
+Area geografica;Numero impianti;Rifiuti non pericolosi (t);Rifiuti pericolosi (t);Totale RS (t)
+Demolitori veicoli (d.lgs 209/2003);;;;
+Area geografica;Numero impianti;Veicoli (t);;
+Rottamatori veicoli (d.lgs. n. 209/2003);;;;
+Area geografica;Numero impianti;Veicoli (EER 160106)(t);Altri RS (t);Totale (t)
+Frantumatori veicoli (d.lgs. n. 209/2003);;;;
+Area geografica;Numero impianti;Veicoli (EER 160106)(t);Altri RS (t);Totale (t)

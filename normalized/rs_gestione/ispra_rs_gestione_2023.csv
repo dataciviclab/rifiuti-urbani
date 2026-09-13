@@ -1,0 +1,66 @@
+sezione;col1;col2;col3;col4;col5;col6;col7
+Nord;85.196.912;9.890.907;95.087.819;14.828.596;759.375;15.587.971;110.675.790
+Centro;18.783.472;3.698.924;22.482.396;5.699.961;71.173;5.771.134;28.253.530
+Sud;28.600.548;5.087.783;33.688.331;6.117.764;176.410;6.294.174;39.982.505
+Italia;132.580.932;18.677.614;151.258.546;26.646.321;1.006.958;27.653.279;178.911.825
+Operazioni di recupero dei rifiuti pericolosi e non pericolosi - 2023 (ISPRA);;;;;;;
+Area geografica;R1 (t);R2 (t);R3 (t);R4 (t);R5 (t);R6 (t);R7 (t)
+Nord;1.427.865;220.899;9.701.927;16.921.214;45.229.657;40.177;35.749
+Centro;233.206;11.378;1.227.005;1.495.626;13.369.457;1.494;0
+Sud;190.592;5.514;1.896.423;2.339.476;20.201.388;56;15.557
+Italia;1.851.663;237.791;12.825.355;20.756.316;78.800.502;41.727;51.306
+Operazioni di smaltimento dei rifiuti pericolosi e non pericolosi - 2023 (ISPRA);;;;;;;
+Area geografica;D1 (t);D2 (t);D3 (t);D4 (t);D8 (t);D9 (t);D10 (t)
+Nord;4.400.914;0;0;0;3.397.018;4.978.294;879.578
+Centro;2.000.937;0;0;0;1.273.031;2.117.706;21.749
+Sud;1.499.208;0;0;0;1.892.683;2.410.150;163.792
+Italia;7.901.059;0;0;0;6.562.732;9.506.150;1.065.119
+Operazioni di recupero dei rifiuti non pericolosi - 2023 (ISPRA);;;;;;;
+Area geografica;R1 (t);R2 (t);R3 (t);R4 (t);R5 (t);R6 (t);R7 (t)
+Nord;1.339.995;1.066;9.575.102;16.361.822;45.000.255;0;20.868
+Centro;233.206;0;1.184.933;1.378.938;13.325.737;0;0
+Sud;163.119;0;1.879.214;1.800.568;20.139.767;0;10.339
+Italia;1.736.320;1.066;12.639.249;19.541.328;78.465.759;0;31.207
+Operazioni di recupero dei rifiuti pericolosi - 2023 (ISPRA);;;;;;;
+Area geografica;R1 (t);R2 (t);R3 (t);R4 (t);R5 (t);R6 (t);R7 (t)
+Nord;87.870;219.833;126.825;559.392;229.402;40.177;14.881
+Centro;0;11.378;42.072;116.688;43.720;1.494;0
+Sud;27.473;5.514;17.209;538.908;61.621;56;5.218
+Italia;115.343;236.725;186.106;1.214.988;334.743;41.727;20.099
+Operazioni di smaltimento dei rifiuti non pericolosi - 2023 (ISPRA);;;;;;;
+Area geografica;D1 (t);D2 (t);D3 (t);D4 (t);D8 (t);D9 (t);D10 (t)
+Nord;3.791.673;0;0;0;3.264.563;3.238.157;633.988
+Centro;1.829.086;0;0;0;1.272.866;1.861.230;13.744
+Sud;1.397.983;0;0;0;1.890.745;2.025.265;41.708
+Italia;7.018.742;0;0;0;6.428.174;7.124.652;689.440
+Operazioni di smaltimento dei rifiuti pericolosi - 2023 (ISPRA);;;;;;;
+Area geografica;D1 (t);D2 (t);D3 (t);D4 (t);D8 (t);D9 (t);D10 (t)
+Nord;609.241;0;0;0;132.455;1.740.137;245.590
+Centro;171.851;0;0;0;165;256.476;8.005
+Sud;101.225;0;0;0;1.938;384.885;122.084
+Italia;882.317;0;0;0;134.558;2.381.498;375.679
+Legenda;;;;;;;
+Codifiche delle operazioni di recupero (R) e smaltimento (D):;;;;;;;
+R1: Utilizzazione principale come combustibile o come altro mezzo per produrre energia;;;;;;;
+R2: Rigenerazione/recupero di solventi;;;;;;;
+R3: Riciclo/recupero delle sostanze organiche non utilizzate come solventi (comprese le operazioni di compostaggio e altre trasformazioni biologiche);;;;;;;
+R4: Riciclo/recupero dei metalli e dei composti metallici;;;;;;;
+R5: Riciclo/recupero di altre sostanze inorganiche;;;;;;;
+R6: Rigenerazione degli acidi o delle basi;;;;;;;
+R7: Recupero dei prodotti che servono a captare gli inquinanti;;;;;;;
+R8: Recupero dei prodotti provenienti dai catalizzatori;;;;;;;
+R9: Rigenerazione o altri reimpieghi degli oli;;;;;;;
+R10: Spandimento sul suolo a beneficio dell'agricoltura o dell'ecologia;;;;;;;
+R11: Utilizzazione di rifiuti ottenuti da una delle operazioni indicate da R1 a R10;;;;;;;
+R12: Scambio di rifiuti per sottoporli a una delle operazioni indicate da R1 a R11;;;;;;;
+R13: Messa in riserva;;;;;;;
+D1: Deposito sul o nel suolo (a esempio discarica);;;;;;;
+D2: Trattamento in ambiente terrestre (ad esempio biodegradazione dei rifiuti liquidi o fanghi sui suoli);;;;;;;
+D3: Iniezioni in profondita' (ad esempio iniezioni dei rifiuti pompabili in pozzi, in cupole saline o faglie geologiche naturali);;;;;;;
+D4: Lagunaggio (ad esempio scarico di rifuti liquidi o di fanghi in pozzi, stagni o lagune ecc.);;;;;;;
+D8: Trattamento biologico non specificato altrove nel presente allegato, che dia origine a composti o a miscugli che vengono eliminati secondo uno dei procedimenti elencati nei punti da D1 a D12;;;;;;;
+D9: Trattamento fisico-chimico non specificato altrove nel presente allegato che dia origine a composti o a miscugli eliminati secondo uno dei procedimenti elencati nei punti da D1 a D12 (a esempio evaporazione, essiccazione, calcinazione, ecc.);;;;;;;
+D10: Incenerimento a terra;;;;;;;
+D13: Raggruppamento preliminare prima di una delle operazioni di cui ai punti da D1 a D12;;;;;;;
+D14: Ricondizionamento preliminare prima di una delle operazioni di cui ai punti da D1 a D13;;;;;;;
+D15: Deposito preliminare;;;;;;;

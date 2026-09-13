@@ -1,9 +1,9 @@
 SELECT
-    {year}::INTEGER AS anno,
-    normalize_string("Regione") AS regione,
-    normalize_italian_number("Rifiuti non pericolosi(t)") AS rifiuti_non_pericolosi_t,
-    normalize_italian_number("Rifiuti pericolosi (t)") AS rifiuti_pericolosi_t,
-    normalize_italian_number("Totale(t)") AS totale_t
+    anno::INTEGER AS anno,
+    normalize_string(regione) AS regione,
+    normalize_italian_number(non_pericolosi_t) AS rifiuti_non_pericolosi_t,
+    normalize_italian_number(pericolosi_t) AS rifiuti_pericolosi_t,
+    normalize_italian_number(totale_t) AS totale_t
 FROM raw_input
-WHERE normalize_string("Regione") IS NOT NULL
-  AND normalize_string("Regione") NOT LIKE '%Regione%'
+WHERE regione IS NOT NULL
+  AND regione NOT LIKE '%Regione%'

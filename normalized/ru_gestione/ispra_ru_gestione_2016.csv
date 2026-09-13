@@ -1,0 +1,44 @@
+sezione;col1;col2;col3;col4;col5;col6;col7
+Nord;168;602.017,3;1.083.729,2;1.685.746,4;205.880,7;187.206,2;2.078.833,4
+Centro;42;521.222,0;225.793,2;747.015,2;84.154,5;47.292,5;878.462,2
+Sud;64;831.251,4;133.479,9;964.731,3;156.517,5;48.058,8;1.169.307,6
+Italia;274;1.954.490,7;1.443.002,3;3.397.492,9;446.552,7;282.557,6;4.126.603,2
+Trattamento integrato aerobico e anaerobico;;;;;;;
+Area geografica;Numero impianti;Frazione umida (t);Verde (t);Tot. RU (t);Fanghi (t);Altro (t);Totale (t)
+Nord;26;1.726.786,3;200.673,3;1.927.459,6;88.030,1;123.324,1;2.138.813,8
+Centro;2;49.943,6;14.007,3;63.950,9;0,0;0,0;63.950,9
+Sud;3;77.617,1;5.579,3;83.196,4;0,0;698,8;83.895,1
+Italia;31;1.854.347,0;220.259,8;2.074.606,8;88.030,1;124.022,9;2.286.659,8
+Digestione anaerobica;;;;;;;
+Area geografica;Numero impianti;Frazione organica RU (t);Fanghi (t);Altro (t);Totale (t);;
+Nord;19;221.750,7;308.370,4;80.713,7;610.834,9;;
+Sud;2;27.331,2;804,2;47.152,3;75.287,6;;
+Italia;21;249.081,9;309.174,6;127.866,0;686.122,5;;
+Trattamento meccanico biologico (TMB);;;;;;;
+Area geografica;Numero impianti;RU indiff. (t);Rif. da trattamento RU (t);Altri RU (t);Tot. RU e tratt. RU (t);RS(t);
+Nord;42;1.926.452,0;448.050,0;59.793,0;2.434.295,0;97.292,0;
+Centro;36;2.964.847,0;157.297,0;56.386,0;3.178.530,0;11.685,0;
+Sud;52;4.896.271,0;294.328,0;37.781,0;5.228.380,0;10.675,0;
+Italia;130;9.787.570,0;899.675,0;153.960,0;10.841.205,0;119.652,0;
+Incenerimento;;;;;;;
+Area geografica;Numero impianti;RU (t);Da trattamento RU (t);Tot. RU e tratt. RU (t);RS non pericolosi(t);RS pericolosi(t);
+Nord;26;2.589.280,6;1.136.976,6;3.726.257,2;708.230,3;29.687,4;
+Centro;8;110.511,7;541.022,0;651.533,7;1.249,2;245,0;
+Sud;7;107.293,1;918.777,5;1.026.070,7;39.182,8;23.174,3;
+Italia;41;2.807.085,5;2.596.776,2;5.403.861,6;748.662,3;53.106,7;
+Coincenerimento;;;;;;;
+Area geografica;Numero impianti;RU (t);Da trattamento RU (t);Tot. RU e tratt. RU (t);Da trattmento RS (t);RS non pericolosi(t);RS pericolosi(t)
+Nord;9;37.779,2;259.886,7;297.665,9;32.293,9;101.122,1;14.180,0
+Centro;1;0,0;15.177,5;15.177,5;7.339,2;0,0;0,0
+Sud;2;0,0;147.930,7;147.930,7;9.751,3;0,0;0,0
+Italia;12;37.779,2;422.994,9;460.774,1;49.384,3;101.122,1;14.180,0
+Smaltimento in discarica;;;;;;;
+Area geografica;Numero impianti;RU (t);Da trattamento RU (t);Tot. RU e tratt. RU (t);RS (t);;
+Nord;52;333.577,1;1.350.239,3;1.683.816,5;1.450.998,6;;
+Centro;31;139.695,6;1.641.758,9;1.781.454,4;929.067,5;;
+Sud;51;372.271,4;3.594.070,3;3.966.341,7;822.725,6;;
+Italia;134;845.544,1;6.586.068,5;7.431.612,6;3.202.791,7;;
+Andamento del numero di impianti per tipologia;;;;;;;
+Anno;Compostaggio (n.);Tratt. integrato (n.);Dig. anaerobica (n.);TMB (n.);Incenerimento (n.);Coincenerimento (n.);Discarica (n.)
+2016;274;31;21;130;41;12;134
+2015;263;26;20;118;41;17;149

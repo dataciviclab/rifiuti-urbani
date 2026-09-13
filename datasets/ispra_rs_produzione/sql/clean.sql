@@ -1,18 +1,17 @@
 -- ISPRA RS Produzione — CLEAN
 -- CSV normalizzato: sezione;col1;col2;col3;col4;col5
--- sezione = nome sezione, col1 = area/attività, col2-col5 = valori
+-- sezione = area geografica, col1-col4 = valori
 
 SELECT
     {year}::INTEGER AS anno,
-    normalize_string(sezione) AS sezione,
-    normalize_string(col1) AS area,
-    normalize_italian_number(col2) AS valore_1,
-    normalize_italian_number(col3) AS valore_2,
-    normalize_italian_number(col4) AS valore_3,
-    normalize_italian_number(col5) AS valore_4
+    normalize_string(sezione) AS area_geografica,
+    normalize_italian_number(col1) AS rs_np_t,
+    normalize_italian_number(col2) AS rs_p_t,
+    normalize_italian_number(col3) AS rs_cer_nd_t,
+    normalize_italian_number(col4) AS totale_t
 FROM raw_input
-WHERE col1 IS NOT NULL
-  AND col1 != ''
-  AND col1 NOT LIKE '%Totale%'
-  AND col1 NOT LIKE '%Descrizione%'
-  AND col1 NOT LIKE '%Capitolo%'
+WHERE sezione IS NOT NULL
+  AND sezione != ''
+  AND sezione NOT LIKE '%Totale%'
+  AND sezione NOT LIKE '%Descrizione%'
+  AND sezione NOT LIKE '%Capitolo%'

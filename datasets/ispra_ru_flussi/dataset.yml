@@ -13,33 +13,27 @@ raw:
     - name: "ispra_ru_flussi_local"
       type: "local_file"
       args:
-        path: "../../rifiuti-ispra-raw-2024/ru_flussi_normalized.csv"
+        path: "../../normalized/flussi/ispra_ru_flussi_{year}.csv"
       primary: true
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
 
 clean:
   sql: "sql/clean.sql"
   required_columns:
     - "anno"
     - "regione"
-    - "tipologia_flusso"
-    - "quantita_tonnellate"
+    - "quantita_t"
   read:
-    source: auto
-    mode: latest
     header: true
-    skip: 0
     delim: ";"
     encoding: "utf-8"
-    trim_whitespace: true
-    columns:
-      "sezione": VARCHAR
-      "col1": VARCHAR
-      "col2": VARCHAR
-      "col3": VARCHAR
   validate:
-    min_rows: 50
-    primary_key: [anno, regione, tipologia_flusso]
-    not_null: [anno, regione, tipologia_flusso]
+    min_rows: 20
+    primary_key: [anno, regione]
+    not_null: [anno, regione]
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -53,9 +47,9 @@ mart:
   validate:
     table_rules:
       mart_flussi:
-        primary_key: [anno, regione, tipologia_flusso]
-        min_rows: 50
-        required_columns: [quantita_tonnellate, tipologia_flusso]
+        primary_key: [anno, regione]
+        min_rows: 20
+        required_columns: [quantita_t]
 
 validation:
   fail_on_error: true

@@ -13,25 +13,20 @@ raw:
     - name: "ispra_ru_export_local"
       type: "local_file"
       args:
-        path: "/home/gabry/dev/dataciviclab-workspace/esperimenti-locali/rifiuti-urbani/rifiuti-ispra-raw-2024/ru_export_clean.csv"
+        path: "../../normalized/ru_export/ispra_ru_export_{year}.csv"
       primary: true
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
 
 clean:
   sql: "sql/clean.sql"
   required_columns: [anno, regione, rifiuti_non_pericolosi_t, rifiuti_pericolosi_t, totale_t]
   read:
-    source: auto
-    mode: latest
     header: true
-    skip: 0
     delim: ";"
     encoding: "utf-8"
-    columns:
-      "Regione": VARCHAR
-      "Anno": VARCHAR
-      "Rifiuti non pericolosi(t)": VARCHAR
-      "Rifiuti pericolosi (t)": VARCHAR
-      "Totale(t)": VARCHAR
   validate:
     min_rows: 15
     primary_key: [anno, regione]

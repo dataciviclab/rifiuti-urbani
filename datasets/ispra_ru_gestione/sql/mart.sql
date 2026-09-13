@@ -1,25 +1,27 @@
 -- mart_gestione — ISPRA RU Gestione: arricchimento
 --
--- Aggiunge totali per sezione e percentuali per area.
+-- Aggiunge totali per area geografica e percentuali.
 
 SELECT
     anno,
-    sezione,
-    area,
-    n_impianti,
-    t1,
-    t2,
-    t3,
-    -- Totale per sezione (Italia row)
-    MAX(CASE WHEN area = 'Italia' THEN t3 END) OVER (
-        PARTITION BY anno, sezione
-    ) AS totale_sezione,
-    -- Pct area sul totale sezione
+    area_geografica,
+    numero_impianti,
+    frazione_umida_t,
+    verde_t,
+    tot_ru_t,
+    fanghi_t,
+    altro_t,
+    totale_t,
+    -- Totale per area (Italia row)
+    MAX(CASE WHEN area_geografica = 'Italia' THEN totale_t END) OVER (
+        PARTITION BY anno
+    ) AS totale_italia,
+    -- Pct area sul totale Italia
     ROUND(
-        t3 * 100.0 / NULLIF(MAX(CASE WHEN area = 'Italia' THEN t3 END) OVER (
-            PARTITION BY anno, sezione
+        totale_t * 100.0 / NULLIF(MAX(CASE WHEN area_geografica = 'Italia' THEN totale_t END) OVER (
+            PARTITION BY anno
         ), 0), 2
-    ) AS pct_sezione
+    ) AS pct_italia
 FROM clean_input
-WHERE t3 > 0
-ORDER BY sezione, area
+WHERE totale_t > 0
+ORDER BY anno, area_geografica

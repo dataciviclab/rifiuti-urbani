@@ -1,24 +1,24 @@
 -- mart_impianti — ISPRA RS Impianti: arricchimento
 --
--- Aggiunge totali per sezione e percentuali per area.
+-- Aggiunge totali per area geografica e percentuali.
 
 SELECT
     anno,
-    sezione,
-    area,
-    n_impianti,
-    t1,
-    t2,
-    t3,
-    -- Totale impianti per sezione (Italia row)
-    MAX(CASE WHEN area = 'Italia' THEN n_impianti END) OVER (
-        PARTITION BY anno, sezione
-    ) AS totale_impianti_sezione,
-    -- Pct area sul totale sezione
+    area_geografica,
+    numero_impianti,
+    fanghi_t,
+    altri_rs_t,
+    totale_rs_t,
+    -- Totale impianti per area (Italia row)
+    MAX(CASE WHEN area_geografica = 'Italia' THEN totale_rs_t END) OVER (
+        PARTITION BY anno
+    ) AS totale_italia,
+    -- Pct area sul totale Italia
     ROUND(
-        n_impianti * 100.0 / NULLIF(MAX(CASE WHEN area = 'Italia' THEN n_impianti END) OVER (
-            PARTITION BY anno, sezione
+        totale_rs_t * 100.0 / NULLIF(MAX(CASE WHEN area_geografica = 'Italia' THEN totale_rs_t END) OVER (
+            PARTITION BY anno
         ), 0), 2
-    ) AS pct_sezione
+    ) AS pct_italia
 FROM clean_input
-ORDER BY sezione, area
+WHERE totale_rs_t > 0
+ORDER BY anno, area_geografica

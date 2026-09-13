@@ -1,0 +1,94 @@
+sezione;col1;col2;col3;col4
+Nord;68;273.241;260.147;533.388
+Centro;18;52.606;35.294;87.900
+Sud;43;204.426;36.702;241.128
+Italia;129;530.273;332.143;862.416
+Trattamento integrato aerobico e anaerobico;;;;
+Area geografica;Numero impianti;Fanghi (t);Altri RS (t);Totale RS (t)
+Nord;29;134.453;171.868;306.321
+Centro;5;28.539;4.373;32.912
+Sud;7;14.883;72.181;87.064
+Italia;41;177.875;248.422;426.297
+Digestione anaerobica;;;;
+Area geografica;Numero impianti;Fanghi (t);Altri RS (t);Totale RS (t)
+Nord;16;488.387;66.811;555.198
+Centro;1;0;1.340;1.340
+Italia;17;488.387;68.151;556.538
+Trattamento meccanico biologico (TMB);;;;
+Area geografica;Numero impianti;RS(t);;
+Nord;21;151.845,0;;
+Centro;10;111.450,0;;
+Sud;9;28.862,0;;
+Italia;40;292.157,0;;
+Incenerimento;;;;
+Area geografica;Numero impianti;Rifiuti combustibili (EER 191210)(t);Altri RS non pericolosi (t);RS pericolosi (t)
+NORD;44;47.572;586.414;245.592
+CENTRO;8;0;13.744;8.005
+SUD;22;24.334;17.374;122.084
+Italia;74;71.906;617.532;375.681
+Coincenerimento;;;;
+Area geografica;Numero impianti;Rifiuti combustibili (EER 191210)(t);Altri RS non pericolosi (t);RS pericolosi (t)
+NORD;196;63.642;1.276.355;87.869
+CENTRO;61;29.345;203.860;0
+SUD;44;13.110;150.008;27.473
+Italia;301;106.097;1.630.223;115.343
+Smaltimento in discarica;;;;
+Area geografica;Numero impianti;Rifiuti non pericolosi (t);Rifiuti pericolosi (t);Totale RS (t)
+Nord;134;3.791.673;609.241;4.400.914
+Centro;38;1.829.086;171.851;2.000.937
+Sud;77;1.397.983;101.225;1.499.208
+Italia;249;7.018.742;882.317;7.901.059
+Demolitori veicoli (d.lgs 209/2003);;;;
+Area geografica;Numero impianti;Veicoli (t);;
+Nord;603;405.258;;
+Centro;226;167.505;;
+Sud;589;398.529;;
+Italia;1.418;971.292;;
+Rottamatori veicoli (d.lgs. n. 209/2003);;;;
+Area geografica;Numero impianti;Veicoli (EER 160106)(t);Altri RS (t);Totale (t)
+Nord;63;13.637;14.280;27.917
+Centro;28;1.733;3.512;5.244
+Sud;13;5.143;15.785;20.928
+Italia;104;20.513;33.576;54.089
+Frantumatori veicoli (d.lgs. n. 209/2003);;;;
+Area geografica;Numero impianti;Veicoli (EER 160106)(t);Altri RS (t);Totale (t)
+Nord;15;363.223;145.492;508.715
+Centro;5;258.850;23.513;282.363
+Sud;6;46.205;26.614;72.819
+Italia;26;668.278;195.620;863.898
+Altre tipologie di impianti;;;;
+Area geografica;Tipologia;Numero impianti;RS NP (t);RS P(t)
+Nord;IMPIANTI DI RECUPERO DI MATERIA;2.576;49.363.502;2.011.318
+Nord;IMPIANTI DI STOCCAGGIO;967;261.909;7.065
+Nord;IMPIANTI DI TRATTAMENTO CHIMICO-FISICO BIOLOGICO;403;6.862.359;2.430.584
+Nord;RECUPERO DI MATERIA PRESSO ATTIVITA PRODUTTIVE;778;16.626.498;313.884
+Centro;IMPIANTI DI RECUPERO DI MATERIA;693;12.282.728;239.149
+Centro;IMPIANTI DI STOCCAGGIO;273;534.077;8.065
+Centro;IMPIANTI DI TRATTAMENTO CHIMICO-FISICO BIOLOGICO;198;3.468.794;359.268
+Centro;RECUPERO DI MATERIA PRESSO ATTIVITA PRODUTTIVE;223;3.258.849;78.458
+Sud;IMPIANTI DI RECUPERO DI MATERIA;1.281;20.536.522;598.283
+Sud;IMPIANTI DI STOCCAGGIO;414;408.712;2.345
+Sud;IMPIANTI DI TRATTAMENTO CHIMICO-FISICO BIOLOGICO;204;4.093.657;456.874
+Sud;RECUPERO DI MATERIA PRESSO ATTIVITA PRODUTTIVE;222;2.962.945;57.459
+Italia;IMPIANTI DI RECUPERO DI MATERIA;4.550;82.182.752;2.848.750
+Italia;IMPIANTI DI STOCCAGGIO;1.654;1.204.698;17.475
+Italia;IMPIANTI DI TRATTAMENTO CHIMICO-FISICO BIOLOGICO;805;14.424.810;3.246.726
+Italia;RECUPERO DI MATERIA PRESSO ATTIVITA PRODUTTIVE;1.223;22.848.292;449.801
+Italia;TOTALE COMPLESSIVO;8.232;120.660.552;6.562.752
+Riepilogo del numero di impianti operativi che hanno gestito rifiuti sepciali;;;;
+Tipologia;Numero impianti;;;
+compostaggio;129;;;
+trattamento integrato aerobico-anaerobico;41;;;
+digestione anaerobica;17;;;
+trattamento meccanico-biologico;40;;;
+incenerimento;74;;;
+coincenerimento;301;;;
+discarica;249;;;
+autodemolizione;1.418;;;
+rottamazione;104;;;
+frantumazione;26;;;
+recupero di materia presso attivita produttive;1.223;;;
+impianti di stoccaggio;1.654;;;
+impianti di recupero di materia;4.550;;;
+impianti di trattamento chimico-fisico biologico;805;;;
+TOTALE;10.631;;;

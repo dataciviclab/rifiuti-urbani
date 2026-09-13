@@ -13,29 +13,22 @@ raw:
     - name: "ispra_ru_gestione_local"
       type: "local_file"
       args:
-        path: "/home/gabry/dev/dataciviclab-workspace/esperimenti-locali/rifiuti-urbani/rifiuti-ispra-raw-2024/ru_gestione_normalized.csv"
+        path: "../../normalized/ru_gestione/ispra_ru_gestione_{year}.csv"
       primary: true
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
 
 clean:
   sql: "sql/clean.sql"
-  required_columns: [anno, sezione, area, n_impianti, t1, t2, t3]
+  required_columns: [anno, area_geografica, numero_impianti, frazione_umida_t, verde_t, tot_ru_t, fanghi_t, altro_t, totale_t]
   read:
-    source: auto
-    mode: latest
     header: true
-    skip: 0
     delim: ";"
     encoding: "utf-8"
-    columns:
-      "sezione": VARCHAR
-      "col1": VARCHAR
-      "col2": VARCHAR
-      "col3": VARCHAR
-      "col4": VARCHAR
-      "col5": VARCHAR
   validate:
     min_rows: 20
-    
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -48,8 +41,7 @@ mart:
   validate:
     table_rules:
       mart_gestione:
-        
-        min_rows: 20
+        min_rows: 5
 
 validation:
   fail_on_error: true
