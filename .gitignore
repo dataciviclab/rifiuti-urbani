@@ -1,0 +1,23 @@
+# Output pipeline
+out/
+
+# Cache
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Raw data (non committare)
+rifiuti-ispra-raw-2024/

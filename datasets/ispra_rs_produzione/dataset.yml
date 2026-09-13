@@ -1,0 +1,55 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_rs_produzione"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, rs, produzione]
+  category: ambiente
+  years: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
+raw:
+  sources:
+    - name: "ispra_rs_produzione_local"
+      type: "local_file"
+      args:
+        path: "/home/gabry/dev/dataciviclab-workspace/esperimenti-locali/rifiuti-urbani/rifiuti-ispra-raw-2024/rs_produzione_normalized.csv"
+      primary: true
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns: [anno, sezione, area, valore_1, valore_2, valore_3, valore_4]
+  read:
+    source: auto
+    mode: latest
+    header: true
+    skip: 0
+    delim: ";"
+    encoding: "utf-8"
+    columns:
+      "sezione": VARCHAR
+      "col1": VARCHAR
+      "col2": VARCHAR
+      "col3": VARCHAR
+      "col4": VARCHAR
+      "col5": VARCHAR
+  validate:
+    min_rows: 50
+    
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_produzione"
+      sql: "sql/mart.sql"
+  required_tables: [mart_produzione]
+  validate:
+    table_rules:
+      mart_produzione:
+        
+        min_rows: 50
+
+validation:
+  fail_on_error: true

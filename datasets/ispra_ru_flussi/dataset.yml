@@ -1,0 +1,61 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_ru_flussi"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, ru, flussi]
+  category: ambiente
+  years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
+raw:
+  sources:
+    - name: "ispra_ru_flussi_local"
+      type: "local_file"
+      args:
+        path: "../../rifiuti-ispra-raw-2024/ru_flussi_normalized.csv"
+      primary: true
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns:
+    - "anno"
+    - "regione"
+    - "tipologia_flusso"
+    - "quantita_tonnellate"
+  read:
+    source: auto
+    mode: latest
+    header: true
+    skip: 0
+    delim: ";"
+    encoding: "utf-8"
+    trim_whitespace: true
+    columns:
+      "sezione": VARCHAR
+      "col1": VARCHAR
+      "col2": VARCHAR
+      "col3": VARCHAR
+  validate:
+    min_rows: 50
+    primary_key: [anno, regione, tipologia_flusso]
+    not_null: [anno, regione, tipologia_flusso]
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_flussi"
+      sql: "sql/mart.sql"
+  required_tables:
+    - "mart_flussi"
+  validate:
+    table_rules:
+      mart_flussi:
+        primary_key: [anno, regione, tipologia_flusso]
+        min_rows: 50
+        required_columns: [quantita_tonnellate, tipologia_flusso]
+
+validation:
+  fail_on_error: true

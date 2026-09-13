@@ -1,0 +1,55 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_ru_import"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, ru_import]
+  category: ambiente
+  years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
+raw:
+  sources:
+    - name: "ispra_ru_import_local"
+      type: "local_file"
+      args:
+        path: "/home/gabry/dev/dataciviclab-workspace/esperimenti-locali/rifiuti-urbani/rifiuti-ispra-raw-2024/ru_import_clean.csv"
+      primary: true
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns: [anno, regione, rifiuti_non_pericolosi_t, rifiuti_pericolosi_t, totale_t]
+  read:
+    source: auto
+    mode: latest
+    header: true
+    skip: 0
+    delim: ";"
+    encoding: "utf-8"
+    columns:
+      "Regione": VARCHAR
+      "Anno": VARCHAR
+      "Rifiuti non pericolosi(t)": VARCHAR
+      "Rifiuti pericolosi (t)": VARCHAR
+      "Totale(t)": VARCHAR
+  validate:
+    min_rows: 15
+    primary_key: [anno, regione]
+    not_null: [anno, regione]
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_import"
+      sql: "sql/mart.sql"
+  required_tables: [mart_import]
+  validate:
+    table_rules:
+      mart_import:
+        primary_key: [anno, regione]
+        min_rows: 15
+
+validation:
+  fail_on_error: true

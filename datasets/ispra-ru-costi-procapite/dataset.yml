@@ -1,0 +1,57 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_ru_costi_procapite"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, ru, costi, procapite]
+  category: ambiente
+  years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
+raw:
+  sources:
+    - name: "ispra_ru_costi_procapite_normalized"
+      type: "local_file"
+      args:
+        path: "../../normalized/costi_procapite/ispra_costi_pc_{year}.csv"
+        filename: "ispra_ru_costi_procapite_{year}.csv"
+      primary: true
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns:
+    - "anno"
+    - "codice_comune_istat"
+    - "comune_o_aggregazione"
+    - "provincia"
+    - "popolazione"
+    - "ctot_euro_ab"
+  read:
+    source: auto
+    mode: latest
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+  validate:
+    min_rows: 4000
+    primary_key: [anno, codice_comune_istat]
+    not_null: [anno, codice_comune_istat]
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_comuni"
+      sql: "sql/mart.sql"
+  required_tables:
+    - "mart_comuni"
+  validate:
+    table_rules:
+      mart_comuni:
+        primary_key: [anno, codice_comune_istat]
+        min_rows: 4000
+        required_columns: [ctot_euro_ab, percentile_nazionale, fascia_costi, media_nazionale_ctot]
+
+validation:
+  fail_on_error: true

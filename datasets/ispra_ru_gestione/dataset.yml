@@ -1,0 +1,55 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_ru_gestione"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, ru, gestione]
+  category: ambiente
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+
+raw:
+  sources:
+    - name: "ispra_ru_gestione_local"
+      type: "local_file"
+      args:
+        path: "/home/gabry/dev/dataciviclab-workspace/esperimenti-locali/rifiuti-urbani/rifiuti-ispra-raw-2024/ru_gestione_normalized.csv"
+      primary: true
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns: [anno, sezione, area, n_impianti, t1, t2, t3]
+  read:
+    source: auto
+    mode: latest
+    header: true
+    skip: 0
+    delim: ";"
+    encoding: "utf-8"
+    columns:
+      "sezione": VARCHAR
+      "col1": VARCHAR
+      "col2": VARCHAR
+      "col3": VARCHAR
+      "col4": VARCHAR
+      "col5": VARCHAR
+  validate:
+    min_rows: 20
+    
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_gestione"
+      sql: "sql/mart.sql"
+  required_tables: [mart_gestione]
+  validate:
+    table_rules:
+      mart_gestione:
+        
+        min_rows: 20
+
+validation:
+  fail_on_error: true
