@@ -75,3 +75,11 @@ def query_mart(slug: str, sql: str, year: int = 2024):
 def calc_kg_procapite(df, ton_col="totale_ru_tonnellate", pop_col="popolazione"):
     """Calcola kg procapite da tonnellate e popolazione."""
     return df[ton_col].sum() * 1000 / df[pop_col].sum()
+
+
+def safe_int(value, default=0):
+    """Converte a int gestendo NA/NaN."""
+    import pandas as pd
+    if pd.isna(value):
+        return default
+    return int(value)

@@ -3,7 +3,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from sources import load_mart, load_mart_all, fmt_num, YEARS
+from sources import load_mart, load_mart_all, fmt_num, safe_int, YEARS
 
 st.title("🚛 Flussi Rifiuti")
 

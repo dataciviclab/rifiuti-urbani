@@ -2,7 +2,7 @@
 
 import streamlit as st
 import plotly.express as px
-from sources import load_mart, fmt_eur, fmt_num, fmt_pct, YEARS
+from sources import load_mart, fmt_eur, fmt_num, fmt_pct, safe_int, YEARS
 
 st.title("🏘️ Benchmark Comunale")
 
@@ -31,8 +31,8 @@ row = df_comune.iloc[0]
 
 st.subheader(f"📊 {comune}")
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Popolazione", fmt_num(int(row['popolazione'])))
-k2.metric("Produzione RU", f"{fmt_num(int(row['totale_ru_tonnellate']))} t")
+k1.metric("Popolazione", fmt_num(safe_int(row["popolazione"])))
+k2.metric("Produzione RU", f"{fmt_num(safe_int(row["totale_ru_tonnellate"]))} t")
 k3.metric("RD%", fmt_pct(row['percentuale_rd']))
 k4.metric("Procapite", f"{row['kg_ru_per_abitante']:.1f} kg/ab")
 

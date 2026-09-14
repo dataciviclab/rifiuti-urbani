@@ -4,7 +4,7 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-from sources import load_mart, load_mart_all, fmt_num, fmt_pct, YEARS
+from sources import load_mart, load_mart_all, fmt_num, fmt_pct, safe_int, YEARS
 
 st.title("🏭 Rifiuti Speciali")
 
@@ -30,7 +30,8 @@ if df_prod is not None and not df_prod.empty:
         if df_imp is not None and not df_imp.empty:
             italia_imp = df_imp[df_imp['area_geografica'] == 'Italia']
             if not italia_imp.empty:
-                k4.metric("Impianti", fmt_num(int(italia_imp['numero_impianti'].iloc[0])))
+                imp_val = italia_imp['numero_impianti'].iloc[0]
+                k4.metric("Impianti", fmt_num(int(imp_val)) if pd.notna(imp_val) else "N/A")
 else:
     st.warning("Dati RS non disponibili.")
     st.stop()
