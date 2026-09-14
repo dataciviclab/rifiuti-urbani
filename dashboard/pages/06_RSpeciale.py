@@ -42,7 +42,9 @@ st.divider()
 st.subheader("📊 Produzione RS per Area Geografica")
 
 if df_prod is not None and not df_prod.empty:
-    df_area = df_prod[df_prod['area_geografica'] != 'Italia'].copy()
+    # Filtra solo aree geografiche (escludi categorie attività)
+    aree_geo = ['Italia', 'Nord', 'Centro', 'Sud']
+    df_area = df_prod[df_prod['area_geografica'].isin(aree_geo) & (df_prod['area_geografica'] != 'Italia')].copy()
 
     col1, col2 = st.columns(2)
 
@@ -82,7 +84,8 @@ if df_trend_all is not None and not df_trend_all.empty:
 st.subheader("🔄 Gestione RS per Area")
 
 if df_gest is not None and not df_gest.empty:
-    df_gest_area = df_gest[df_gest['area_geografica'] != 'Italia'].copy()
+    aree_geo = ['Italia', 'Nord', 'Centro', 'Sud']
+    df_gest_area = df_gest[df_gest['area_geografica'].isin(aree_geo) & (df_gest['area_geografica'] != 'Italia')].copy()
 
     fig_gest = px.bar(df_gest_area, x='area_geografica', y=['rs_np_t', 'rs_p_t'],
                       title="Gestione RS per Area",
@@ -95,7 +98,8 @@ if df_gest is not None and not df_gest.empty:
 st.subheader("🏗️ Impianti di Gestione RS")
 
 if df_imp is not None and not df_imp.empty:
-    df_imp_area = df_imp[df_imp['area_geografica'] != 'Italia'].copy()
+    aree_geo = ['Italia', 'Nord', 'Centro', 'Sud']
+    df_imp_area = df_imp[df_imp['area_geografica'].isin(aree_geo) & (df_imp['area_geografica'] != 'Italia')].copy()
 
     col1, col2 = st.columns(2)
 
