@@ -134,10 +134,7 @@ if insights:
             if i + j < len(insights):
                 ins = insights[i + j]
                 with col:
-                    st.metric(
-                        f"{ins['icon']} {ins['title']}",
-                        ins['text'],
-                    )
+                    st.info(f"**{ins['icon']} {ins['title']}**\n\n{ins['text']}")
 
 st.divider()
 
