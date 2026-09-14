@@ -16,6 +16,7 @@ st.set_page_config(
 pages = {
     "Monitoraggio": [
         st.Page("pages/01_Panoramica.py", title="Panoramica", icon="📊", default=True),
+        st.Page("pages/06_RSpeciale.py", title="Rifiuti Speciali", icon="🏭"),
     ],
     "Benchmark": [
         st.Page("pages/02_Regioni.py", title="Regioni", icon="🗺️"),

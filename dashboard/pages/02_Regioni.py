@@ -3,22 +3,40 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from sources import load_mart_all, calc_kg_procapite, fmt_num, fmt_pct, YEARS
+from sources import load_mart, load_mart_all, fmt_num, fmt_pct, YEARS
 
 st.title("🗺️ Benchmark Regionale")
 
-year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="regioni_year")
+# ── Filtri ─────────────────────────────────────────────────────────────────
+col1, col2 = st.columns([1, 2])
+with col1:
+    year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="regioni_year")
 
-# ── RD% per regione ───────────────────────────────────────────────────────
-st.subheader("📊 Classifica Regioni per RD%")
-
-df = load_mart_all("base", "mart_comuni", (year,))
+df = load_mart("base", "mart_comuni", year)
 
 if df is None or df.empty:
     st.warning("Nessun dato disponibile.")
     st.stop()
 
-df_reg = df.groupby('regione').agg(
+regioni_disponibili = sorted(df['regione'].unique().tolist())
+with col2:
+    regioni_selezionate = st.multiselect(
+        "Filtra regioni",
+        regioni_disponibili,
+        default=regioni_disponibili,
+        key="regioni_filter",
+    )
+
+if not regioni_selezionate:
+    st.warning("Seleziona almeno una regione.")
+    st.stop()
+
+df_filtrato = df[df['regione'].isin(regioni_selezionate)]
+
+# ── RD% per regione ───────────────────────────────────────────────────────
+st.subheader("📊 Classifica Regioni per RD%")
+
+df_reg = df_filtrato.groupby('regione').agg(
     rd_pct=('percentuale_rd', 'mean'),
     produzione=('totale_ru_tonnellate', 'sum'),
     rd=('totale_rd_tonnellate', 'sum'),
@@ -26,7 +44,7 @@ df_reg = df.groupby('regione').agg(
 ).reset_index().sort_values('rd_pct', ascending=False)
 
 df_reg['kg_procapite'] = df_reg['produzione'] * 1000 / df_reg['popolazione']
-rd_nazionale = df_reg['rd_pct'].mean()
+rd_nazionale = df_filtrato['percentuale_rd'].mean()
 
 col1, col2 = st.columns(2)
 
@@ -58,18 +76,17 @@ df_display['rd_pct'] = df_display['rd_pct'].apply(lambda x: fmt_pct(x))
 df_display['kg_procapite'] = df_display['kg_procapite'].apply(lambda x: f"{x:.1f}")
 st.dataframe(df_display, use_container_width=True, hide_index=True)
 
-# ── Trend top 5 ───────────────────────────────────────────────────────────
-st.subheader("📈 Trend RD% Top 5 Regioni (2018-2024)")
-top_regions = df_reg.nlargest(5, 'rd_pct')['regione'].tolist()
+# ── Trend regioni selezionate ─────────────────────────────────────────────
+st.subheader(f"📈 Trend RD% ({', '.join(regioni_selezionate[:5])}{'...' if len(regioni_selezionate) > 5 else ''})")
 
 df_all = load_mart_all("base", "mart_comuni", tuple(YEARS))
 if df_all is not None and not df_all.empty:
-    df_top = df_all[df_all['regione'].isin(top_regions)]
-    df_trend = df_top.groupby(['anno', 'regione']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
+    df_filtrato_all = df_all[df_all['regione'].isin(regioni_selezionate)]
+    df_trend = df_filtrato_all.groupby(['anno', 'regione']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
 
     if not df_trend.empty:
         fig_trend = px.line(df_trend, x='anno', y='rd_pct', color='regione', markers=True,
-                            title="Top 5 Regioni - Trend RD%",
+                            title="Trend RD% Regioni Selezionate",
                             labels={'rd_pct': 'RD%', 'anno': 'Anno'})
         fig_trend.update_layout(height=400)
         st.plotly_chart(fig_trend, width="stretch")
