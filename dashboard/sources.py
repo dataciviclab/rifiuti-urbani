@@ -7,11 +7,19 @@ from __future__ import annotations
 
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 
 from lab_connectors.duckdb.queries import (
     load_mart_table as _load_mart_table,
+    load_mart_all_years as _load_mart_all_years,
     query_clean as _query_clean,
 )
+from lab_connectors.formatters import fmt_eur, fmt_num, fmt_pct
+from lab_connectors.registry import load_registry
+
+# ── Registry ───────────────────────────────────────────────────────────────
+_REGISTRY_PATH = Path(__file__).parent.parent / "registry" / "registry.json"
+_registry = load_registry(_REGISTRY_PATH)
 
 PREFIX = "rifiuti-urbani/"
 YEARS = list(range(2018, 2025))
@@ -37,6 +45,12 @@ SLUGS = {
 def load_mart(slug: str, table: str, year: int = 2024):
     """Carica un singolo mart table (cached 1h)."""
     return _load_mart_table(SLUGS[slug], table, year, prefix=PREFIX)
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_mart_all(slug: str, table: str, years: tuple[int, ...] = tuple(YEARS)):
+    """Carica mart per tutti gli anni con UNION (cached 1h)."""
+    return _load_mart_all_years(SLUGS[slug], table, list(years), prefix=PREFIX)
 
 
 @st.cache_data(ttl=3600, show_spinner=False)

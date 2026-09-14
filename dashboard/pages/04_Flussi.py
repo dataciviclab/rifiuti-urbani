@@ -3,7 +3,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from sources import load_mart, load_mart as load_flussi, YEARS
+from sources import load_mart, load_mart_all, fmt_num, YEARS
 
 st.title("🚛 Flussi Rifiuti")
 
@@ -12,7 +12,7 @@ year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="flussi_year")
 # ── Flussi extraregionali ────────────────────────────────────────────────
 st.subheader("📊 Flussi Extraregionali RU")
 try:
-    df_flussi = load_flussi("flussi", "mart_flussi", year)
+    df_flussi = load_mart("flussi", "mart_flussi", year)
     if df_flussi is not None and not df_flussi.empty:
         df_flussi = df_flussi[df_flussi['regione'] != 'Italia'].sort_values('quantita_t', ascending=False)
         fig = px.bar(df_flussi, x='regione', y='quantita_t', color='quantita_t',
@@ -78,23 +78,18 @@ except Exception:
 
 # ── Trend ──────────────────────────────────────────────────────────────────
 st.subheader("📈 Trend Flussi Extraregionali (2018-2024)")
-trend_data = []
-for y in YEARS:
-    try:
-        m = load_flussi("flussi", "mart_flussi", y)
-        if m is not None and not m.empty:
-            tot = m[m['regione'] == 'Italia']['quantita_t'].sum()
-            if tot > 0:
-                trend_data.append({'anno': y, 'totale': tot})
-    except Exception:
-        pass
-
-if trend_data:
-    df_trend = pd.DataFrame(trend_data)
-    fig_trend = px.line(df_trend, x='anno', y='totale', markers=True,
-                        title="Totale Flussi Extraregionali",
-                        labels={'totale': 'Tonnnellate', 'anno': 'Anno'})
-    fig_trend.update_layout(height=350)
-    st.plotly_chart(fig_trend, width="stretch")
+try:
+    df_trend_all = load_mart_all("flussi", "mart_flussi", tuple(YEARS))
+    if df_trend_all is not None and not df_trend_all.empty:
+        df_italia = df_trend_all[df_trend_all['regione'] == 'Italia']
+        if not df_italia.empty:
+            df_trend = df_italia.groupby('anno').agg(totale=('quantita_t', 'sum')).reset_index()
+            fig_trend = px.line(df_trend, x='anno', y='totale', markers=True,
+                                title="Totale Flussi Extraregionali",
+                                labels={'totale': 'Tonnnellate', 'anno': 'Anno'})
+            fig_trend.update_layout(height=350)
+            st.plotly_chart(fig_trend, width="stretch")
+except Exception:
+    st.info("Trend non disponibile.")
 
 st.caption(f"Dati: ISPRA Catasto Rifiuti Nazionale · Anno {year} · CC BY 4.0")

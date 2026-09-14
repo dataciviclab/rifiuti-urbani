@@ -2,7 +2,7 @@
 
 import streamlit as st
 import plotly.express as px
-from sources import load_mart, YEARS
+from sources import load_mart, fmt_eur, fmt_num, fmt_pct, YEARS
 
 st.title("🏘️ Benchmark Comunale")
 
@@ -31,9 +31,9 @@ row = df_comune.iloc[0]
 
 st.subheader(f"📊 {comune}")
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Popolazione", f"{row['popolazione']:,.0f}")
-k2.metric("Produzione RU", f"{row['totale_ru_tonnellate']:,.0f} t")
-k3.metric("RD%", f"{row['percentuale_rd']:.1f}%")
+k1.metric("Popolazione", fmt_num(int(row['popolazione'])))
+k2.metric("Produzione RU", f"{fmt_num(int(row['totale_ru_tonnellate']))} t")
+k3.metric("RD%", fmt_pct(row['percentuale_rd']))
 k4.metric("Procapite", f"{row['kg_ru_per_abitante']:.1f} kg/ab")
 
 try:
@@ -42,9 +42,9 @@ try:
         c = costi[costi['codice_comune_istat'] == row['codice_comune_istat']]
         if not c.empty:
             k5, k6, k7 = st.columns(3)
-            k5.metric("Costo Totale", f"{c['ctot_euro_ab'].iloc[0]:.2f} EUR/ab")
-            k6.metric("Raccolta", f"{c['crt_euro_ab'].iloc[0]:.2f} EUR/ab")
-            k7.metric("Smaltimento", f"{c['crd_euro_ab'].iloc[0]:.2f} EUR/ab")
+            k5.metric("Costo Totale", fmt_eur(c['ctot_euro_ab'].iloc[0]))
+            k6.metric("Raccolta", fmt_eur(c['crt_euro_ab'].iloc[0]))
+            k7.metric("Smaltimento", fmt_eur(c['crd_euro_ab'].iloc[0]))
 except Exception:
     pass
 
@@ -62,15 +62,15 @@ rd_naz = df_all['percentuale_rd'].mean()
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.metric(f"vs Provincia ({provincia})", f"{rd_comune:.1f}%",
+    st.metric(f"vs Provincia ({provincia})", fmt_pct(rd_comune),
               delta=f"{rd_comune - rd_prov:+.1f}pp vs media prov.",
               delta_color="normal" if rd_comune >= rd_prov else "inverse")
 with col2:
-    st.metric(f"vs Regione ({regione})", f"{rd_comune:.1f}%",
+    st.metric(f"vs Regione ({regione})", fmt_pct(rd_comune),
               delta=f"{rd_comune - rd_reg:+.1f}pp vs media reg.",
               delta_color="normal" if rd_comune >= rd_reg else "inverse")
 with col3:
-    st.metric("vs Nazionale", f"{rd_comune:.1f}%",
+    st.metric("vs Nazionale", fmt_pct(rd_comune),
               delta=f"{rd_comune - rd_naz:+.1f}pp vs media naz.",
               delta_color="normal" if rd_comune >= rd_naz else "inverse")
 

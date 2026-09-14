@@ -3,16 +3,16 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from sources import load_mart, YEARS
+from sources import load_mart_all, fmt_num, fmt_pct, YEARS
 
 st.title("🗺️ Benchmark Regionale")
 
 year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="regioni_year")
 
-# ── RD% per regione (dal mart) ────────────────────────────────────────────
+# ── RD% per regione ───────────────────────────────────────────────────────
 st.subheader("📊 Classifica Regioni per RD%")
 
-df = load_mart("base", "mart_comuni", year)
+df = load_mart_all("base", "mart_comuni", (year,))
 
 if df is None or df.empty:
     st.warning("Nessun dato disponibile.")
@@ -23,9 +23,9 @@ df_reg = df.groupby('regione').agg(
     produzione=('totale_ru_tonnellate', 'sum'),
     rd=('totale_rd_tonnellate', 'sum'),
     popolazione=('popolazione', 'sum'),
-    kg_procapite=('totale_ru_tonnellate', lambda x: x.sum() * 1e6 / df.loc[x.index, 'popolazione'].sum()),
 ).reset_index().sort_values('rd_pct', ascending=False)
 
+df_reg['kg_procapite'] = df_reg['produzione'] * 1e6 / df_reg['popolazione']
 rd_nazionale = df_reg['rd_pct'].mean()
 
 col1, col2 = st.columns(2)
@@ -51,10 +51,10 @@ with col2:
 # ── Tabella ────────────────────────────────────────────────────────────────
 st.subheader("📋 Dettaglio Regioni")
 df_display = df_reg.copy()
-df_display['produzione'] = df_display['produzione'].apply(lambda x: f"{x:,.0f} t")
-df_display['rd'] = df_display['rd'].apply(lambda x: f"{x:,.0f} t")
-df_display['popolazione'] = df_display['popolazione'].apply(lambda x: f"{x:,.0f}")
-df_display['rd_pct'] = df_display['rd_pct'].apply(lambda x: f"{x:.1f}%")
+df_display['produzione'] = df_display['produzione'].apply(lambda x: f"{fmt_num(int(x))} t")
+df_display['rd'] = df_display['rd'].apply(lambda x: f"{fmt_num(int(x))} t")
+df_display['popolazione'] = df_display['popolazione'].apply(lambda x: fmt_num(int(x)))
+df_display['rd_pct'] = df_display['rd_pct'].apply(lambda x: fmt_pct(x))
 df_display['kg_procapite'] = df_display['kg_procapite'].apply(lambda x: f"{x:.1f}")
 st.dataframe(df_display, use_container_width=True, hide_index=True)
 
@@ -62,24 +62,16 @@ st.dataframe(df_display, use_container_width=True, hide_index=True)
 st.subheader("📈 Trend RD% Top 5 Regioni (2018-2024)")
 top_regions = df_reg.nlargest(5, 'rd_pct')['regione'].tolist()
 
-trend_data = []
-for y in YEARS:
-    try:
-        m = load_mart("base", "mart_comuni", y)
-        if m is not None and not m.empty:
-            for reg in top_regions:
-                sub = m[m['regione'] == reg]
-                if not sub.empty:
-                    trend_data.append({'anno': y, 'regione': reg, 'rd_pct': sub['percentuale_rd'].mean()})
-    except Exception:
-        pass
+df_all = load_mart_all("base", "mart_comuni", tuple(YEARS))
+if df_all is not None and not df_all.empty:
+    df_top = df_all[df_all['regione'].isin(top_regions)]
+    df_trend = df_top.groupby(['anno', 'regione']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
 
-if trend_data:
-    df_trend = pd.DataFrame(trend_data)
-    fig_trend = px.line(df_trend, x='anno', y='rd_pct', color='regione', markers=True,
-                        title="Top 5 Regioni - Trend RD%",
-                        labels={'rd_pct': 'RD%', 'anno': 'Anno'})
-    fig_trend.update_layout(height=400)
-    st.plotly_chart(fig_trend, width="stretch")
+    if not df_trend.empty:
+        fig_trend = px.line(df_trend, x='anno', y='rd_pct', color='regione', markers=True,
+                            title="Top 5 Regioni - Trend RD%",
+                            labels={'rd_pct': 'RD%', 'anno': 'Anno'})
+        fig_trend.update_layout(height=400)
+        st.plotly_chart(fig_trend, width="stretch")
 
 st.caption(f"Dati: ISPRA Catasto Rifiuti Nazionale · Anno {year} · CC BY 4.0")
