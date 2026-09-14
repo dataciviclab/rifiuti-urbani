@@ -62,17 +62,29 @@ rd_naz = df_all['percentuale_rd'].mean()
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.metric(f"vs Provincia ({provincia})", fmt_pct(rd_comune),
-              delta=f"{rd_comune - rd_prov:+.1f}pp vs media prov.",
-              delta_color="normal" if rd_comune >= rd_prov else "inverse")
+    delta = rd_comune - rd_prov
+    st.metric(
+        f"Provincia ({provincia})",
+        f"{fmt_pct(rd_prov)}",
+        delta=f"{comune}: {delta:+.1f}pp",
+        delta_color="normal" if delta >= 0 else "inverse",
+    )
 with col2:
-    st.metric(f"vs Regione ({regione})", fmt_pct(rd_comune),
-              delta=f"{rd_comune - rd_reg:+.1f}pp vs media reg.",
-              delta_color="normal" if rd_comune >= rd_reg else "inverse")
+    delta = rd_comune - rd_reg
+    st.metric(
+        f"Regione ({regione})",
+        f"{fmt_pct(rd_reg)}",
+        delta=f"{comune}: {delta:+.1f}pp",
+        delta_color="normal" if delta >= 0 else "inverse",
+    )
 with col3:
-    st.metric("vs Nazionale", fmt_pct(rd_comune),
-              delta=f"{rd_comune - rd_naz:+.1f}pp vs media naz.",
-              delta_color="normal" if rd_comune >= rd_naz else "inverse")
+    delta = rd_comune - rd_naz
+    st.metric(
+        "Nazionale",
+        f"{fmt_pct(rd_naz)}",
+        delta=f"{comune}: {delta:+.1f}pp",
+        delta_color="normal" if delta >= 0 else "inverse",
+    )
 
 # ── Distribuzione provincia ────────────────────────────────────────────────
 st.subheader("📊 Distribuzione RD% nella Provincia")
