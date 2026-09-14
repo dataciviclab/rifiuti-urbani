@@ -162,13 +162,4 @@ if df_compose is not None and not df_compose.empty:
         st.plotly_chart(fig2, width="stretch")
 
     # Table
-    st.dataframe(
-        df_classi.style.format({
-            'n_comuni': '{:.0f}',
-            'rd_medio': '{:.1f}%',
-            'costo_medio': '€{:.2f}',
-            'kg_procapite': '{:.1f}',
-        }),
-        use_container_width=True,
-        hide_index=True,
-    )
+    st.dataframe(df_classi, use_container_width=True, hide_index=True)
