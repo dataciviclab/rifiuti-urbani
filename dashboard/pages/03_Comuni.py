@@ -2,6 +2,8 @@
 
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
+import pandas as pd
 from sources import load_mart, fmt_eur, fmt_num, fmt_pct, safe_int, YEARS
 
 st.title("🏘️ Benchmark Comunale")
@@ -100,3 +102,73 @@ if not df_dist.empty:
     st.plotly_chart(fig, width="stretch")
 
 st.caption(f"Dati: ISPRA Catasto Rifiuti Nazionale · Anno {year} · CC BY 4.0")
+
+# ── Classi demografiche ────────────────────────────────────────────────────
+st.divider()
+st.subheader("👥 Analisi per Classe Demografica")
+
+# Load compose data (has classi demografiche + costi)
+df_compose = load_mart("unified", "mart_comuni", year)
+
+if df_compose is not None and not df_compose.empty:
+    df_classi = df_compose.groupby('classe_demografica').agg(
+        n_comuni=('codice_comune_istat', 'count'),
+        rd_medio=('percentuale_rd', 'mean'),
+        costo_medio=('ctot_euro_ab', 'mean'),
+        kg_procapite=('kg_ru_per_abitante', 'mean'),
+    ).reset_index().sort_values('n_comuni', ascending=False)
+
+    # Show current comune's class
+    classe_comune = row.get('classe_demografica', 'N/A')
+    st.info(f"**{comune}** appartiene alla classe **{classe_comune}**")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            name='RD% Medio',
+            x=df_classi['classe_demografica'],
+            y=df_classi['rd_medio'],
+            marker_color='#22c55e',
+        ))
+        fig.add_trace(go.Bar(
+            name='Costo Medio (EUR/ab)',
+            x=df_classi['classe_demografica'],
+            y=df_classi['costo_medio'],
+            marker_color='#3b82f6',
+        ))
+        fig.update_layout(
+            title="RD% e Costi per Classe Demografica",
+            barmode='group',
+            height=400,
+            xaxis_title="Classe",
+            yaxis_title="Valore",
+        )
+        st.plotly_chart(fig, width="stretch")
+
+    with col2:
+        fig2 = px.scatter(
+            df_classi,
+            x='costo_medio',
+            y='rd_medio',
+            size='n_comuni',
+            color='classe_demografica',
+            hover_data=['kg_procapite'],
+            title="Costo vs RD% per Classe",
+            labels={'costo_medio': 'Costo Medio (EUR/ab)', 'rd_medio': 'RD% Medio'},
+        )
+        fig2.update_layout(height=400)
+        st.plotly_chart(fig2, width="stretch")
+
+    # Table
+    st.dataframe(
+        df_classi.style.format({
+            'n_comuni': '{:.0f}',
+            'rd_medio': '{:.1f}%',
+            'costo_medio': '€{:.2f}',
+            'kg_procapite': '{:.1f}',
+        }),
+        use_container_width=True,
+        hide_index=True,
+    )
