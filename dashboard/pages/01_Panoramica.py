@@ -1,4 +1,4 @@
-"""Panoramica — KPI nazionali e trend 2018-2024."""
+"""Panoramica — KPI nazionali, trend e insight strategici."""
 
 import streamlit as st
 import plotly.express as px
@@ -42,12 +42,110 @@ k8.metric("Obiettivo UE 65%", fmt_pct(rd_pct), delta=f"{rd_pct - 65.0:+.1f}pp")
 
 st.divider()
 
-# ── Trend (usa load_mart_all) ─────────────────────────────────────────────
+# ── Insight Strategy ───────────────────────────────────────────────────────
+st.subheader("💡 Insight Strategici")
+
+# Calcola insight
+df_trend_all = load_mart_all("base", "mart_comuni", tuple(YEARS))
+df_costi_all = load_mart_all("costi_pc", "mart_comuni", tuple(YEARS))
+df_compose = load_mart("unified", "mart_comuni", year)
+
+insights = []
+
+if df_trend_all is not None and not df_trend_all.empty:
+    # Trend RD%
+    trend = df_trend_all.groupby('anno').agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
+    rd_first = trend['rd_pct'].iloc[0]
+    rd_last = trend['rd_pct'].iloc[-1]
+    rd_delta = rd_last - rd_first
+    
+    # Trend costi
+    if df_costi_all is not None and not df_costi_all.empty:
+        trend_costi = df_costi_all.groupby('anno').agg(costo=('ctot_euro_ab', 'mean')).reset_index()
+        cost_first = trend_costi['costo'].iloc[0]
+        cost_last = trend_costi['costo'].iloc[-1]
+        efficiency_first = cost_first / rd_first
+        efficiency_last = cost_last / rd_last
+        
+        if efficiency_last > efficiency_first:
+            insights.append({
+                "icon": "📈",
+                "title": "Crescita a costi crescenti",
+                "text": f"RD% +{rd_delta:.1f}pp in 6 anni, ma costo/punto RD% +{((efficiency_last/efficiency_first)-1)*100:.0f}% ({efficiency_first:.2f} → {efficiency_last:.2f} EUR/punto)",
+                "color": "orange",
+            })
+        else:
+            insights.append({
+                "icon": "✅",
+                "title": "Efficienza in miglioramento",
+                "text": f"RD% +{rd_delta:.1f}pp e costo/punto RD% in diminuzione",
+                "color": "green",
+            })
+    
+    # Gap Nord-Sud
+    gap_data = df_trend_all.copy()
+    gap_data['macroarea'] = gap_data['regione'].apply(
+        lambda x: 'NORD' if x in ['Piemonte', "Valle d'Aosta", 'Lombardia', 'Trentino-Alto Adige', 'Veneto', 'Friuli-Venezia Giulia', 'Liguria', 'Emilia-Romagna'] 
+        else ('SUD' if x in ['Calabria', 'Basilicata', 'Sicilia', 'Sardegna', 'Campania', 'Puglia', 'Molise'] else 'CENTRO')
+    )
+    gap_trend = gap_data.groupby(['anno', 'macroarea']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
+    gap_nord = gap_trend[gap_trend['macroarea'] == 'NORD'].set_index('anno')['rd_pct']
+    gap_sud = gap_trend[gap_trend['macroarea'] == 'SUD'].set_index('anno')['rd_pct']
+    
+    if not gap_nord.empty and not gap_sud.empty:
+        gap_2018 = gap_nord.get(2018, 0) - gap_sud.get(2018, 0)
+        gap_2024 = gap_nord.get(2024, 0) - gap_sud.get(2024, 0)
+        if gap_2024 < gap_2018:
+            insights.append({
+                "icon": "🗺️",
+                "title": "Gap territoriale in riduzione",
+                "text": f"Gap Nord-Sud: {gap_2018:.1f}pp → {gap_2024:.1f}pp (-{gap_2018-gap_2024:.1f}pp)",
+                "color": "green",
+            })
+        else:
+            insights.append({
+                "icon": "⚠️",
+                "title": "Gap territoriale persistente",
+                "text": f"Gap Nord-Sud resta a {gap_2024:.1f}pp",
+                "color": "orange",
+            })
+    
+    # Classi demografiche
+    if df_compose is not None and not df_compose.empty:
+        classi = df_compose.groupby('classe_demografica').agg(
+            rd=('percentuale_rd', 'mean'),
+            costo=('ctot_euro_ab', 'mean'),
+        ).reset_index()
+        if not classi.empty:
+            best = classi.loc[classi['rd'].idxmax()]
+            worst = classi.loc[classi['rd'].idxmin()]
+            insights.append({
+                "icon": "🏘️",
+                "title": "La dimensione conta",
+                "text": f"Migliori: {best['classe_demografica']} (RD {best['rd']:.0f}%, {best['costo']:.0f} EUR). Peggiori: {worst['classe_demografica']} (RD {worst['rd']:.0f}%, {worst['costo']:.0f} EUR)",
+                "color": "blue" if best['classe_demografica'] != worst['classe_demografica'] else "gray",
+            })
+
+# Render insights
+if insights:
+    for i in range(0, len(insights), 3):
+        cols = st.columns(3)
+        for j, col in enumerate(cols):
+            if i + j < len(insights):
+                ins = insights[i + j]
+                with col:
+                    st.metric(
+                        f"{ins['icon']} {ins['title']}",
+                        ins['text'],
+                    )
+
+st.divider()
+
+# ── Trend ──────────────────────────────────────────────────────────────────
 st.subheader("📈 Trend 2018-2024")
 
-df_trend_base = load_mart_all("base", "mart_comuni", tuple(YEARS))
-if df_trend_base is not None and not df_trend_base.empty:
-    df_trend = df_trend_base.groupby('anno').agg(
+if df_trend_all is not None and not df_trend_all.empty:
+    df_trend = df_trend_all.groupby('anno').agg(
         produzione=('totale_ru_tonnellate', 'sum'),
         rd=('totale_rd_tonnellate', 'sum'),
         rd_pct=('percentuale_rd', 'mean'),
@@ -68,13 +166,12 @@ if df_trend_base is not None and not df_trend_base.empty:
         st.plotly_chart(fig_prod, width="stretch")
 
     st.subheader("💰 Trend Costi Gestione")
-    df_trend_costi = load_mart_all("costi_pc", "mart_comuni", tuple(YEARS))
-    if df_trend_costi is not None and not df_trend_costi.empty:
-        df_costi = df_trend_costi.groupby('anno').agg(
+    if df_costi_all is not None and not df_costi_all.empty:
+        df_costi_trend = df_costi_all.groupby('anno').agg(
             media=('ctot_euro_ab', 'mean'),
             mediana=('ctot_euro_ab', 'median'),
         ).reset_index()
-        fig_costi = px.line(df_costi, x='anno', y=['media', 'mediana'], markers=True,
+        fig_costi = px.line(df_costi_trend, x='anno', y=['media', 'mediana'], markers=True,
                             title="Costo Gestione per Abitante",
                             labels={'value': 'EUR/ab', 'anno': 'Anno', 'variable': 'Metrica'})
         fig_costi.update_layout(height=350)
