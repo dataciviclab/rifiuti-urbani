@@ -70,3 +70,8 @@ def query_mart(slug: str, sql: str, year: int = 2024):
     con.register("mart_input", df)
     result = con.execute(sql.replace("mart_input", "mart_input")).fetchdf()
     return result
+
+
+def calc_kg_procapite(df, ton_col="totale_ru_tonnellate", pop_col="popolazione"):
+    """Calcola kg procapite da tonnellate e popolazione."""
+    return df[ton_col].sum() * 1000 / df[pop_col].sum()

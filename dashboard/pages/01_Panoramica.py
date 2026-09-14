@@ -4,7 +4,7 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-from sources import load_mart, load_mart_all, fmt_eur, fmt_num, fmt_pct, YEARS
+from sources import load_mart, load_mart_all, calc_kg_procapite, fmt_eur, fmt_num, fmt_pct, YEARS
 
 st.title("📊 Panoramica Nazionale")
 
@@ -24,7 +24,7 @@ k3.metric("Raccolta Differenziata", f"{fmt_num(int(df['totale_rd_tonnellate'].su
 k4.metric("RD%", fmt_pct(df['percentuale_rd'].mean()))
 
 k5, k6, k7, k8 = st.columns(4)
-kg_procapite = df['totale_ru_tonnellate'].sum() * 1e6 / df['popolazione'].sum()
+kg_procapite = calc_kg_procapite(df)
 k5.metric("Procapite", f"{kg_procapite:.1f} kg/ab")
 k6.metric("Comuni", fmt_num(len(df)))
 

@@ -3,7 +3,7 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from sources import load_mart_all, fmt_num, fmt_pct, YEARS
+from sources import load_mart_all, calc_kg_procapite, fmt_num, fmt_pct, YEARS
 
 st.title("🗺️ Benchmark Regionale")
 
@@ -25,7 +25,7 @@ df_reg = df.groupby('regione').agg(
     popolazione=('popolazione', 'sum'),
 ).reset_index().sort_values('rd_pct', ascending=False)
 
-df_reg['kg_procapite'] = df_reg['produzione'] * 1e6 / df_reg['popolazione']
+df_reg['kg_procapite'] = df_reg['produzione'] * 1000 / df_reg['popolazione']
 rd_nazionale = df_reg['rd_pct'].mean()
 
 col1, col2 = st.columns(2)
