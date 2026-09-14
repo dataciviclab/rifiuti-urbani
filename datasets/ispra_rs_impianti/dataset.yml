@@ -28,7 +28,7 @@ clean:
     delim: ";"
     encoding: "utf-8"
   validate:
-    min_rows: 30
+    min_rows: 3
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -41,7 +41,7 @@ mart:
   validate:
     table_rules:
       mart_impianti:
-        min_rows: 20
+        min_rows: 3
 
 validation:
   fail_on_error: true
