@@ -2,9 +2,8 @@
 
 import streamlit as st
 import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
-from sources import query, YEARS
+from sources import load_mart, load_mart as load_flussi, YEARS
 
 st.title("🚛 Flussi Rifiuti")
 
@@ -12,18 +11,18 @@ year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="flussi_year")
 
 # ── Flussi extraregionali ────────────────────────────────────────────────
 st.subheader("📊 Flussi Extraregionali RU")
-df_flussi = query("flussi", """
-    SELECT regione, quantita_t FROM clean_input
-    WHERE regione != 'Italia' ORDER BY quantita_t DESC
-""", years=(year,))
-
-if not df_flussi.empty:
-    fig = px.bar(df_flussi, x='regione', y='quantita_t', color='quantita_t',
-                 color_continuous_scale='Blues',
-                 title="Flussi Extraregionali per Regione",
-                 labels={'quantita_t': 'Tonnnellate', 'regione': 'Regione'})
-    fig.update_layout(height=400, xaxis_tickangle=-45)
-    st.plotly_chart(fig, width="stretch")
+try:
+    df_flussi = load_flussi("flussi", "mart_flussi", year)
+    if df_flussi is not None and not df_flussi.empty:
+        df_flussi = df_flussi[df_flussi['regione'] != 'Italia'].sort_values('quantita_t', ascending=False)
+        fig = px.bar(df_flussi, x='regione', y='quantita_t', color='quantita_t',
+                     color_continuous_scale='Blues',
+                     title="Flussi Extraregionali per Regione",
+                     labels={'quantita_t': 'Tonnnellate', 'regione': 'Regione'})
+        fig.update_layout(height=400, xaxis_tickangle=-45)
+        st.plotly_chart(fig, width="stretch")
+except Exception as e:
+    st.info(f"Flussi non disponibili: {e}")
 
 st.divider()
 
@@ -33,36 +32,38 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("**Import RU**")
-    df_imp = query("import_ru", """
-        SELECT regione, totale_t FROM clean_input
-        WHERE regione != 'Italia' ORDER BY totale_t DESC
-    """, years=(year,))
-    if not df_imp.empty:
-        fig_imp = px.pie(df_imp, values='totale_t', names='regione',
-                         title="Import RU per Regione")
-        fig_imp.update_layout(height=350)
-        st.plotly_chart(fig_imp, width="stretch")
+    try:
+        df_imp = load_mart("import_ru", "mart_import", year)
+        if df_imp is not None and not df_imp.empty:
+            df_imp = df_imp[df_imp['regione'] != 'Italia']
+            fig_imp = px.pie(df_imp, values='totale_t', names='regione',
+                             title="Import RU per Regione")
+            fig_imp.update_layout(height=350)
+            st.plotly_chart(fig_imp, width="stretch")
+    except Exception:
+        st.info("Import non disponibili")
 
 with col2:
     st.markdown("**Export RU**")
-    df_exp = query("export_ru", """
-        SELECT regione, totale_t FROM clean_input
-        WHERE regione != 'Italia' ORDER BY totale_t DESC
-    """, years=(year,))
-    if not df_exp.empty:
-        fig_exp = px.pie(df_exp, values='totale_t', names='regione',
-                         title="Export RU per Regione")
-        fig_exp.update_layout(height=350)
-        st.plotly_chart(fig_exp, width="stretch")
+    try:
+        df_exp = load_mart("export_ru", "mart_import", year)
+        if df_exp is not None and not df_exp.empty:
+            df_exp = df_exp[df_exp['regione'] != 'Italia']
+            fig_exp = px.pie(df_exp, values='totale_t', names='regione',
+                             title="Export RU per Regione")
+            fig_exp.update_layout(height=350)
+            st.plotly_chart(fig_exp, width="stretch")
+    except Exception:
+        st.info("Export non disponibili")
 
 # ── Bilancio ───────────────────────────────────────────────────────────────
 st.subheader("⚖️ Bilancio Import/Export per Regione")
 try:
-    imp = query("import_ru", "SELECT regione, totale_t as import_val FROM clean_input WHERE regione != 'Italia'",
-                years=(year,))
-    exp = query("export_ru", "SELECT regione, totale_t as export_val FROM clean_input WHERE regione != 'Italia'",
-                years=(year,))
-    if not imp.empty and not exp.empty:
+    imp = load_mart("import_ru", "mart_import", year)
+    exp = load_mart("export_ru", "mart_import", year)
+    if imp is not None and exp is not None and not imp.empty and not exp.empty:
+        imp = imp[imp['regione'] != 'Italia'][['regione', 'totale_t']].rename(columns={'totale_t': 'import_val'})
+        exp = exp[exp['regione'] != 'Italia'][['regione', 'totale_t']].rename(columns={'totale_t': 'export_val'})
         bil = pd.merge(imp, exp, on='regione')
         bil['bilancio'] = bil['import_val'] - bil['export_val']
         bil = bil.sort_values('bilancio', ascending=False)
@@ -80,17 +81,16 @@ st.subheader("📈 Trend Flussi Extraregionali (2018-2024)")
 trend_data = []
 for y in YEARS:
     try:
-        row = query("flussi", """
-            SELECT sum(quantita_t) as totale FROM clean_input WHERE regione = 'Italia'
-        """, years=(y,))
-        if not row.empty:
-            row['anno'] = y
-            trend_data.append(row)
+        m = load_flussi("flussi", "mart_flussi", y)
+        if m is not None and not m.empty:
+            tot = m[m['regione'] == 'Italia']['quantita_t'].sum()
+            if tot > 0:
+                trend_data.append({'anno': y, 'totale': tot})
     except Exception:
         pass
 
 if trend_data:
-    df_trend = pd.concat(trend_data, ignore_index=True)
+    df_trend = pd.DataFrame(trend_data)
     fig_trend = px.line(df_trend, x='anno', y='totale', markers=True,
                         title="Totale Flussi Extraregionali",
                         labels={'totale': 'Tonnnellate', 'anno': 'Anno'})

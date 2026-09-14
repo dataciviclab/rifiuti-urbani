@@ -4,45 +4,40 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-from sources import query, YEARS
+from sources import load_mart, YEARS
 
 st.title("📊 Panoramica Nazionale")
 
 year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="panoramica_year")
 
-# ── KPI principali ────────────────────────────────────────────────────────
-df = query("base", """
-    SELECT
-        sum(totale_ru_tonnellate) as produzione,
-        sum(totale_rd_tonnellate) as rd,
-        avg(percentuale_rd) as rd_pct,
-        sum(kg_ru_per_abitante * popolazione) / sum(popolazione) as kg_procapite,
-        count(*) as n_comuni,
-        sum(popolazione) as popolazione
-    FROM clean_input WHERE totale_ru_tonnellate > 0
-""", years=(year,))
+# ── KPI principali (dal mart) ─────────────────────────────────────────────
+df = load_mart("base", "mart_comuni", year)
 
-if df.empty:
+if df is None or df.empty:
     st.warning("Nessun dato disponibile.")
     st.stop()
 
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Popolazione", f"{df['popolazione'].iloc[0]:,.0f}")
-k2.metric("Produzione RU", f"{df['produzione'].iloc[0]:,.0f} t")
-k3.metric("Raccolta Differenziata", f"{df['rd'].iloc[0]:,.0f} t")
-k4.metric("RD%", f"{df['rd_pct'].iloc[0]:.1f}%")
+k1.metric("Popolazione", f"{df['popolazione'].sum():,.0f}")
+k2.metric("Produzione RU", f"{df['totale_ru_tonnellate'].sum():,.0f} t")
+k3.metric("Raccolta Differenziata", f"{df['totale_rd_tonnellate'].sum():,.0f} t")
+k4.metric("RD%", f"{df['percentuale_rd'].mean():.1f}%")
 
 k5, k6, k7, k8 = st.columns(4)
-k5.metric("Procapite", f"{df['kg_procapite'].iloc[0]:.1f} kg/ab")
-k6.metric("Comuni", f"{df['n_comuni'].iloc[0]:,}")
+k5.metric("Procapite", f"{(df['totale_ru_tonnellate'].sum() * 1e6 / df['popolazione'].sum()):.1f} kg/ab")
+k6.metric("Comuni", f"{len(df):,}")
 
 try:
-    costi = query("costi_pc", "SELECT avg(ctot_euro_ab) as costo_medio FROM clean_input WHERE ctot_euro_ab > 0", years=(year,))
-    k7.metric("Costo Medio", f"{costi['costo_medio'].iloc[0]:.2f} EUR/ab" if not costi.empty else "N/A")
+    from sources import load_mart as load_costi
+    costi = load_costi("costi_pc", "mart_comuni", year)
+    if costi is not None and not costi.empty:
+        k7.metric("Costo Medio", f"{costi['ctot_euro_ab'].mean():.2f} EUR/ab")
+    else:
+        k7.metric("Costo Medio", "N/A")
 except Exception:
     k7.metric("Costo Medio", "N/A")
 
-rd_pct = df['rd_pct'].iloc[0]
+rd_pct = df['percentuale_rd'].mean()
 k8.metric("Obiettivo UE 65%", f"{rd_pct:.1f}%", delta=f"{rd_pct - 65.0:+.1f}pp")
 
 st.divider()
@@ -52,20 +47,19 @@ st.subheader("📈 Trend 2018-2024")
 trend_data = []
 for y in YEARS:
     try:
-        row = query("base", """
-            SELECT sum(totale_ru_tonnellate) as produzione,
-                   sum(totale_rd_tonnellate) as rd,
-                   avg(percentuale_rd) as rd_pct
-            FROM clean_input WHERE totale_ru_tonnellate > 0
-        """, years=(y,))
-        if not row.empty:
-            row['anno'] = y
-            trend_data.append(row)
+        m = load_mart("base", "mart_comuni", y)
+        if m is not None and not m.empty:
+            trend_data.append({
+                'anno': y,
+                'produzione': m['totale_ru_tonnellate'].sum(),
+                'rd': m['totale_rd_tonnellate'].sum(),
+                'rd_pct': m['percentuale_rd'].mean(),
+            })
     except Exception:
         pass
 
 if trend_data:
-    df_trend = pd.concat(trend_data, ignore_index=True)
+    df_trend = pd.DataFrame(trend_data)
     col1, col2 = st.columns(2)
     with col1:
         fig_rd = px.line(df_trend, x='anno', y='rd_pct', markers=True,
@@ -84,18 +78,17 @@ if trend_data:
     costi_trend = []
     for y in YEARS:
         try:
-            c = query("costi_pc", """
-                SELECT avg(ctot_euro_ab) as media,
-                       percentile_cont(0.5) within group (order by ctot_euro_ab) as mediana
-                FROM clean_input WHERE ctot_euro_ab > 0
-            """, years=(y,))
-            if not c.empty:
-                c['anno'] = y
-                costi_trend.append(c)
+            c = load_mart("costi_pc", "mart_comuni", y)
+            if c is not None and not c.empty:
+                costi_trend.append({
+                    'anno': y,
+                    'media': c['ctot_euro_ab'].mean(),
+                    'mediana': c['ctot_euro_ab'].median(),
+                })
         except Exception:
             pass
     if costi_trend:
-        df_costi = pd.concat(costi_trend, ignore_index=True)
+        df_costi = pd.DataFrame(costi_trend)
         fig_costi = px.line(df_costi, x='anno', y=['media', 'mediana'], markers=True,
                             title="Costo Gestione per Abitante", labels={'value': 'EUR/ab', 'anno': 'Anno'})
         fig_costi.update_layout(height=350)

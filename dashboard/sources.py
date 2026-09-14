@@ -6,6 +6,7 @@ Wrappa lab_connectors.duckdb.queries con @st.cache_data.
 from __future__ import annotations
 
 import streamlit as st
+import pandas as pd
 
 from lab_connectors.duckdb.queries import (
     load_mart_table as _load_mart_table,
@@ -34,7 +35,7 @@ SLUGS = {
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_mart(slug: str, table: str, year: int = 2024):
-    """Carica un singolo mart table da GCS (cached 1h)."""
+    """Carica un singolo mart table (cached 1h)."""
     return _load_mart_table(SLUGS[slug], table, year, prefix=PREFIX)
 
 
@@ -42,3 +43,16 @@ def load_mart(slug: str, table: str, year: int = 2024):
 def query(slug: str, sql: str, years: tuple[int, ...] = tuple(YEARS)):
     """Esegue SQL sul clean layer (cached 1h)."""
     return _query_clean(SLUGS[slug], sql, list(years), prefix=PREFIX)
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def query_mart(slug: str, sql: str, year: int = 2024):
+    """Esegue SQL sul mart layer (cached 1h)."""
+    import duckdb
+    df = _load_mart_table(SLUGS[slug], "mart_comuni", year, prefix=PREFIX)
+    if df is None or df.empty:
+        return pd.DataFrame()
+    con = duckdb.connect()
+    con.register("mart_input", df)
+    result = con.execute(sql.replace("mart_input", "mart_input")).fetchdf()
+    return result
