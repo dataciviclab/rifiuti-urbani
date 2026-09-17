@@ -1,10 +1,9 @@
 """Panoramica — KPI nazionali, trend e insight strategici."""
 
-import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
-import pandas as pd
-from sources import load_mart, load_mart_all, calc_kg_procapite, fmt_eur, fmt_num, fmt_pct, YEARS
+import streamlit as st
+from sources import YEARS, calc_kg_procapite, fmt_eur, fmt_num, fmt_pct, load_mart, load_mart_all
 
 st.title("📊 Panoramica Nazionale")
 
@@ -58,7 +57,7 @@ if df_trend_all is not None and not df_trend_all.empty:
     rd_first = trend['rd_pct'].iloc[0]
     rd_last = trend['rd_pct'].iloc[-1]
     rd_delta = rd_last - rd_first
-    
+
     # Trend costi
     if df_costi_all is not None and not df_costi_all.empty:
         trend_costi = df_costi_all.groupby('anno').agg(costo=('ctot_euro_ab', 'mean')).reset_index()
@@ -66,7 +65,7 @@ if df_trend_all is not None and not df_trend_all.empty:
         cost_last = trend_costi['costo'].iloc[-1]
         efficiency_first = cost_first / rd_first
         efficiency_last = cost_last / rd_last
-        
+
         if efficiency_last > efficiency_first:
             insights.append({
                 "icon": "📈",
@@ -81,17 +80,17 @@ if df_trend_all is not None and not df_trend_all.empty:
                 "text": f"RD% +{rd_delta:.1f}pp e costo/punto RD% in diminuzione",
                 "color": "green",
             })
-    
+
     # Gap Nord-Sud
     gap_data = df_trend_all.copy()
     gap_data['macroarea'] = gap_data['regione'].apply(
-        lambda x: 'NORD' if x in ['Piemonte', "Valle d'Aosta", 'Lombardia', 'Trentino-Alto Adige', 'Veneto', 'Friuli-Venezia Giulia', 'Liguria', 'Emilia-Romagna'] 
+        lambda x: 'NORD' if x in ['Piemonte', "Valle d'Aosta", 'Lombardia', 'Trentino-Alto Adige', 'Veneto', 'Friuli-Venezia Giulia', 'Liguria', 'Emilia-Romagna']
         else ('SUD' if x in ['Calabria', 'Basilicata', 'Sicilia', 'Sardegna', 'Campania', 'Puglia', 'Molise'] else 'CENTRO')
     )
     gap_trend = gap_data.groupby(['anno', 'macroarea']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
     gap_nord = gap_trend[gap_trend['macroarea'] == 'NORD'].set_index('anno')['rd_pct']
     gap_sud = gap_trend[gap_trend['macroarea'] == 'SUD'].set_index('anno')['rd_pct']
-    
+
     if not gap_nord.empty and not gap_sud.empty:
         gap_2018 = gap_nord.get(2018, 0) - gap_sud.get(2018, 0)
         gap_2024 = gap_nord.get(2024, 0) - gap_sud.get(2024, 0)
@@ -109,7 +108,7 @@ if df_trend_all is not None and not df_trend_all.empty:
                 "text": f"Gap Nord-Sud resta a {gap_2024:.1f}pp",
                 "color": "orange",
             })
-    
+
     # Classi demografiche
     if df_compose is not None and not df_compose.empty:
         classi = df_compose.groupby('classe_demografica').agg(

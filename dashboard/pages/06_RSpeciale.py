@@ -1,10 +1,10 @@
 """Speciale — Analisi rifiuti speciali (produzione, gestione, impianti)."""
 
-import streamlit as st
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-import pandas as pd
-from sources import load_mart, load_mart_all, fmt_num, fmt_pct, safe_int, YEARS
+import streamlit as st
+from sources import YEARS, fmt_num, load_mart, load_mart_all
 
 st.title("🏭 Rifiuti Speciali")
 

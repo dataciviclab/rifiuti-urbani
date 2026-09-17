@@ -17,7 +17,6 @@ from __future__ import annotations
 import argparse
 import csv
 import re
-import sys
 from pathlib import Path
 
 
@@ -53,20 +52,20 @@ def detect_type(lines: list[str]) -> str:
             return "costi"
         if first in ("regione", "\tregione"):
             # Check if it's flussi or import/export
-            if any("quantitativi" in strip_crlf(l).lower() for l in lines[:5]):
+            if any("quantitativi" in strip_crlf(ln).lower() for ln in lines[:5]):
                 return "flussi"
-            if any("importati" in strip_crlf(l).lower() for l in lines[:5]):
+            if any("importati" in strip_crlf(ln).lower() for ln in lines[:5]):
                 return "import"
-            if any("esportati" in strip_crlf(l).lower() for l in lines[:5]):
+            if any("esportati" in strip_crlf(ln).lower() for ln in lines[:5]):
                 return "export"
             return "regione"  # generic region-level
         if first in ("area geografica", "\tarea geografica"):
             # Check if it's rs produzione/gestione/impianti
-            if any("produzione" in strip_crlf(l).lower() for l in lines[:5]):
+            if any("produzione" in strip_crlf(ln).lower() for ln in lines[:5]):
                 return "area_produzione"
-            if any("gestione" in strip_crlf(l).lower() for l in lines[:5]):
+            if any("gestione" in strip_crlf(ln).lower() for ln in lines[:5]):
                 return "area_gestione"
-            if any("censimento" in strip_crlf(l).lower() or "impiant" in strip_crlf(l).lower() for l in lines[:5]):
+            if any("censimento" in strip_crlf(ln).lower() or "impiant" in strip_crlf(ln).lower() for ln in lines[:5]):
                 return "area_impianti"
             return "area_geo"
         if first == "sezione":
@@ -141,9 +140,6 @@ def normalize_costi(lines: list[str], year: int) -> list[dict]:
         elif cl in ("ctotab", "ctotkg"):
             col_map[i] = "ctot"
         # Skip: cacab, cgindab, cgdab, "altri costi" — not in output
-
-    out_cols = ["istat_comune", "comune", "provincia", "numero_comuni",
-                "popolazione", "crt", "cts", "crd", "ctr", "csl", "cc", "ck", "ctot"]
 
     rows = []
     for line in lines[header_idx + 1:]:

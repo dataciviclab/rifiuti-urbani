@@ -1,10 +1,9 @@
 """Frazioni Merceologiche — Analisi composizione rifiuti."""
 
-import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
-from sources import load_mart, load_mart_all, fmt_num, fmt_pct, YEARS
+import plotly.express as px
+import streamlit as st
+from sources import YEARS, fmt_num, fmt_pct, load_mart, load_mart_all
 
 st.title("🗑️ Frazioni Merceologiche")
 

@@ -7,6 +7,7 @@ esistano e che i campi obbligatori siano presenti.
 from __future__ import annotations
 
 import pathlib
+
 import pytest
 import yaml
 

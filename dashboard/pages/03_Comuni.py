@@ -1,10 +1,9 @@
 """Comuni — Benchmark e analisi comunale."""
 
-import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
-import pandas as pd
-from sources import load_mart, fmt_eur, fmt_num, fmt_pct, safe_int, YEARS
+import streamlit as st
+from sources import YEARS, fmt_eur, fmt_num, fmt_pct, load_mart, safe_int
 
 st.title("🏘️ Benchmark Comunale")
 

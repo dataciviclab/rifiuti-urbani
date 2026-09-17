@@ -1,9 +1,8 @@
 """Regioni — Benchmark regionale RD% e costi."""
 
-import streamlit as st
 import plotly.express as px
-import pandas as pd
-from sources import load_mart, load_mart_all, fmt_num, fmt_pct, YEARS
+import streamlit as st
+from sources import YEARS, fmt_num, fmt_pct, load_mart, load_mart_all
 
 st.title("🗺️ Benchmark Regionale")
 

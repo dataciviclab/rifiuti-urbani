@@ -1,9 +1,9 @@
 """Flussi — Analisi import/export e movimenti rifiuti."""
 
-import streamlit as st
-import plotly.express as px
 import pandas as pd
-from sources import load_mart, load_mart_all, fmt_num, safe_int, YEARS
+import plotly.express as px
+import streamlit as st
+from sources import YEARS, load_mart, load_mart_all
 
 st.title("🚛 Flussi Rifiuti")
 
