@@ -4,20 +4,13 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 6 1 * *'  # Monthly, 1st at 6:00 UTC
+    - cron: '0 6 1 * *'
 
 jobs:
   pipeline:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: dataciviclab/.github/actions/python-setup@main
-        with:
-          extras: "pipeline"
-
-      - name: Run pipeline
-        run: make pipeline
-
-      - name: Update registry
-        run: make registry
+    uses: dataciviclab/.github/.github/workflows/pipeline-reusable.yml@main
+    with:
+      repo-slug: rifiuti-urbani
+      run-command: make run-all
+      sync-pattern: flat
+    secrets: inherit
