@@ -11,7 +11,7 @@ st.title("📊 Panoramica Nazionale")
 year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="panoramica_year")
 
 # ── KPI principali ────────────────────────────────────────────────────────
-df = load_mart("base", "mart_comuni", year)
+df = load_mart("ispra_ru_base", "mart_comuni", year)
 
 if df is None or df.empty:
     st.warning("Nessun dato disponibile.")
@@ -29,7 +29,7 @@ k5.metric("Procapite", f"{kg_procapite:.1f} kg/ab")
 k6.metric("Comuni", fmt_num(len(df)))
 
 try:
-    costi = load_mart("costi_pc", "mart_comuni", year)
+    costi = load_mart("ispra_ru_costi_procapite", "mart_comuni", year)
     if costi is not None and not costi.empty:
         k7.metric("Costo Medio", fmt_eur(costi['ctot_euro_ab'].mean()))
     else:
@@ -46,9 +46,9 @@ st.divider()
 st.subheader("💡 Insight Strategici")
 
 # Calcola insight
-df_trend_all = load_mart_all("base", "mart_comuni", tuple(YEARS))
-df_costi_all = load_mart_all("costi_pc", "mart_comuni", tuple(YEARS))
-df_compose = load_mart("unified", "mart_comuni", year)
+df_trend_all = load_mart_all("ispra_ru_base", "mart_comuni", tuple(YEARS))
+df_costi_all = load_mart_all("ispra_ru_costi_procapite", "mart_comuni", tuple(YEARS))
+df_compose = load_mart("rifiuti_urbani_unified", "mart_comuni", year)
 
 insights = []
 

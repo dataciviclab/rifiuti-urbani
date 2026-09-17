@@ -12,7 +12,7 @@ col1, col2 = st.columns([1, 2])
 with col1:
     year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="comuni_year")
 
-df_all = load_mart("base", "mart_comuni", year)
+df_all = load_mart("ispra_ru_base", "mart_comuni", year)
 
 if df_all is None or df_all.empty:
     st.warning("Nessun dato disponibile.")
@@ -39,7 +39,7 @@ k3.metric("RD%", fmt_pct(row['percentuale_rd']))
 k4.metric("Procapite", f"{row['kg_ru_per_abitante']:.1f} kg/ab")
 
 try:
-    costi = load_mart("costi_pc", "mart_comuni", year)
+    costi = load_mart("ispra_ru_costi_procapite", "mart_comuni", year)
     if costi is not None and not costi.empty:
         c = costi[costi['codice_comune_istat'] == row['codice_comune_istat']]
         if not c.empty:
@@ -108,7 +108,7 @@ st.divider()
 st.subheader("👥 Analisi per Classe Demografica")
 
 # Load compose data (has classi demografiche + costi)
-df_compose = load_mart("unified", "mart_comuni", year)
+df_compose = load_mart("rifiuti_urbani_unified", "mart_comuni", year)
 
 if df_compose is not None and not df_compose.empty:
     df_classi = df_compose.groupby('classe_demografica').agg(

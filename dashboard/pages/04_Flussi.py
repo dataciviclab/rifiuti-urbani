@@ -12,7 +12,7 @@ year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="flussi_year")
 # ── Flussi extraregionali ────────────────────────────────────────────────
 st.subheader("📊 Flussi Extraregionali RU")
 try:
-    df_flussi = load_mart("flussi", "mart_flussi", year)
+    df_flussi = load_mart("ispra_ru_flussi", "mart_flussi", year)
     if df_flussi is not None and not df_flussi.empty:
         df_flussi = df_flussi[df_flussi['regione'] != 'Italia'].sort_values('quantita_t', ascending=False)
         fig = px.bar(df_flussi, x='regione', y='quantita_t', color='quantita_t',
@@ -33,7 +33,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.markdown("**Import RU**")
     try:
-        df_imp = load_mart("import_ru", "mart_import", year)
+        df_imp = load_mart("ispra_ru_import", "mart_import", year)
         if df_imp is not None and not df_imp.empty:
             df_imp = df_imp[df_imp['regione'] != 'Italia']
             fig_imp = px.pie(df_imp, values='totale_t', names='regione',
@@ -46,7 +46,7 @@ with col1:
 with col2:
     st.markdown("**Export RU**")
     try:
-        df_exp = load_mart("export_ru", "mart_import", year)
+        df_exp = load_mart("ispra_ru_export", "mart_import", year)
         if df_exp is not None and not df_exp.empty:
             df_exp = df_exp[df_exp['regione'] != 'Italia']
             fig_exp = px.pie(df_exp, values='totale_t', names='regione',
@@ -59,8 +59,8 @@ with col2:
 # ── Bilancio ───────────────────────────────────────────────────────────────
 st.subheader("⚖️ Bilancio Import/Export per Regione")
 try:
-    imp = load_mart("import_ru", "mart_import", year)
-    exp = load_mart("export_ru", "mart_import", year)
+    imp = load_mart("ispra_ru_import", "mart_import", year)
+    exp = load_mart("ispra_ru_export", "mart_import", year)
     if imp is not None and exp is not None and not imp.empty and not exp.empty:
         imp = imp[imp['regione'] != 'Italia'][['regione', 'totale_t']].rename(columns={'totale_t': 'import_val'})
         exp = exp[exp['regione'] != 'Italia'][['regione', 'totale_t']].rename(columns={'totale_t': 'export_val'})
@@ -79,7 +79,7 @@ except Exception:
 # ── Trend ──────────────────────────────────────────────────────────────────
 st.subheader("📈 Trend Flussi Extraregionali (2018-2024)")
 try:
-    df_trend_all = load_mart_all("flussi", "mart_flussi", tuple(YEARS))
+    df_trend_all = load_mart_all("ispra_ru_flussi", "mart_flussi", tuple(YEARS))
     if df_trend_all is not None and not df_trend_all.empty:
         df_italia = df_trend_all[df_trend_all['regione'] == 'Italia']
         if not df_italia.empty:

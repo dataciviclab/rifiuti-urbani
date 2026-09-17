@@ -13,9 +13,9 @@ year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="rs_year")
 # ── KPI Nazionale ──────────────────────────────────────────────────────────
 st.subheader("📊 Panoramica Nazionale RS")
 
-df_prod = load_mart("produzione_rs", "mart_produzione", year)
-df_gest = load_mart("gestione_rs", "mart_gestione", year)
-df_imp = load_mart("impianti_rs", "mart_impianti", year)
+df_prod = load_mart("ispra_rs_produzione", "mart_produzione", year)
+df_gest = load_mart("ispra_rs_gestione", "mart_gestione", year)
+df_imp = load_mart("ispra_rs_impianti", "mart_impianti", year)
 
 if df_prod is not None and not df_prod.empty:
     # Get Italia row
@@ -70,7 +70,7 @@ st.divider()
 # ── Trend produzione RS ────────────────────────────────────────────────────
 st.subheader("📈 Trend Produzione RS (2018-2024)")
 
-df_trend_all = load_mart_all("produzione_rs", "mart_produzione", tuple(YEARS))
+df_trend_all = load_mart_all("ispra_rs_produzione", "mart_produzione", tuple(YEARS))
 if df_trend_all is not None and not df_trend_all.empty:
     df_italia = df_trend_all[df_trend_all['area_geografica'] == 'Italia']
     if not df_italia.empty:

@@ -11,7 +11,7 @@ st.title("🗑️ Frazioni Merceologiche")
 year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="frazioni_year")
 
 # ── Carica dati ────────────────────────────────────────────────────────────
-df = load_mart("base", "mart_comuni", year)
+df = load_mart("ispra_ru_base", "mart_comuni", year)
 
 if df is None or df.empty:
     st.warning("Nessun dato disponibile.")
@@ -82,7 +82,7 @@ with col2:
 # ── Trend frazioni ─────────────────────────────────────────────────────────
 st.subheader("📈 Trend Frazioni Principali (2018-2024)")
 
-df_all = load_mart_all("base", "mart_comuni", tuple(YEARS))
+df_all = load_mart_all("ispra_ru_base", "mart_comuni", tuple(YEARS))
 if df_all is not None and not df_all.empty:
     top_frazioni = ['frazione_umida_t', 'carta_t', 'plastica_t', 'vetro_t', 'metallo_t']
     trend_data = []
