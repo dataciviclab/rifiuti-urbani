@@ -51,7 +51,7 @@ run-compose:
 run-all: run run-compose
 
 .PHONY: pipeline
-pipeline: lint test run-all
+pipeline: lint test download normalize run-all
 	@echo "✅ Pipeline complete"
 
 # --- Single dataset runner ---------------------------------------------------
