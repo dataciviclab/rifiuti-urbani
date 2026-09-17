@@ -21,3 +21,6 @@ Thumbs.db
 
 # Raw data (non committare)
 rifiuti-ispra-raw/
+
+# Normalized (generato da scripts/normalize_ispra_all.py)
+normalized/
