@@ -5,14 +5,12 @@ Monitoraggio, esplorazione e benchmark dei rifiuti urbani e speciali in Italia.
 """
 
 import streamlit as st
-from lab_connectors.dashboard import DashboardConfig, run_dashboard
 
-config = DashboardConfig(
-    title="ISPRA Rifiuti Urbani · Dashboard",
-    icon="♻️",
-    repo_name="rifiuti-urbani",
-    repo_url="https://github.com/dataciviclab/rifiuti-urbani",
-    sources_text="Dati: ISPRA Catasto Rifiuti Nazionale",
+st.set_page_config(
+    page_title="ISPRA Rifiuti Urbani · Dashboard",
+    page_icon="♻️",
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 pages = {
@@ -31,4 +29,13 @@ pages = {
     ],
 }
 
-run_dashboard(config, pages)
+pg = st.navigation(pages, position="sidebar")
+
+st.sidebar.markdown("---")
+st.sidebar.caption("Dati: ISPRA Catasto Rifiuti Nazionale")
+st.sidebar.caption(
+    "Codice: [dataciviclab/rifiuti-urbani](https://github.com/dataciviclab/rifiuti-urbani)"
+)
+st.sidebar.caption("[DataCivicLab](https://dataciviclab.org/) · CC BY 4.0")
+
+pg.run()
