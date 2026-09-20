@@ -1,0 +1,7 @@
+# Ruff configuration per rifiuti-urbani
+line-length = 120
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]

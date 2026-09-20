@@ -1,0 +1,73 @@
+
+	Censimento impiamti di gestione dei rifiuti speciali - anno 2021 (ISPRA);
+	Compostaggio
+	Area geografica;Numero impianti;Fanghi (t);Altri RS (t);Totale RS (t)
+Nord;76;         250.865;         203.032;         453.897;
+Centro;24;          74.029;          42.023;         116.052;
+Sud;40;         168.398;          39.710;         208.108;
+Italia;140;         493.292;         284.765;         778.057;
+
+	Trattamento integrato aerobico e anaerobico
+	Area geografica;Numero impianti;Fanghi (t);Altri RS (t);Totale RS (t)
+Nord;21;          61.993;          88.217;         150.210;
+Centro;3;          26.868;             742;          27.610;
+Sud;3;               0;           1.264;           1.264;
+Italia;27;          88.861;          90.223;         179.084;
+
+	Digestione anaerobica
+	Area geografica;Numero impianti;Fanghi (t);Altri RS (t);Totale RS (t)
+Nord;12;         469.198;          36.530;         505.728;
+Sud;1;          10.303;          51.921;          62.224;
+Italia;13;         479.501;          88.451;         567.952;
+
+	Trattamento meccanico biologico (TMB)
+	Area geografica;Numero impianti;RS(t)
+Nord;20;         118.945,0;
+Centro;11;          98.109,0;
+Sud;6;          15.109,0;
+Italia;37;         232.163,0;
+
+	Incenerimento
+	Area geografica;Numero impianti;Rifiuti combustibili (EER 191210)(t);Altri RS non pericolosi (t);RS pericolosi (t);Totale RS (t) 
+Nord;46;          32.095;         547.002;         322.009;         901.106;
+Centro;7;               0;          21.095;           8.002;          29.097;
+Sud;21;           4.067;          49.318;         119.852;         173.237;
+Italia;74;          36.162;         617.416;         449.862;       1.103.440;
+
+	Coincenerimento
+	Area geografica;Numero impianti;Rifiuti combustibili (EER 191210)(t);Altri RS non pericolosi (t);RS pericolosi (t);Totale RS (t) 
+Nord;197;          55.304;       1.259.507;          91.197;       1.406.007;
+Centro;62;          19.980;         228.564;               0;         248.544;
+Sud;41;          33.209;         134.445;          29.847;         197.502;
+Italia;300;         108.493;       1.622.516;         121.044;       1.852.053;
+
+	Smaltimento in discarica
+	Area geografica;Numero impianti;Rifiuti non pericolosi (t);Rifiuti pericolosi (t);Totale RS (t)
+Nord;152;       4.506.859;         661.589;       5.168.448;
+Centro;43;       2.502.041;         215.008;       2.717.049;
+Sud;75;       1.954.388;         341.748;       2.296.136;
+Italia;270;       8.963.288;       1.218.345;      10.181.633;
+
+	Demolitori veicoli (d.lgs 209/2003)
+	Area geografica;Numero impianti;Veicoli (t)
+Nord;613;         638.254;
+Centro;217;         253.090;
+Sud;600;         512.810;
+Italia;           1.430;       1.404.154;
+
+	
+Rottamatori veicoli (d.lgs. n. 209/2003)
+	Area geografica;Numero impianti;Veicoli (EER 160106)(t);Altri RS (t);Totale (t)
+Nord;59;          19.886;          20.467;          40.354;
+Centro;28;           6.676;           6.689;          13.365;
+Sud;10;          11.623;          24.710;          36.332;
+Italia;              97;          38.185;          51.866;          90.051;
+
+Frantumatori veicoli (d.lgs. n. 209/2003)
+	Area geografica;Numero impianti;Veicoli (EER 160106)(t);Altri RS (t);Totale (t)
+Nord;16;         572.054;         167.242;         739.296;
+Centro;6;         302.182;          26.618;         328.800;
+Sud;7;          87.304;          25.337;         112.641;
+Italia;              29;         961.540;         219.197;       1.180.737;
+
+	

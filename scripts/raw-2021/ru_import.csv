@@ -1,0 +1,74 @@
+Quantitativi di rifiuti urbani (e di rifiuti dal trattamento dei rifiuti urbani) importati per regione - 2021 (ISPRA);
+	Regione;Anno;Rifiuti non pericolosi(t);Rifiuti pericolosi (t);Totale(t)
+PIEMONTE;2021;          11.118;               0;          11.118;
+LOMBARDIA;2021;          39.508;             863;          40.370;
+TRENTINO ALTO ADIGE;2021;             107;               0;             107;
+VENETO;2021;          14.773;           1.249;          16.022;
+FRIULI VENEZIA GIULIA;2021;          23.799;               0;          23.799;
+LIGURIA;2021;          27.014;               0;          27.014;
+EMILIA ROMAGNA;2021;          11.030;              11;          11.040;
+TOSCANA;2021;          10.177;               0;          10.177;
+MARCHE;2021;           2.209;               0;           2.209;
+LAZIO;2021;             191;               0;             191;
+ABRUZZO;2021;              96;               0;              96;
+CAMPANIA;2021;          31.861;               0;          31.861;
+PUGLIA;2021;          31.094;               0;          31.094;
+CALABRIA;2021;          13.565;               0;          13.565;
+SICILIA;2021;             344;             218;             561;
+SARDEGNA;2021;              10;               0;              10;
+Italia;2021;         216.895;           2.340;         219.235;
+
+Quantitativi di rifiuti urbani (e di rifiuti dal trattamento dei rifiuti urbani) importati per Paese di provenienza - 2021 (ISPRA);
+	Paese;Anno;Rifiuti non pericolosi(t);Rifiuti pericolosi (t);Totale(t)
+AFGHANISTAN;2021;           4.059,1;               0,0;           4.059,2;
+ALBANIA;2021;              52,0;               0,0;              52,0;
+ARGENTINA;2021;             162,8;               0,0;             162,8;
+AUSTRALIA;2021;             273,2;               0,0;             273,2;
+AUSTRIA;2021;           9.390,9;             260,1;           9.650,9;
+BELGIO;2021;             267,3;               0,0;             267,3;
+BOSNIA-ERZEGOVINA;2021;               0,5;               0,0;               0,5;
+BULGARIA;2021;              23,7;               0,0;              23,7;
+CANADA;2021;             127,5;               0,0;             127,5;
+CINA;2021;          23.701,8;               0,0;          23.701,8;
+CROAZIA;2021;           1.791,2;               0,0;           1.791,2;
+DANIMARCA;2021;             188,7;               0,0;             188,7;
+EIRE;2021;             695,2;               0,0;             695,2;
+EMIRATI ARABI UNITI;2021;           1.590,8;               0,0;           1.590,8;
+FRANCIA;2021;          55.993,6;               0,0;          55.993,7;
+GERMANIA;2021;          47.495,7;               0,0;          47.495,7;
+GHANA;2021;               4,3;               0,0;               4,3;
+GRECIA;2021;             106,4;               0,0;             106,4;
+HONG KONG;2021;              24,3;               0,0;              24,3;
+INDIA;2021;              18,1;               0,0;              18,1;
+ISOLE CAYMAN;2021;               0,1;               0,0;               0,1;
+ISRAELE;2021;             493,4;               0,0;             493,4;
+LIBANO;2021;           1.305,9;               0,0;           1.305,9;
+LIBIA;2021;              42,5;               0,0;              42,5;
+LUSSEMBURGO;2021;             593,8;              10,6;             604,4;
+MALTA;2021;           1.305,3;           1.075,7;           2.381,0;
+MESSICO;2021;               6,2;               0,0;               6,2;
+NORVEGIA;2021;              48,2;               0,0;              48,2;
+PAESI BASSI;2021;           2.761,1;               0,0;           2.761,1;
+PAKISTAN;2021;              31,0;               0,0;              31,0;
+POLONIA;2021;             439,3;               0,0;             439,3;
+PORTOGALLO;2021;              47,6;               0,0;              47,6;
+REGNO UNITO;2021;           1.074,3;               0,0;           1.074,3;
+REPUBBLICA CECA;2021;             404,6;               0,0;             404,6;
+ROMANIA;2021;             721,5;               0,0;             721,5;
+SERBIA E MONTENEGRO;2021;              20,2;               0,0;              20,2;
+SLOVENIA;2021;          14.792,8;             988,9;          15.781,7;
+SPAGNA;2021;             398,4;               4,5;             402,9;
+SVEZIA;2021;              16,2;               0,0;              16,2;
+SVIZZERA;2021;          43.472,2;               0,0;          43.472,2;
+TUNISIA;2021;               1,1;               0,0;               1,1;
+UNGHERIA;2021;           2.886,4;               0,0;           2.886,4;
+USA;2021;              66,3;               0,0;              66,3;
+TOTALE;;         216.895,2;           2.339,9;         219.235,0;
+		
+Andamento delle importazioni di rifiuti urbani (e di rifiuti dal trattamento dei rifiuti urbani) - ISPRA;
+	Anno;Quantitativo (t)
+2021;         219.235,0;
+2020;         236.858,9;
+2019;         194.855,4;
+2018;         196.919,4;
+
