@@ -10,7 +10,7 @@ END=${2:-2024}
 BASE="https://www.catasto-rifiuti.isprambiente.it"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Cookie acceptance
+# Cookie acceptance first
 COOKIE_JAR="$SCRIPT_DIR/.cookies.txt"
 curl -s -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/index.php?pg=&advice=si" -o /dev/null
 

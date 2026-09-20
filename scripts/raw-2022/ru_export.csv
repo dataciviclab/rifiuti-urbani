@@ -1,0 +1,67 @@
+Quantitativi di rifiuti urbani (e di rifiuti dal trattamento dei rifiuti urbani) esportati per regione - 2022 (ISPRA);
+	Regione;Anno;Rifiuti non pericolosi(t);Rifiuti pericolosi (t);Totale(t)
+PIEMONTE;2022;          10.712;           1.480;          12.192;
+VALLE D'AOSTA;2022;               2;               0;               2;
+LOMBARDIA;2022;         129.090;             542;         129.632;
+TRENTINO ALTO ADIGE;2022;           6.967;             133;           7.100;
+VENETO;2022;          29.105;              82;          29.187;
+FRIULI VENEZIA GIULIA;2022;          55.169;              24;          55.193;
+LIGURIA;2022;             303;               0;             303;
+EMILIA ROMAGNA;2022;          42.579;             148;          42.726;
+TOSCANA;2022;          11.244;              34;          11.278;
+MARCHE;2022;             656;               0;             656;
+LAZIO;2022;         153.612;               0;         153.612;
+ABRUZZO;2022;          58.269;               0;          58.269;
+CAMPANIA;2022;         309.253;               0;         309.253;
+PUGLIA;2022;           8.796;               0;           8.796;
+CALABRIA;2022;          34.965;              43;          35.009;
+SICILIA;2022;           4.827;               0;           4.827;
+SARDEGNA;2022;              23;               0;              23;
+Italia;2022;         855.572;           2.485;         858.057;
+
+Quantitativi di rifiuti urbani (e di rifiuti dal trattamento dei rifiuti urbani) esportati per Paese di destinazione - 2022 (ISPRA);
+	Paese;Anno;Rifiuti non pericolosi(t);Rifiuti pericolosi (t);Totale(t)
+AUSTRIA;2022;         131.192,1;              15,5;         131.207,6;
+BELGIO;2022;           1.460,8;               1,4;           1.462,2;
+BULGARIA;2022;          12.100,6;               0,0;          12.100,6;
+CIPRO;2022;          80.229,1;               0,0;          80.229,1;
+CROAZIA;2022;           7.008,8;               0,0;           7.008,8;
+DANIMARCA;2022;          21.023,6;              27,4;          21.051,0;
+EGITTO;2022;             125,6;               0,0;             125,6;
+ESTONIA;2022;             111,3;               0,0;             111,3;
+FINLANDIA;2022;               0,0;              95,3;              95,3;
+FRANCIA;2022;           4.161,6;             148,7;           4.310,2;
+GERMANIA;2022;         115.241,2;             575,4;         115.816,7;
+GHANA;2022;              95,2;               0,0;              95,2;
+GRECIA;2022;          41.387,2;               0,0;          41.387,2;
+INDIA;2022;           1.646,6;               0,0;           1.646,6;
+INDONESIA;2022;           2.398,2;               0,0;           2.398,2;
+LETTONIA;2022;           1.850,9;               0,0;           1.850,9;
+LITUANIA;2022;             849,3;               0,0;             849,3;
+PAESI BASSI;2022;         140.675,1;               0,0;         140.675,1;
+PAKISTAN;2022;           1.759,4;               0,0;           1.759,4;
+POLONIA;2022;           1.241,4;               0,0;           1.241,4;
+PORTOGALLO;2022;          45.500,3;             138,3;          45.638,6;
+REGNO UNITO;2022;               0,3;               0,0;               0,3;
+REPUBBLICA CECA;2022;           1.157,8;               0,0;           1.157,8;
+ROMANIA;2022;             681,5;               0,0;             681,5;
+SLOVACCHIA;2022;          16.397,9;               0,0;          16.397,9;
+SLOVENIA;2022;          30.838,0;               0,0;          30.838,0;
+SPAGNA;2022;          34.874,8;           1.332,2;          36.207,0;
+SURINAME;2022;               0,0;               0,9;               0,9;
+SVEZIA;2022;          43.414,6;               0,0;          43.414,6;
+SVIZZERA;2022;          14.263,2;             150,1;          14.413,3;
+TUNISIA;2022;          29.897,4;               0,0;          29.897,4;
+TURCHIA;2022;           6.920,9;               0,0;           6.920,9;
+UNGHERIA;2022;          66.972,0;               0,0;          66.972,0;
+USA;2022;              95,4;               0,0;              95,4;
+TOTALE;;         855.572,2;           2.485,2;         858.057,3;
+		
+Andamento delle esportazioni di rifiuti urbani (e di rifiuti dal trattamento dei rifiuti urbani) - ISPRA;
+	Anno;Quantitativo (t)
+2022;         858.057,3;
+2021;         658.830,1;
+2020;         581.259,9;
+2019;         514.524,7;
+2018;         464.516,7;
+

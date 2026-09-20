@@ -1,0 +1,76 @@
+	Gestione dei rifiuti speciali pericolosi e non pericolosi (dati ripartiti in operazioni di recupero e smaltimento e messa in riserva o deposito prliminare al 31/12 - 2018 (ISPRA);
+	Area geografica;R1-R12 (t);R13 al 31/12 (t);Tot. R1-R13  (t);D1-D14 (t);D15 al 31/12 (t);Tot. D1-D15 (t);Totale (t)
+	Nord;      71.793.130;       9.092.850;      80.885.980;      16.827.579;         355.612;      17.183.191;      98.069.171;
+Centro;      14.898.221;       2.994.077;      17.892.298;       6.414.468;         108.802;       6.523.270;      24.415.568;
+Sud;      18.589.423;       3.931.025;      22.520.448;       7.450.699;         137.532;       7.588.231;      30.108.679;
+Italia;     105.280.774;      16.017.952;     121.298.726;      30.692.746;         601.946;      31.294.692;     152.593.418;
+
+Operazioni di recupero dei rifiuti pericolosi e non pericolosi - 2018 (ISPRA);
+		Area geografica;R1 (t); R2 (t);R3 (t);R4 (t);R5 (t);R6 (t);R7 (t);R8 (t);R9 (t);R10 (t);R11 (t);R12 (t);R13 al 31/12 (t);Totale (t)
+	Nord;       1.434.301;         185.417;       8.496.009;      16.957.483;      36.435.725;          81.333;          65.059;               0;         179.243;       2.100.474;          24.833;       5.833.253;       9.092.850;      80.885.980;
+Centro;         265.541;          19.480;       1.174.289;       1.695.746;       9.841.661;           1.511;              72;           1.903;          86.534;         971.865;           7.260;         832.359;       2.994.077;      17.892.298;
+Sud;         329.237;           2.923;       1.697.141;       2.382.273;      12.292.462;               0;          15.754;           1.227;          49.856;         789.250;          24.144;       1.005.156;       3.931.025;      22.520.448;
+Italia;       2.029.079;         207.820;      11.367.439;      21.035.502;      58.569.848;          82.844;          80.885;           3.130;         315.633;       3.861.589;          56.237;       7.670.768;      16.017.952;     121.298.726;
+
+Operazioni di smaltimento dei rifiuti pericolosi e non pericolosi - 2018 (ISPRA);
+		Area geografica;D1 (t);D2 (t);D3 (t);D4 (t);D8 (t);D9 (t);D10 (t);D13 (t);D14 (t);D15 al 31/12 (t);Totale (t)
+	Nord;       6.634.474;               0;               0;               0;       3.001.596;       5.201.804;       1.013.524;         729.941;         246.240;         355.612;      17.183.191;
+Centro;       2.271.561;               0;           3.129;               0;       1.535.971;       2.217.621;          30.722;         329.383;          26.081;         108.802;       6.523.270;
+Sud;       2.981.620;               0;               0;               0;       1.616.538;       2.598.512;         151.871;          57.335;          44.823;         137.532;       7.588.231;
+Italia;      11.887.655;               0;           3.129;               0;       6.154.105;      10.017.937;       1.196.117;       1.116.659;         317.144;         601.946;      31.294.692;
+
+		
+Operazioni di recupero dei rifiuti non pericolosi - 2018 (ISPRA);
+		Area geografica;R1 (t); R2 (t);R3 (t);R4 (t);R5 (t);R6 (t);R7 (t);R8 (t);R9 (t);R10 (t);R11 (t);R12 (t);R13 al 31/12 (t);Totale (t)
+	Nord;       1.351.224;             741;       8.396.651;      16.216.326;      36.164.712;             989;          54.535;               0;          24.148;       2.100.474;          24.833;       5.070.265;       8.879.175;      78.284.073;
+Centro;         265.541;               2;       1.162.887;       1.494.214;       9.794.944;             609;              56;           1.127;          24.559;         971.865;           7.260;         713.780;       2.933.530;      17.370.374;
+Sud;         299.020;               1;       1.631.715;       1.720.598;      12.263.987;               0;           7.874;             148;          24.668;         789.250;          15.242;         785.283;       3.747.187;      21.284.973;
+Italia;       1.915.785;             744;      11.191.253;      19.431.138;      58.223.643;           1.598;          62.465;           1.275;          73.375;       3.861.589;          47.335;       6.569.328;      15.559.892;     116.939.420;
+
+Operazioni di recupero dei rifiuti pericolosi - 2018 (ISPRA);
+		Area geografica;R1 (t); R2 (t);R3 (t);R4 (t);R5 (t);R6 (t);R7 (t);R8 (t);R9 (t);R10 (t);R11 (t);R12 (t);R13 al 31/12 (t);Totale (t)
+	Nord;          83.077;         184.676;          99.358;         741.157;         271.013;          80.344;          10.524;               0;         155.095;               0;               0;         762.988;         213.675;       2.601.907;
+Centro;               0;          19.478;          11.402;         201.532;          46.717;             902;              16;             776;          61.975;               0;               0;         118.579;          60.547;         521.924;
+Sud;          30.217;           2.922;          65.426;         661.675;          28.475;               0;           7.880;           1.079;          25.188;               0;           8.902;         219.873;         183.838;       1.235.475;
+Italia;         113.294;         207.076;         176.186;       1.604.364;         346.205;          81.246;          18.420;           1.855;         242.258;               0;           8.902;       1.101.440;         458.060;       4.359.306;
+
+
+Operazioni di smaltimento dei rifiuti non pericolosi - 2018 (ISPRA);
+		Area geografica;D1 (t);D2 (t);D3 (t);D4 (t);D8 (t);D9 (t);D10 (t);D13 (t);D14 (t);D15 al 31/12 (t);Totale (t)
+	Nord;       5.885.761;               0;               0;               0;       2.867.531;       3.398.449;         707.773;         262.214;          85.558;         189.346;      13.396.632;
+Centro;       2.093.526;               0;           3.129;               0;       1.533.889;       1.896.064;          23.500;         255.950;           8.889;          75.794;       5.890.741;
+Sud;       2.627.477;               0;               0;               0;       1.613.636;       2.289.141;          40.385;          39.838;          39.974;         102.530;       6.752.981;
+Italia;      10.606.764;               0;           3.129;               0;       6.015.056;       7.583.654;         771.658;         558.002;         134.421;         367.670;      26.040.354;
+
+	Operazioni di smaltimento dei rifiuti pericolosi - 2018 (ISPRA);
+		Area geografica;D1 (t);D2 (t);D3 (t);D4 (t);D8 (t);D9 (t);D10 (t);D13 (t);D14 (t);D15 al 31/12 (t);Totale (t)
+	Nord;         748.713;               0;               0;               0;         134.065;       1.803.355;         305.751;         467.727;         160.682;         166.266;       3.786.559;
+Centro;         178.035;               0;               0;               0;           2.082;         321.557;           7.222;          73.433;          17.192;          33.008;         632.529;
+Sud;         354.143;               0;               0;               0;           2.902;         309.371;         111.486;          17.497;           4.849;          35.002;         835.250;
+Italia;       1.280.891;               0;               0;               0;         139.049;       2.434.283;         424.459;         558.657;         182.723;         234.276;       5.254.338;
+
+	Legenda;
+	Codifiche delle operazioni di recupero (R) e smaltimento (D):
+	R1: Utilizzazione principale come combustibile o come altro mezzo per produrre energia
+	R2: Rigenerazione/recupero di solventi
+	R3: Riciclo/recupero delle sostanze organiche non utilizzate come solventi (comprese le operazioni di compostaggio e altre trasformazioni biologiche)
+	R4: Riciclo/recupero dei metalli e dei composti metallici
+	R5: Riciclo/recupero di altre sostanze inorganiche
+	R6: Rigenerazione degli acidi o delle basi
+	R7: Recupero dei prodotti che servono a captare gli inquinanti
+	R8: Recupero dei prodotti provenienti dai catalizzatori
+	R9: Rigenerazione o altri reimpieghi degli oli
+	R10: Spandimento sul suolo a beneficio dell'agricoltura o dell'ecologia
+	R11: Utilizzazione di rifiuti ottenuti da una delle operazioni indicate da R1 a R10
+	R12: Scambio di rifiuti per sottoporli a una delle operazioni indicate da R1 a R11
+	R13: Messa in riserva;
+	D1: Deposito sul o nel suolo (a esempio discarica)
+	D2: Trattamento in ambiente terrestre (ad esempio biodegradazione dei rifiuti liquidi o fanghi sui suoli)
+	D3: Iniezioni in profondita' (ad esempio iniezioni dei rifiuti pompabili in pozzi, in cupole saline o faglie geologiche naturali)  
+	D4: Lagunaggio (ad esempio scarico di rifuti liquidi o di fanghi in pozzi, stagni o lagune ecc.)
+	D8: Trattamento biologico non specificato altrove nel presente allegato, che dia origine a composti o a miscugli che vengono eliminati secondo uno dei procedimenti elencati nei punti da D1 a D12
+	D9: Trattamento fisico-chimico non specificato altrove nel presente allegato che dia origine a composti o a miscugli eliminati secondo uno dei procedimenti elencati nei punti da D1 a D12 (a esempio evaporazione, essiccazione, calcinazione, ecc.)
+	D10: Incenerimento a terra
+	D13: Raggruppamento preliminare prima di una delle operazioni di cui ai punti da D1 a D12
+	D14: Ricondizionamento preliminare prima di una delle operazioni di cui ai punti da D1 a D13
+	D15: Deposito preliminare
