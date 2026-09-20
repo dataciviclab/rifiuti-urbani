@@ -19,8 +19,10 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Raw data (non committare)
-rifiuti-ispra-raw/
+# Raw data (non committare — generati da download_multiyear.sh)
+rifiuti-ispra-raw/raw-*/
+rifiuti-ispra-raw/.cookies.txt
+rifiuti-ispra-raw/*.csv
 
 # Normalized (generato da scripts/normalize_ispra_all.py)
 normalized/

@@ -51,7 +51,7 @@ run-compose:
 run-all: run run-compose
 
 .PHONY: pipeline
-pipeline: test download normalize run-all
+pipeline: lint test download normalize run-all
 	@echo "✅ Pipeline complete"
 
 # --- Single dataset runner ---------------------------------------------------
@@ -64,7 +64,7 @@ run-%:
 
 .PHONY: download
 download:
-	cd rifiuti-ispra-raw && ./download_multiyear.sh $(YEAR_START) $(YEAR_END)
+	bash scripts/download_multiyear.sh $(YEAR_START) $(YEAR_END)
 
 .PHONY: normalize
 normalize:
