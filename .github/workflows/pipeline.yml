@@ -9,11 +9,6 @@ on:
   schedule:
     - cron: "0 6 1 * *"
   workflow_dispatch:
-    inputs:
-      years:
-        description: "Anni (es. 2025 o all)"
-        required: false
-        default: ""
 
 jobs:
   pipeline:
@@ -22,6 +17,7 @@ jobs:
     with:
       repo-slug: "rifiuti-urbani"
       run-command: "make pipeline"
+      extra-env: "TOOLKIT_ALLOW_SCRIPT_SOURCE=1"
     permissions:
       contents: write
       pull-requests: write

@@ -5,16 +5,19 @@ Wrappa lab_connectors.duckdb.queries con @st.cache_data.
 
 from __future__ import annotations
 
-import streamlit as st
-import pandas as pd
 from pathlib import Path
 
+import pandas as pd
+import streamlit as st
+from lab_connectors.duckdb.queries import (
+    load_mart_all_years as _load_mart_all_years,
+)
 from lab_connectors.duckdb.queries import (
     load_mart_table as _load_mart_table,
-    load_mart_all_years as _load_mart_all_years,
+)
+from lab_connectors.duckdb.queries import (
     query_clean as _query_clean,
 )
-from lab_connectors.formatters import fmt_eur, fmt_num, fmt_pct
 from lab_connectors.registry import load_registry
 
 # ── Registry ───────────────────────────────────────────────────────────────
