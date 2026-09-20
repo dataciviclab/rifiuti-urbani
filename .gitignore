@@ -26,3 +26,5 @@ rifiuti-ispra-raw/*.csv
 
 # Normalized (generato da scripts/normalize_ispra_all.py)
 normalized/
+scripts/raw-*/
+scripts/.cookies.txt
