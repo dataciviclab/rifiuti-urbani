@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 ISPRA Rifiuti Urbani · Dashboard Streamlit
 Monitoraggio, esplorazione e benchmark dei rifiuti urbani e speciali in Italia.
