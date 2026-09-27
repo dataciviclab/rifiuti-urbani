@@ -60,7 +60,6 @@ I CSV ISPRA sono multi-sezione con formati variabili tra anni. `scripts/normaliz
 
 - [CI pipeline](.github/workflows/pipeline.yml): lint + test + run + GCS sync
 - [Config check](.github/workflows/ci.yml): validazione dataset.yml su PR
-- [Test audit](.github/workflows/test-audit.yml): marker contratto obbligatori
 - [Registry](registry/registry.json): catalogo aggiornato dalla CI
 
 ## License
