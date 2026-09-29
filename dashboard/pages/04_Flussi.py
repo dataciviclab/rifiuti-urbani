@@ -18,7 +18,7 @@ try:
         fig = px.bar(df_flussi, x='regione', y='quantita_t', color='quantita_t',
                      color_continuous_scale='Blues',
                      title="Flussi Extraregionali per Regione",
-                     labels={'quantita_t': 'Tonnnellate', 'regione': 'Regione'})
+                     labels={'quantita_t': 'Tonnellate', 'regione': 'Regione'})
         fig.update_layout(height=400, xaxis_tickangle=-45)
         st.plotly_chart(fig, width="stretch")
 except Exception as e:
@@ -70,7 +70,7 @@ try:
         fig_bil = px.bar(bil, x='regione', y='bilancio', color='bilancio',
                          color_continuous_scale=['#ef4444', '#22c55e'],
                          title="Bilancio (negativo = esportatore netto)",
-                         labels={'bilancio': 'Tonnnellate', 'regione': 'Regione'})
+                         labels={'bilancio': 'Tonnellate', 'regione': 'Regione'})
         fig_bil.update_layout(height=400, xaxis_tickangle=-45)
         st.plotly_chart(fig_bil, width="stretch")
 except Exception:
@@ -86,7 +86,7 @@ try:
             df_trend = df_italia.groupby('anno').agg(totale=('quantita_t', 'sum')).reset_index()
             fig_trend = px.line(df_trend, x='anno', y='totale', markers=True,
                                 title="Totale Flussi Extraregionali",
-                                labels={'totale': 'Tonnnellate', 'anno': 'Anno'})
+                                labels={'totale': 'Tonnellate', 'anno': 'Anno'})
             fig_trend.update_layout(height=350)
             st.plotly_chart(fig_trend, width="stretch")
 except Exception:

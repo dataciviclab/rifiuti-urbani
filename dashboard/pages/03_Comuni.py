@@ -34,7 +34,7 @@ st.subheader(f"📊 {comune}")
 k1, k2, k3, k4 = st.columns(4)
 k1.metric("Popolazione", fmt_num(safe_int(row["popolazione"])))
 k2.metric("Produzione RU", f"{fmt_num(safe_int(row["totale_ru_tonnellate"]))} t")
-k3.metric("RD%", fmt_pct(row['percentuale_rd']))
+k3.metric("RD%", fmt_pct(row['percentuale_rd'], signed=False))
 k4.metric("Procapite", f"{row['kg_ru_per_abitante']:.1f} kg/ab")
 
 try:
@@ -66,7 +66,7 @@ with col1:
     delta = rd_comune - rd_prov
     st.metric(
         f"Provincia ({provincia})",
-        f"{fmt_pct(rd_prov)}",
+        f"{fmt_pct(rd_prov, signed=False)}",
         delta=f"{comune}: {delta:+.1f}pp",
         delta_color="normal" if delta >= 0 else "inverse",
     )
@@ -74,7 +74,7 @@ with col2:
     delta = rd_comune - rd_reg
     st.metric(
         f"Regione ({regione})",
-        f"{fmt_pct(rd_reg)}",
+        f"{fmt_pct(rd_reg, signed=False)}",
         delta=f"{comune}: {delta:+.1f}pp",
         delta_color="normal" if delta >= 0 else "inverse",
     )
@@ -82,7 +82,7 @@ with col3:
     delta = rd_comune - rd_naz
     st.metric(
         "Nazionale",
-        f"{fmt_pct(rd_naz)}",
+        f"{fmt_pct(rd_naz, signed=False)}",
         delta=f"{comune}: {delta:+.1f}pp",
         delta_color="normal" if delta >= 0 else "inverse",
     )

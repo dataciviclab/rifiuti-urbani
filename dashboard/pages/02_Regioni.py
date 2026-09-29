@@ -71,7 +71,7 @@ df_display = df_reg.copy()
 df_display['produzione'] = df_display['produzione'].apply(lambda x: f"{fmt_num(int(x))} t")
 df_display['rd'] = df_display['rd'].apply(lambda x: f"{fmt_num(int(x))} t")
 df_display['popolazione'] = df_display['popolazione'].apply(lambda x: fmt_num(int(x)))
-df_display['rd_pct'] = df_display['rd_pct'].apply(lambda x: fmt_pct(x))
+df_display['rd_pct'] = df_display['rd_pct'].apply(lambda x: fmt_pct(x, signed=False))
 df_display['kg_procapite'] = df_display['kg_procapite'].apply(lambda x: f"{x:.1f}")
 st.dataframe(df_display, use_container_width=True, hide_index=True)
 

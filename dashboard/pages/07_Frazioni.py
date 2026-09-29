@@ -45,7 +45,7 @@ k1, k2, k3, k4 = st.columns(4)
 k1.metric("Totale RU", f"{totale_ru/1e6:.1f} M t")
 k2.metric("Totale RD", f"{totale_rd/1e6:.1f} M t")
 k3.metric("Indifferenziato", f"{indiff/1e6:.1f} M t")
-k4.metric("RD%", fmt_pct(totale_rd / totale_ru * 100 if totale_ru > 0 else 0))
+k4.metric("RD%", fmt_pct(totale_rd / totale_ru * 100 if totale_ru > 0 else 0, signed=False))
 
 st.divider()
 
@@ -57,24 +57,24 @@ frazioni_data = []
 for col, name in frazioni_cols.items():
     total = df[col].sum()
     if total > 0:
-        frazioni_data.append({'Frazione': name, 'Tonnnellate': total, 'Perc': total / totale_rd * 100})
+        frazioni_data.append({'Frazione': name, 'Tonnellate': total, 'Perc': total / totale_rd * 100})
 
-df_frazioni = pd.DataFrame(frazioni_data).sort_values('Tonnnellate', ascending=False)
+df_frazioni = pd.DataFrame(frazioni_data).sort_values('Tonnellate', ascending=False)
 
 col1, col2 = st.columns(2)
 
 with col1:
-    fig = px.pie(df_frazioni, values='Tonnnellate', names='Frazione',
+    fig = px.pie(df_frazioni, values='Tonnellate', names='Frazione',
                  title="Composizione RD (%)",
                  hole=0.3)
     fig.update_layout(height=400)
     st.plotly_chart(fig, width="stretch")
 
 with col2:
-    fig2 = px.bar(df_frazioni, x='Frazione', y='Tonnnellate',
+    fig2 = px.bar(df_frazioni, x='Frazione', y='Tonnellate',
                   color='Frazione',
                   title="RD per Frazione (t)",
-                  labels={'Tonnnellate': 'Tonnnellate', 'Frazione': 'Frazione'})
+                  labels={'Tonnellate': 'Tonnellate', 'Frazione': 'Frazione'})
     fig2.update_layout(height=400, xaxis_tickangle=-45, showlegend=False)
     st.plotly_chart(fig2, width="stretch")
 
@@ -129,7 +129,7 @@ st.plotly_chart(fig_reg, width="stretch")
 st.subheader("📋 Dettaglio Frazioni Nazionali")
 
 df_display = df_frazioni.copy()
-df_display['Tonnnellate'] = df_display['Tonnnellate'].apply(lambda x: f"{fmt_num(int(x))} t")
+df_display['Tonnellate'] = df_display['Tonnellate'].apply(lambda x: f"{fmt_num(int(x))} t")
 df_display['Perc'] = df_display['Perc'].apply(lambda x: f"{x:.1f}%")
 st.dataframe(df_display, use_container_width=True, hide_index=True)
 

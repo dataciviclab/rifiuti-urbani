@@ -20,7 +20,7 @@ k1, k2, k3, k4 = st.columns(4)
 k1.metric("Popolazione", fmt_num(df['popolazione'].sum()))
 k2.metric("Produzione RU", f"{fmt_num(int(df['totale_ru_tonnellate'].sum()))} t")
 k3.metric("Raccolta Differenziata", f"{fmt_num(int(df['totale_rd_tonnellate'].sum()))} t")
-k4.metric("RD%", fmt_pct(df['percentuale_rd'].mean()))
+k4.metric("RD%", fmt_pct(df['percentuale_rd'].mean(), signed=False))
 
 k5, k6, k7, k8 = st.columns(4)
 kg_procapite = calc_kg_procapite(df)
@@ -37,7 +37,8 @@ except Exception:
     k7.metric("Costo Medio", "N/A")
 
 rd_pct = df['percentuale_rd'].mean()
-k8.metric("Obiettivo UE 65%", fmt_pct(rd_pct), delta=f"{rd_pct - 65.0:+.1f}pp")
+gap_ue = rd_pct - 65.0
+k8.metric("Obiettivo UE 65%", f"{gap_ue:+.1f}pp", delta="raggiunto" if gap_ue >= 0 else "manca")
 
 st.divider()
 

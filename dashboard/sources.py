@@ -18,6 +18,7 @@ from lab_connectors.duckdb.queries import (
 from lab_connectors.duckdb.queries import (
     query_clean as _query_clean,
 )
+from lab_connectors.formatters import fmt_eur, fmt_num, fmt_pct
 from lab_connectors.registry import load_registry
 
 # ── Registry ───────────────────────────────────────────────────────────────
@@ -44,29 +45,34 @@ SLUGS = {
 }
 
 
+def _resolve_slug(slug: str) -> str:
+    """Accetta sia alias corti (``base``) che nomi completi (``ispra_ru_base``)."""
+    return SLUGS.get(slug, slug)
+
+
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_mart(slug: str, table: str, year: int = 2024):
     """Carica un singolo mart table (cached 1h)."""
-    return _load_mart_table(SLUGS[slug], table, year, prefix=PREFIX)
+    return _load_mart_table(_resolve_slug(slug), table, year, prefix=PREFIX)
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_mart_all(slug: str, table: str, years: tuple[int, ...] = tuple(YEARS)):
     """Carica mart per tutti gli anni con UNION (cached 1h)."""
-    return _load_mart_all_years(SLUGS[slug], table, list(years), prefix=PREFIX)
+    return _load_mart_all_years(_resolve_slug(slug), table, list(years), prefix=PREFIX)
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def query(slug: str, sql: str, years: tuple[int, ...] = tuple(YEARS)):
     """Esegue SQL sul clean layer (cached 1h)."""
-    return _query_clean(SLUGS[slug], sql, list(years), prefix=PREFIX)
+    return _query_clean(_resolve_slug(slug), sql, list(years), prefix=PREFIX)
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def query_mart(slug: str, sql: str, year: int = 2024):
     """Esegue SQL sul mart layer (cached 1h)."""
     import duckdb
-    df = _load_mart_table(SLUGS[slug], "mart_comuni", year, prefix=PREFIX)
+    df = _load_mart_table(_resolve_slug(slug), "mart_comuni", year, prefix=PREFIX)
     if df is None or df.empty:
         return pd.DataFrame()
     con = duckdb.connect()

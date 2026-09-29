@@ -52,7 +52,7 @@ if df_prod is not None and not df_prod.empty:
         fig = px.bar(df_area, x='area_geografica', y='totale_t',
                      color='area_geografica',
                      title="Produzione Totale RS",
-                     labels={'totale_t': 'Tonnnellate', 'area_geografica': 'Area'})
+                     labels={'totale_t': 'Tonnellate', 'area_geografica': 'Area'})
         fig.update_layout(height=350, showlegend=False)
         st.plotly_chart(fig, width="stretch")
 
@@ -76,7 +76,7 @@ if df_trend_all is not None and not df_trend_all.empty:
     if not df_italia.empty:
         fig_trend = px.line(df_italia, x='anno', y='totale_t', markers=True,
                             title="Produzione RS Nazionale",
-                            labels={'totale_t': 'Tonnnellate', 'anno': 'Anno'})
+                            labels={'totale_t': 'Tonnellate', 'anno': 'Anno'})
         fig_trend.update_layout(height=350)
         st.plotly_chart(fig_trend, width="stretch")
 
@@ -89,7 +89,7 @@ if df_gest is not None and not df_gest.empty:
 
     fig_gest = px.bar(df_gest_area, x='area_geografica', y=['rs_np_t', 'rs_p_t'],
                       title="Gestione RS per Area",
-                      labels={'value': 'Tonnnellate', 'area_geografica': 'Area', 'variable': 'Tipo'},
+                      labels={'value': 'Tonnellate', 'area_geografica': 'Area', 'variable': 'Tipo'},
                       barmode='group')
     fig_gest.update_layout(height=400)
     st.plotly_chart(fig_gest, width="stretch")
@@ -115,7 +115,7 @@ if df_imp is not None and not df_imp.empty:
         fig_cap = px.bar(df_imp_area, x='area_geografica', y='totale_rs_t',
                          color='area_geografica',
                          title="Capacità Impianti (t)",
-                         labels={'totale_rs_t': 'Tonnnellate', 'area_geografica': 'Area'})
+                         labels={'totale_rs_t': 'Tonnellate', 'area_geografica': 'Area'})
         fig_cap.update_layout(height=350, showlegend=False)
         st.plotly_chart(fig_cap, width="stretch")
 

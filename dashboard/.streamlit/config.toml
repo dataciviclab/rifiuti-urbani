@@ -1,5 +1,10 @@
 [server]
 headless = true
+maxUploadSize = 10
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
 
 [theme]
 primaryColor = "#6366f1"
