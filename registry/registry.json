@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repo": "rifiuti-urbani",
   "source_repo": "dataciviclab/rifiuti-urbani",
-  "updated_at": "2026-10-01",
+  "updated_at": "2026-10-25",
   "datasets": [
     {
       "slug": "ispra_rs_export",
@@ -1199,8 +1199,8 @@
       "table": "mart_import",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_export/2024/mart_import.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_export/*/mart_import.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1209,8 +1209,8 @@
       "table": "mart_gestione",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_gestione/2024/mart_gestione.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_gestione/*/mart_gestione.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1219,8 +1219,8 @@
       "table": "mart_impianti",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_impianti/2024/mart_impianti.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_impianti/*/mart_impianti.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1229,8 +1229,8 @@
       "table": "mart_import",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_import/2024/mart_import.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_import/*/mart_import.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1239,8 +1239,8 @@
       "table": "mart_produzione",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_produzione/2024/mart_produzione.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_produzione/*/mart_produzione.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1249,8 +1249,8 @@
       "table": "mart_comuni",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_base/2024/mart_comuni.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_base/*/mart_comuni.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1259,8 +1259,8 @@
       "table": "mart_sintesi",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_base/2024/mart_sintesi.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_base/*/mart_sintesi.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1269,8 +1269,8 @@
       "table": "mart_trend",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_base/2024/mart_trend.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_base/*/mart_trend.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1279,8 +1279,8 @@
       "table": "mart_comuni",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_costi_kg/2024/mart_comuni.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_costi_kg/*/mart_comuni.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1289,8 +1289,8 @@
       "table": "mart_comuni",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_costi_procapite/2024/mart_comuni.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_costi_procapite/*/mart_comuni.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1299,8 +1299,8 @@
       "table": "mart_import",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_export/2024/mart_import.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_export/*/mart_import.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1309,8 +1309,8 @@
       "table": "mart_flussi",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_flussi/2024/mart_flussi.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_flussi/*/mart_flussi.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1319,8 +1319,8 @@
       "table": "mart_gestione",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_gestione/2024/mart_gestione.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_gestione/*/mart_gestione.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1329,8 +1329,8 @@
       "table": "mart_import",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_import/2024/mart_import.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_import/*/mart_import.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1339,8 +1339,8 @@
       "table": "mart_comuni",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/rifiuti_urbani_unified/2024/mart_comuni.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/rifiuti_urbani_unified/*/mart_comuni.parquet",
+        "multi_file": true
       }
     },
     {
@@ -1349,8 +1349,8 @@
       "table": "mart_sintesi",
       "location": {
         "type": "gcs",
-        "path": "gs://dataciviclab-mart/rifiuti-urbani/rifiuti_urbani_unified/2024/mart_sintesi.parquet",
-        "multi_file": false
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/rifiuti_urbani_unified/*/mart_sintesi.parquet",
+        "multi_file": true
       }
     }
   ],
@@ -1363,7 +1363,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123938Z_9c32e59e",
+        "run_id": "20261025T231758Z_8009b06e",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1376,13 +1376,13 @@
           "mart": 7869
         },
         "output_bytes": {
-          "raw": 736092,
+          "raw": 736154,
           "clean": 456293,
-          "mart": 462379
+          "mart": 462369
         },
-        "started_at": "2026-10-01T12:39:38.982970+00:00",
-        "finished_at": "2026-10-01T12:39:39.155773+00:00",
-        "duration_seconds": 0.173
+        "started_at": "2026-10-25T23:17:58.348783+00:00",
+        "finished_at": "2026-10-25T23:17:58.538716+00:00",
+        "duration_seconds": 0.19
       }
     },
     {
@@ -1393,7 +1393,7 @@
       "detail": "anni 2010-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123914Z_2eeb160b",
+        "run_id": "20261025T231729Z_07b7307c",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1406,13 +1406,13 @@
           "mart": 7996
         },
         "output_bytes": {
-          "raw": 3038479,
+          "raw": 3038451,
           "clean": 556503,
-          "mart": 749052
+          "mart": 749105
         },
-        "started_at": "2026-10-01T12:39:14.139594+00:00",
-        "finished_at": "2026-10-01T12:39:18.087173+00:00",
-        "duration_seconds": 3.948
+        "started_at": "2026-10-25T23:17:29.681116+00:00",
+        "finished_at": "2026-10-25T23:17:33.800330+00:00",
+        "duration_seconds": 4.119
       }
     },
     {
@@ -1423,7 +1423,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123920Z_77f6696c",
+        "run_id": "20261025T231736Z_cdc998bc",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1441,9 +1441,9 @@
           "clean": 167812,
           "mart": 244545
         },
-        "started_at": "2026-10-01T12:39:20.724178+00:00",
-        "finished_at": "2026-10-01T12:39:21.058731+00:00",
-        "duration_seconds": 0.335
+        "started_at": "2026-10-25T23:17:36.702097+00:00",
+        "finished_at": "2026-10-25T23:17:37.094900+00:00",
+        "duration_seconds": 0.393
       }
     },
     {
@@ -1454,7 +1454,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123923Z_4e0dfc19",
+        "run_id": "20261025T231740Z_29114fd3",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1472,9 +1472,9 @@
           "clean": 201819,
           "mart": 279369
         },
-        "started_at": "2026-10-01T12:39:23.576727+00:00",
-        "finished_at": "2026-10-01T12:39:23.935867+00:00",
-        "duration_seconds": 0.359
+        "started_at": "2026-10-25T23:17:40.106806+00:00",
+        "finished_at": "2026-10-25T23:17:40.499385+00:00",
+        "duration_seconds": 0.393
       }
     },
     {
@@ -1485,7 +1485,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123925Z_18d8f158",
+        "run_id": "20261025T231742Z_701d94d2",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1503,9 +1503,9 @@
           "clean": 1399,
           "mart": 1888
         },
-        "started_at": "2026-10-01T12:39:25.270771+00:00",
-        "finished_at": "2026-10-01T12:39:25.384208+00:00",
-        "duration_seconds": 0.113
+        "started_at": "2026-10-25T23:17:42.091085+00:00",
+        "finished_at": "2026-10-25T23:17:42.216961+00:00",
+        "duration_seconds": 0.126
       }
     },
     {
@@ -1516,7 +1516,7 @@
       "detail": "anni 2014-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123926Z_7a5e7140",
+        "run_id": "20261025T231744Z_3a36f2ec",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1534,9 +1534,9 @@
           "clean": 1560,
           "mart": 2043
         },
-        "started_at": "2026-10-01T12:39:26.756215+00:00",
-        "finished_at": "2026-10-01T12:39:26.868999+00:00",
-        "duration_seconds": 0.113
+        "started_at": "2026-10-25T23:17:44.043644+00:00",
+        "finished_at": "2026-10-25T23:17:44.410345+00:00",
+        "duration_seconds": 0.367
       }
     },
     {
@@ -1547,7 +1547,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123928Z_bd23b3c3",
+        "run_id": "20261025T231746Z_18bba52e",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1565,8 +1565,8 @@
           "clean": 985,
           "mart": 1349
         },
-        "started_at": "2026-10-01T12:39:28.145260+00:00",
-        "finished_at": "2026-10-01T12:39:28.261984+00:00",
+        "started_at": "2026-10-25T23:17:46.179407+00:00",
+        "finished_at": "2026-10-25T23:17:46.296783+00:00",
         "duration_seconds": 0.117
       }
     },
@@ -1578,7 +1578,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123929Z_1bec3686",
+        "run_id": "20261025T231747Z_964b4741",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1596,9 +1596,9 @@
           "clean": 1314,
           "mart": 1804
         },
-        "started_at": "2026-10-01T12:39:29.543287+00:00",
-        "finished_at": "2026-10-01T12:39:29.653647+00:00",
-        "duration_seconds": 0.11
+        "started_at": "2026-10-25T23:17:47.869497+00:00",
+        "finished_at": "2026-10-25T23:17:47.995102+00:00",
+        "duration_seconds": 0.126
       }
     },
     {
@@ -1609,7 +1609,7 @@
       "detail": "anni 2014-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123931Z_47e1f180",
+        "run_id": "20261025T231749Z_27378ac8",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1627,9 +1627,9 @@
           "clean": 8414,
           "mart": 9658
         },
-        "started_at": "2026-10-01T12:39:31.024420+00:00",
-        "finished_at": "2026-10-01T12:39:31.150712+00:00",
-        "duration_seconds": 0.126
+        "started_at": "2026-10-25T23:17:49.739307+00:00",
+        "finished_at": "2026-10-25T23:17:49.880034+00:00",
+        "duration_seconds": 0.141
       }
     },
     {
@@ -1640,7 +1640,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123932Z_2ce8effd",
+        "run_id": "20261025T231751Z_08836d86",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1658,9 +1658,9 @@
           "clean": 1330,
           "mart": 1787
         },
-        "started_at": "2026-10-01T12:39:32.504152+00:00",
-        "finished_at": "2026-10-01T12:39:32.627284+00:00",
-        "duration_seconds": 0.123
+        "started_at": "2026-10-25T23:17:51.400985+00:00",
+        "finished_at": "2026-10-25T23:17:51.516335+00:00",
+        "duration_seconds": 0.115
       }
     },
     {
@@ -1671,7 +1671,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123934Z_f0966f2d",
+        "run_id": "20261025T231752Z_fd4c975d",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1689,9 +1689,9 @@
           "clean": 864,
           "mart": 1345
         },
-        "started_at": "2026-10-01T12:39:34.046747+00:00",
-        "finished_at": "2026-10-01T12:39:34.163592+00:00",
-        "duration_seconds": 0.117
+        "started_at": "2026-10-25T23:17:52.993521+00:00",
+        "finished_at": "2026-10-25T23:17:53.113777+00:00",
+        "duration_seconds": 0.12
       }
     },
     {
@@ -1702,7 +1702,7 @@
       "detail": "anni 2015-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123935Z_2046a646",
+        "run_id": "20261025T231754Z_4b13e058",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1720,9 +1720,9 @@
           "clean": 2384,
           "mart": 2248
         },
-        "started_at": "2026-10-01T12:39:35.756722+00:00",
-        "finished_at": "2026-10-01T12:39:35.881429+00:00",
-        "duration_seconds": 0.125
+        "started_at": "2026-10-25T23:17:54.663446+00:00",
+        "finished_at": "2026-10-25T23:17:54.797937+00:00",
+        "duration_seconds": 0.134
       }
     },
     {
@@ -1733,7 +1733,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261001T123937Z_da1f1478",
+        "run_id": "20261025T231756Z_0aaf6469",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1751,9 +1751,9 @@
           "clean": 1212,
           "mart": 1693
         },
-        "started_at": "2026-10-01T12:39:37.291005+00:00",
-        "finished_at": "2026-10-01T12:39:37.401458+00:00",
-        "duration_seconds": 0.11
+        "started_at": "2026-10-25T23:17:56.355555+00:00",
+        "finished_at": "2026-10-25T23:17:56.477164+00:00",
+        "duration_seconds": 0.122
       }
     }
   ],
