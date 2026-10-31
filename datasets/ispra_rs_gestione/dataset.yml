@@ -6,7 +6,8 @@ dataset:
   source_id: "ispra_linked_data"
   tags: [ambiente, ispra, rs, gestione]
   category: ambiente
-  years: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  description: "Gestione dei rifiuti speciali per operazione (recupero R1-R13, smaltimento D1-D15), ripartizione merceologica e area geografica."
+  years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
 raw:
   sources:
@@ -15,17 +16,36 @@ raw:
       args:
         path: "../../normalized/rs_gestione/ispra_rs_gestione_{year}.csv"
       primary: true
-
-clean:
-  sql: "sql/clean.sql"
-  required_columns: [anno, area_geografica, rs_np_t, rs_p_t, rs_cer_nd_t, totale_t]
   read:
-    all_varchar: true
     header: true
     delim: ";"
     encoding: "utf-8"
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns:
+    - "anno"
+    - "area_geografica"
+    - "ripartizione"
+    - "tipo_operazione"
+    - "codice"
+    - "natura"
+    - "quantita_t"
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+    columns:
+      area_geografica: VARCHAR
+      ripartizione: VARCHAR
+      tipo_operazione: VARCHAR
+      codice: VARCHAR
+      natura: VARCHAR
+      quantita_t: VARCHAR
   validate:
-    min_rows: 15
+    min_rows: 100
+    primary_key: [anno, area_geografica, ripartizione, codice]
+    not_null: [anno, area_geografica, ripartizione, codice]
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -38,7 +58,8 @@ mart:
   validate:
     table_rules:
       mart_gestione:
-        min_rows: 10
+        primary_key: [anno, area_geografica, ripartizione, tipo_operazione]
+        min_rows: 12
 
 validation:
   fail_on_error: true

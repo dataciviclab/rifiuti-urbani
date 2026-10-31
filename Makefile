@@ -79,12 +79,12 @@ normalize:
 		[ -f "$$src/ru_flussi.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/ru_flussi.csv" -o "normalized/flussi/ispra_ru_flussi_$$year.csv" -t auto -y $$year 2>/dev/null; \
 		[ -f "$$src/ru_import.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/ru_import.csv" -o "normalized/ru_import/ispra_ru_import_$$year.csv" -t auto -y $$year 2>/dev/null; \
 		[ -f "$$src/ru_export.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/ru_export.csv" -o "normalized/ru_export/ispra_ru_export_$$year.csv" -t auto -y $$year 2>/dev/null; \
-		[ -f "$$src/ru_gestione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/ru_gestione.csv" -o "normalized/ru_gestione/ispra_ru_gestione_$$year.csv" -t auto -y $$year 2>/dev/null; \
+		[ -f "$$src/ru_gestione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/ru_gestione.csv" -o "normalized/ru_gestione/ispra_ru_gestione_$$year.csv" -t gestione_ru -y $$year 2>/dev/null; \
 		[ -f "$$src/rs_import.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_import.csv" -o "normalized/rs_import/ispra_rs_import_$$year.csv" -t auto -y $$year 2>/dev/null; \
 		[ -f "$$src/rs_export.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_export.csv" -o "normalized/rs_export/ispra_rs_export_$$year.csv" -t auto -y $$year 2>/dev/null; \
-		[ -f "$$src/rs_produzione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_produzione.csv" -o "normalized/rs_produzione/ispra_rs_produzione_$$year.csv" -t auto -y $$year 2>/dev/null; \
-		[ -f "$$src/rs_gestione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_gestione.csv" -o "normalized/rs_gestione/ispra_rs_gestione_$$year.csv" -t auto -y $$year 2>/dev/null; \
-		[ -f "$$src/rs_impianti.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_impianti.csv" -o "normalized/rs_impianti/ispra_rs_impianti_$$year.csv" -t auto -y $$year 2>/dev/null; \
+		[ -f "$$src/rs_produzione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_produzione.csv" -o "normalized/rs_produzione/ispra_rs_produzione_$$year.csv" -t produzione_rs -y $$year 2>/dev/null; \
+		[ -f "$$src/rs_gestione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_gestione.csv" -o "normalized/rs_gestione/ispra_rs_gestione_$$year.csv" -t gestione_rs -y $$year 2>/dev/null; \
+		[ -f "$$src/rs_impianti.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_impianti.csv" -o "normalized/rs_impianti/ispra_rs_impianti_$$year.csv" -t impianti -y $$year 2>/dev/null; \
 	done
 
 # --- Status / diagnostics ----------------------------------------------------

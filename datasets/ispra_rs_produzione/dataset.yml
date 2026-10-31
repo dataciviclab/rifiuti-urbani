@@ -6,6 +6,7 @@ dataset:
   source_id: "ispra_linked_data"
   tags: [ambiente, ispra, rs, produzione]
   category: ambiente
+  description: "Produzione di rifiuti speciali per attività economica e per capitolo EER, con ripartizione pericolosi/non pericolosi e area geografica."
   years: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
 raw:
@@ -22,14 +23,30 @@ raw:
 
 clean:
   sql: "sql/clean.sql"
-  required_columns: [anno, area_geografica, rs_np_t, rs_p_t, rs_cer_nd_t, totale_t]
+  required_columns:
+    - "anno"
+    - "dimensione"
+    - "etichetta"
+    - "area_geografica"
+    - "ripartizione"
+    - "totale_t"
   read:
-    all_varchar: true
     header: true
     delim: ";"
     encoding: "utf-8"
+    columns:
+      dimensione: VARCHAR
+      etichetta: VARCHAR
+      area_geografica: VARCHAR
+      ripartizione: VARCHAR
+      np_t: VARCHAR
+      p_t: VARCHAR
+      cer_nd_t: VARCHAR
+      totale_t: VARCHAR
   validate:
-    min_rows: 50
+    min_rows: 300
+    primary_key: [anno, dimensione, etichetta, area_geografica, ripartizione]
+    not_null: [anno, dimensione, etichetta, area_geografica, ripartizione]
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -42,7 +59,8 @@ mart:
   validate:
     table_rules:
       mart_produzione:
-        min_rows: 50
+        primary_key: [anno, dimensione, etichetta, area_geografica, ripartizione]
+        min_rows: 200
 
 validation:
   fail_on_error: true

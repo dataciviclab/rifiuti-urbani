@@ -6,6 +6,7 @@ dataset:
   source_id: "ispra_linked_data"
   tags: [ambiente, ispra, rs, impianti]
   category: ambiente
+  description: "Censimento ISPRA degli impianti che gestiscono rifiuti speciali: impianti e rifiuti trattati per tipologia e ripartizione geografica."
   years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
 raw:
@@ -22,14 +23,28 @@ raw:
 
 clean:
   sql: "sql/clean.sql"
-  required_columns: [anno, area_geografica, numero_impianti, fanghi_t, altri_rs_t, totale_rs_t]
+  required_columns:
+    - "anno"
+    - "tipo_impianto"
+    - "categoria"
+    - "area_geografica"
+    - "numero_impianti"
+    - "totale_t"
   read:
-    all_varchar: true
     header: true
     delim: ";"
     encoding: "utf-8"
+    columns:
+      tipo_impianto: VARCHAR
+      area_geografica: VARCHAR
+      numero_impianti: VARCHAR
+      rs_non_pericolosi_t: VARCHAR
+      rs_pericolosi_t: VARCHAR
+      totale_t: VARCHAR
   validate:
-    min_rows: 3
+    min_rows: 30
+    primary_key: [anno, tipo_impianto, area_geografica]
+    not_null: [anno, tipo_impianto, area_geografica, numero_impianti]
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -42,7 +57,8 @@ mart:
   validate:
     table_rules:
       mart_impianti:
-        min_rows: 3
+        primary_key: [anno, tipo_impianto, area_geografica]
+        min_rows: 25
 
 validation:
   fail_on_error: true

@@ -4,8 +4,9 @@ schema_version: 1
 dataset:
   name: "ispra_ru_gestione"
   source_id: "ispra_linked_data"
-  tags: [ambiente, ispra, ru, gestione]
+  tags: [ambiente, ispra, ru, impianti, gestione]
   category: ambiente
+  description: "Impianti che trattano rifiuti urbani (ISPRA): numero impianti e rifiuti trattati per tipologia impianto e ripartizione geografica."
   years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
 
 raw:
@@ -22,14 +23,30 @@ raw:
 
 clean:
   sql: "sql/clean.sql"
-  required_columns: [anno, area_geografica, numero_impianti, frazione_umida_t, verde_t, tot_ru_t, fanghi_t, altro_t, totale_t]
+  required_columns:
+    - "anno"
+    - "tipo_impianto"
+    - "area_geografica"
+    - "numero_impianti"
+    - "totale_t"
   read:
-    all_varchar: true
     header: true
     delim: ";"
     encoding: "utf-8"
+    columns:
+      tipo_impianto: VARCHAR
+      area_geografica: VARCHAR
+      numero_impianti: VARCHAR
+      frazione_umida_t: VARCHAR
+      verde_t: VARCHAR
+      tot_ru_t: VARCHAR
+      fanghi_t: VARCHAR
+      altro_t: VARCHAR
+      totale_t: VARCHAR
   validate:
     min_rows: 20
+    primary_key: [anno, tipo_impianto, area_geografica]
+    not_null: [anno, tipo_impianto, area_geografica, numero_impianti]
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -42,7 +59,8 @@ mart:
   validate:
     table_rules:
       mart_gestione:
-        min_rows: 5
+        primary_key: [anno, tipo_impianto, area_geografica]
+        min_rows: 15
 
 validation:
   fail_on_error: true

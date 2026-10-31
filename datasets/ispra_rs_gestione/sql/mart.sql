@@ -1,23 +1,43 @@
--- mart_gestione — ISPRA RS Gestione: arricchimento
+-- mart_gestione — ISPRA RS Gestione
 --
--- Aggiunge totali per area geografica e percentuali.
+-- Da forma lunga (una riga per codice operazione) a una riga per
+-- (anno, area, ripartizione, tipo operazione), con flussi e giacenze
+-- **separati**: R13/D15 sono rifiuti in giacenza al 31/12, non trattati
+-- nell'anno, e sommarli ai flussi gonfia i totali di ~18 Mt.
+--
+-- Le righe Italia non entrano nel mart: i valori nazionali sono colonne.
 
+WITH per_area AS (
+    SELECT
+        anno,
+        area_geografica,
+        ripartizione,
+        tipo_operazione,
+        SUM(CASE WHEN natura = 'flusso' THEN quantita_t ELSE 0 END) AS flussi_t,
+        SUM(CASE WHEN natura = 'giacenza' THEN quantita_t ELSE 0 END) AS giacenza_t
+    FROM clean_input
+    GROUP BY anno, area_geografica, ripartizione, tipo_operazione
+),
+arricchito AS (
+    SELECT
+        *,
+        MAX(CASE WHEN area_geografica = 'Italia' THEN flussi_t END)
+            OVER (PARTITION BY anno, ripartizione, tipo_operazione) AS flussi_italia_t,
+        MAX(CASE WHEN area_geografica = 'Italia' THEN giacenza_t END)
+            OVER (PARTITION BY anno, ripartizione, tipo_operazione) AS giacenza_italia_t
+    FROM per_area
+)
 SELECT
     anno,
     area_geografica,
-    rs_np_t,
-    rs_p_t,
-    rs_cer_nd_t,
-    totale_t,
-    -- Totale per area (Italia row)
-    MAX(CASE WHEN area_geografica = 'Italia' THEN totale_t END) OVER (
-        PARTITION BY anno
-    ) AS totale_italia,
-    -- Pct area sul totale Italia
-    ROUND(
-        totale_t * 100.0 / NULLIF(MAX(CASE WHEN area_geografica = 'Italia' THEN totale_t END) OVER (
-            PARTITION BY anno
-        ), 0), 2
-    ) AS pct_italia
-FROM clean_input
-ORDER BY anno, area_geografica
+    ripartizione,
+    tipo_operazione,
+    ROUND(flussi_t, 0) AS flussi_t,
+    ROUND(giacenza_t, 0) AS giacenza_t,
+    ROUND(flussi_t + giacenza_t, 0) AS totale_t,
+    ROUND(flussi_italia_t, 0) AS flussi_italia_t,
+    ROUND(giacenza_italia_t, 0) AS giacenza_italia_t,
+    ROUND(flussi_t * 100.0 / NULLIF(flussi_italia_t, 0), 2) AS pct_flussi_italia
+FROM arricchito
+WHERE area_geografica <> 'Italia'
+ORDER BY anno, ripartizione, tipo_operazione, flussi_t DESC
