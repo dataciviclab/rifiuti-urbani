@@ -57,6 +57,8 @@ clean:
   required_columns:
     - "anno"
     - "codice_comune_istat"
+    - "tipo_dato"
+    - "popolazione"
     - "totale_ru_tonnellate"
     - "percentuale_rd"
   validate:

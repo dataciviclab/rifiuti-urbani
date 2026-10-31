@@ -27,6 +27,7 @@ clean:
     - "popolazione"
     - "ctot_euro_ab"
   read:
+    all_varchar: true
     source: auto
     mode: latest
     header: true

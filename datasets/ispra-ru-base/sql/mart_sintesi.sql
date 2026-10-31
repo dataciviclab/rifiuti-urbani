@@ -4,13 +4,17 @@
 -- Entrambi erano GROUP BY provincia × anno — stessa logica, metriche complementari.
 --
 -- Output: 1 riga = 1 provincia × anno (~1.500 righe).
+-- n_unita conta le unità di rilevazione (comuni + aggregazioni), n_comuni solo
+-- i comuni singoli: le metriche pesate usano tutte le unità, così la copertura
+-- del territorio è completa (es. Valle d'Aosta 2024: 1 comune + 4 aggregazioni).
 -- Uso: unified_comuni, dashboard provinciali, confronti territoriali.
 
 select
     anno,
     regione,
     provincia,
-    count(*)                                                              as n_comuni,
+    count(*)                                                              as n_unita,
+    count(*) filter (where tipo_dato = 'Comune')                          as n_comuni,
     round(sum(popolazione), 0)                                            as popolazione_totale,
     -- RD% medio pesato sulla popolazione
     round(sum(percentuale_rd * popolazione) / nullif(sum(popolazione), 0), 2) as rd_media_ponderata,

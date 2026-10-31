@@ -6,10 +6,12 @@
 TOOLKIT = toolkit
 PYTHON  = python3
 
-YEAR_START ?= 2018
+# Finestra di acquisizione (download + normalize). Gli anni pubblicati da ogni
+# dataset sono quelli dichiarati in dataset.yml: la pipeline non forza una
+# finestra unica, così un dataset può coprire 2010-2024 e un altro 2018-2024.
+YEAR_START ?= 2014
 YEAR_END   ?= 2024
 YEARS       = $(shell seq $(YEAR_START) $(YEAR_END))
-YEARS_COMMA = $(shell echo $(YEARS) | tr ' ' ',')
 
 # --- Dataset discovery ------------------------------------------------------
 DATASETS := $(shell find datasets -name dataset.yml 2>/dev/null | sort)
@@ -37,14 +39,14 @@ check:
 run:
 	@for f in $(DATASETS); do \
 		echo "=== $$f ==="; \
-		$(TOOLKIT) run --config "$$f" --years $(YEARS_COMMA) || exit 1; \
+		$(TOOLKIT) run --config "$$f" || exit 1; \
 	done
 
 .PHONY: run-compose
 run-compose:
 	@for f in $(COMPOSE); do \
 		echo "=== $$f ==="; \
-		$(TOOLKIT) run --config "$$f" --years $(YEARS_COMMA) || exit 1; \
+		$(TOOLKIT) run --config "$$f" || exit 1; \
 	done
 
 .PHONY: run-all
@@ -58,7 +60,7 @@ pipeline: test download normalize run-all
 
 .PHONY: run-%
 run-%:
-	$(TOOLKIT) run --config datasets/$*/dataset.yml --years $(YEARS_COMMA)
+	$(TOOLKIT) run --config datasets/$*/dataset.yml
 
 # --- Data acquisition (ISPRA-specific) ---------------------------------------
 

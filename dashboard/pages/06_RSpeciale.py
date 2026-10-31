@@ -4,11 +4,11 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from sources import YEARS, fmt_num, load_mart, load_mart_all
+from sources import YEARS_RS, fmt_num, load_mart, load_mart_all
 
 st.title("🏭 Rifiuti Speciali")
 
-year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="rs_year")
+year = st.selectbox("Anno", YEARS_RS, index=len(YEARS_RS) - 1, key="rs_year")
 
 # ── KPI Nazionale ──────────────────────────────────────────────────────────
 st.subheader("📊 Panoramica Nazionale RS")
@@ -70,7 +70,7 @@ st.divider()
 # ── Trend produzione RS ────────────────────────────────────────────────────
 st.subheader("📈 Trend Produzione RS (2018-2024)")
 
-df_trend_all = load_mart_all("ispra_rs_produzione", "mart_produzione", tuple(YEARS))
+df_trend_all = load_mart_all("ispra_rs_produzione", "mart_produzione", tuple(YEARS_RS))
 if df_trend_all is not None and not df_trend_all.empty:
     df_italia = df_trend_all[df_trend_all['area_geografica'] == 'Italia']
     if not df_italia.empty:

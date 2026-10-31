@@ -27,6 +27,7 @@ clean:
     - "popolazione"
     - "ctot_cent_kg"
   read:
+    all_varchar: true
     source: auto
     mode: latest
     header: true

@@ -3,11 +3,21 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from sources import YEARS, calc_kg_procapite, fmt_eur, fmt_num, fmt_pct, load_mart, load_mart_all
+from sources import (
+    YEARS_BASE,
+    YEARS_COSTI,
+    YEARS_UNIFIED,
+    calc_kg_procapite,
+    fmt_eur,
+    fmt_num,
+    fmt_pct,
+    load_mart,
+    load_mart_all,
+)
 
 st.title("📊 Panoramica Nazionale")
 
-year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="panoramica_year")
+year = st.selectbox("Anno", YEARS_BASE, index=len(YEARS_BASE) - 1, key="panoramica_year")
 
 # ── KPI principali ────────────────────────────────────────────────────────
 df = load_mart("ispra_ru_base", "mart_comuni", year)
@@ -46,9 +56,9 @@ st.divider()
 st.subheader("💡 Insight Strategici")
 
 # Calcola insight
-df_trend_all = load_mart_all("ispra_ru_base", "mart_comuni", tuple(YEARS))
-df_costi_all = load_mart_all("ispra_ru_costi_procapite", "mart_comuni", tuple(YEARS))
-df_compose = load_mart("rifiuti_urbani_unified", "mart_comuni", year)
+df_trend_all = load_mart_all("ispra_ru_base", "mart_comuni", tuple(YEARS_BASE))
+df_costi_all = load_mart_all("ispra_ru_costi_procapite", "mart_comuni", tuple(YEARS_COSTI))
+df_compose = load_mart("rifiuti_urbani_unified", "mart_comuni", year) if year in YEARS_UNIFIED else None
 
 insights = []
 

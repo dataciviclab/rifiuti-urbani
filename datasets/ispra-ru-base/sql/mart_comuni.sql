@@ -3,7 +3,9 @@
 -- Unisce i vecchi: mart.sql (kg_procapite) + mart_ranking_comuni (classi + rank)
 -- + parti di mart_rd_provincia e mart_kg_procapite (benchmark nazionale/regionale).
 --
--- Stessa cardinalità del clean (1 riga = 1 comune × anno).
+-- Stessa cardinalità del clean (1 riga = 1 unità di rilevazione × anno).
+-- Unità = comune, oppure aggregazione di comuni quando ISPRA attribuisce i
+-- dati a un'unione (tipo_dato = 'Aggregazione', unita = nome dell'unione).
 -- Ogni riga arricchita con:
 --   • kg pro-capite calcolati
 --   • classe demografica (per confronto tra simili)
@@ -20,6 +22,9 @@ comuni_con_classi as (
         regione,
         provincia,
         comune,
+        -- Unità di rilevazione: comune o aggregazione di comuni (dati ISPRA)
+        tipo_dato,
+        coalesce(aggregazione, comune) as unita,
         popolazione,
         totale_ru_tonnellate,
         totale_rd_tonnellate,
