@@ -73,7 +73,7 @@
     {
       "slug": "ispra_rs_gestione",
       "name": "Ispra Rs Gestione",
-      "description": "",
+      "description": "Gestione dei rifiuti speciali per operazione (recupero R1-R13, smaltimento D1-D15), ripartizione merceologica e area geografica.",
       "source": "",
       "source_id": "ispra_linked_data",
       "period": {
@@ -102,25 +102,31 @@
           "description": ""
         },
         {
-          "name": "rs_np_t",
-          "type": "DOUBLE",
-          "role": "metric",
+          "name": "ripartizione",
+          "type": "VARCHAR",
+          "role": "dimension",
           "description": ""
         },
         {
-          "name": "rs_p_t",
-          "type": "DOUBLE",
-          "role": "metric",
+          "name": "tipo_operazione",
+          "type": "VARCHAR",
+          "role": "dimension",
           "description": ""
         },
         {
-          "name": "rs_cer_nd_t",
-          "type": "DOUBLE",
-          "role": "metric",
+          "name": "codice",
+          "type": "VARCHAR",
+          "role": "dimension",
           "description": ""
         },
         {
-          "name": "totale_t",
+          "name": "natura",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "quantita_t",
           "type": "DOUBLE",
           "role": "metric",
           "description": ""
@@ -139,7 +145,7 @@
     {
       "slug": "ispra_rs_impianti",
       "name": "Ispra Rs Impianti",
-      "description": "",
+      "description": "Censimento ISPRA degli impianti che gestiscono rifiuti speciali: impianti e rifiuti trattati per tipologia e ripartizione geografica.",
       "source": "",
       "source_id": "ispra_linked_data",
       "period": {
@@ -162,6 +168,18 @@
           "semantic_type": "year"
         },
         {
+          "name": "tipo_impianto",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "categoria",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
           "name": "area_geografica",
           "type": "VARCHAR",
           "role": "dimension",
@@ -169,24 +187,24 @@
         },
         {
           "name": "numero_impianti",
+          "type": "INTEGER",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_non_pericolosi_t",
           "type": "DOUBLE",
           "role": "metric",
           "description": ""
         },
         {
-          "name": "fanghi_t",
+          "name": "rs_pericolosi_t",
           "type": "DOUBLE",
           "role": "metric",
           "description": ""
         },
         {
-          "name": "altri_rs_t",
-          "type": "DOUBLE",
-          "role": "metric",
-          "description": ""
-        },
-        {
-          "name": "totale_rs_t",
+          "name": "totale_t",
           "type": "DOUBLE",
           "role": "metric",
           "description": ""
@@ -271,7 +289,7 @@
     {
       "slug": "ispra_rs_produzione",
       "name": "Ispra Rs Produzione",
-      "description": "",
+      "description": "Produzione di rifiuti speciali per attività economica e per capitolo EER, con ripartizione pericolosi/non pericolosi e area geografica.",
       "source": "",
       "source_id": "ispra_linked_data",
       "period": {
@@ -294,25 +312,43 @@
           "semantic_type": "year"
         },
         {
+          "name": "dimensione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "etichetta",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
           "name": "area_geografica",
           "type": "VARCHAR",
           "role": "dimension",
           "description": ""
         },
         {
-          "name": "rs_np_t",
+          "name": "ripartizione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "np_t",
           "type": "DOUBLE",
           "role": "metric",
           "description": ""
         },
         {
-          "name": "rs_p_t",
+          "name": "p_t",
           "type": "DOUBLE",
           "role": "metric",
           "description": ""
         },
         {
-          "name": "rs_cer_nd_t",
+          "name": "cer_nd_t",
           "type": "DOUBLE",
           "role": "metric",
           "description": ""
@@ -882,7 +918,7 @@
     {
       "slug": "ispra_ru_gestione",
       "name": "Ispra Ru Gestione",
-      "description": "",
+      "description": "Impianti che trattano rifiuti urbani (ISPRA): numero impianti e rifiuti trattati per tipologia impianto e ripartizione geografica.",
       "source": "",
       "source_id": "ispra_linked_data",
       "period": {
@@ -893,6 +929,7 @@
         "ambiente",
         "ispra",
         "ru",
+        "impianti",
         "gestione"
       ],
       "category": "ambiente",
@@ -905,6 +942,12 @@
           "semantic_type": "year"
         },
         {
+          "name": "tipo_impianto",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
           "name": "area_geografica",
           "type": "VARCHAR",
           "role": "dimension",
@@ -912,7 +955,7 @@
         },
         {
           "name": "numero_impianti",
-          "type": "BIGINT",
+          "type": "INTEGER",
           "role": "metric",
           "description": ""
         },
@@ -1405,7 +1448,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001936Z_aefbd0c8",
+        "run_id": "20261031T090528Z_846affd7",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1418,13 +1461,13 @@
           "mart": 7889
         },
         "output_bytes": {
-          "raw": 786262,
+          "raw": 786302,
           "clean": 487993,
           "mart": 493641
         },
-        "started_at": "2026-10-31T00:19:36.093575+00:00",
-        "finished_at": "2026-10-31T00:19:36.641045+00:00",
-        "duration_seconds": 0.547
+        "started_at": "2026-10-31T09:05:28.432169+00:00",
+        "finished_at": "2026-10-31T09:05:28.683331+00:00",
+        "duration_seconds": 0.251
       }
     },
     {
@@ -1435,7 +1478,7 @@
       "detail": "anni 2010-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001906Z_dcd60d85",
+        "run_id": "20261031T090454Z_392627ba",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1449,12 +1492,12 @@
         },
         "output_bytes": {
           "raw": 3038451,
-          "clean": 584531,
-          "mart": 799656
+          "clean": 584410,
+          "mart": 799697
         },
-        "started_at": "2026-10-31T00:19:06.677384+00:00",
-        "finished_at": "2026-10-31T00:19:11.160794+00:00",
-        "duration_seconds": 4.483
+        "started_at": "2026-10-31T09:04:54.178964+00:00",
+        "finished_at": "2026-10-31T09:04:57.792613+00:00",
+        "duration_seconds": 3.614
       }
     },
     {
@@ -1465,7 +1508,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001913Z_8af7da6f",
+        "run_id": "20261031T090501Z_6b6af9b2",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1483,9 +1526,9 @@
           "clean": 177215,
           "mart": 252761
         },
-        "started_at": "2026-10-31T00:19:13.916257+00:00",
-        "finished_at": "2026-10-31T00:19:14.275585+00:00",
-        "duration_seconds": 0.359
+        "started_at": "2026-10-31T09:05:01.382530+00:00",
+        "finished_at": "2026-10-31T09:05:01.855715+00:00",
+        "duration_seconds": 0.473
       }
     },
     {
@@ -1496,7 +1539,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001917Z_339face0",
+        "run_id": "20261031T090505Z_cef78e0d",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1514,9 +1557,9 @@
           "clean": 231509,
           "mart": 309093
         },
-        "started_at": "2026-10-31T00:19:17.295014+00:00",
-        "finished_at": "2026-10-31T00:19:17.666006+00:00",
-        "duration_seconds": 0.371
+        "started_at": "2026-10-31T09:05:05.421834+00:00",
+        "finished_at": "2026-10-31T09:05:05.913246+00:00",
+        "duration_seconds": 0.491
       }
     },
     {
@@ -1527,7 +1570,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001919Z_ee020e78",
+        "run_id": "20261031T090507Z_ac6cde78",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1545,9 +1588,9 @@
           "clean": 1510,
           "mart": 1849
         },
-        "started_at": "2026-10-31T00:19:19.334033+00:00",
-        "finished_at": "2026-10-31T00:19:19.451656+00:00",
-        "duration_seconds": 0.118
+        "started_at": "2026-10-31T09:05:07.635443+00:00",
+        "finished_at": "2026-10-31T09:05:07.774349+00:00",
+        "duration_seconds": 0.139
       }
     },
     {
@@ -1555,30 +1598,30 @@
       "source_id": "ispra_linked_data",
       "status": "ok",
       "label": "ispra_rs_gestione",
-      "detail": "anni 2014-2024 — mart: si",
+      "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001921Z_f7ff3a98",
+        "run_id": "20261031T090509Z_fcd2cda4",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
           "raw": 100,
-          "clean": 90,
+          "clean": 100,
           "mart": 100
         },
         "output_rows": {
-          "raw": 65,
-          "clean": 28,
-          "mart": 28
+          "raw": 276,
+          "clean": 276,
+          "mart": 18
         },
         "output_bytes": {
-          "raw": 4708,
-          "clean": 1560,
-          "mart": 2043
+          "raw": 10702,
+          "clean": 2822,
+          "mart": 2419
         },
-        "started_at": "2026-10-31T00:19:21.499219+00:00",
-        "finished_at": "2026-10-31T00:19:21.620058+00:00",
-        "duration_seconds": 0.121
+        "started_at": "2026-10-31T09:05:09.665288+00:00",
+        "finished_at": "2026-10-31T09:05:09.830148+00:00",
+        "duration_seconds": 0.165
       }
     },
     {
@@ -1589,27 +1632,27 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001923Z_4879390c",
+        "run_id": "20261031T090511Z_b4fad4f9",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
           "raw": 100,
-          "clean": 95,
+          "clean": 100,
           "mart": 100
         },
         "output_rows": {
-          "raw": 93,
-          "clean": 4,
-          "mart": 4
+          "raw": 55,
+          "clean": 55,
+          "mart": 41
         },
         "output_bytes": {
-          "raw": 4053,
-          "clean": 993,
-          "mart": 1349
+          "raw": 3140,
+          "clean": 2600,
+          "mart": 3266
         },
-        "started_at": "2026-10-31T00:19:23.176808+00:00",
-        "finished_at": "2026-10-31T00:19:23.291648+00:00",
-        "duration_seconds": 0.115
+        "started_at": "2026-10-31T09:05:11.609772+00:00",
+        "finished_at": "2026-10-31T09:05:11.758869+00:00",
+        "duration_seconds": 0.149
       }
     },
     {
@@ -1620,7 +1663,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001924Z_7b95cf34",
+        "run_id": "20261031T090513Z_a272f9db",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1638,9 +1681,9 @@
           "clean": 1426,
           "mart": 1766
         },
-        "started_at": "2026-10-31T00:19:24.811172+00:00",
-        "finished_at": "2026-10-31T00:19:24.926321+00:00",
-        "duration_seconds": 0.115
+        "started_at": "2026-10-31T09:05:13.493425+00:00",
+        "finished_at": "2026-10-31T09:05:13.631114+00:00",
+        "duration_seconds": 0.138
       }
     },
     {
@@ -1651,7 +1694,7 @@
       "detail": "anni 2014-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001927Z_cc00da94",
+        "run_id": "20261031T090517Z_72f32e44",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1660,18 +1703,18 @@
           "mart": 100
         },
         "output_rows": {
-          "raw": 332,
-          "clean": 317,
-          "mart": 313
+          "raw": 1244,
+          "clean": 1244,
+          "mart": 933
         },
         "output_bytes": {
-          "raw": 30499,
-          "clean": 8414,
-          "mart": 9658
+          "raw": 118396,
+          "clean": 9837,
+          "mart": 16437
         },
-        "started_at": "2026-10-31T00:19:27.257155+00:00",
-        "finished_at": "2026-10-31T00:19:27.404131+00:00",
-        "duration_seconds": 0.147
+        "started_at": "2026-10-31T09:05:17.496151+00:00",
+        "finished_at": "2026-10-31T09:05:17.774434+00:00",
+        "duration_seconds": 0.278
       }
     },
     {
@@ -1682,7 +1725,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001928Z_851ba115",
+        "run_id": "20261031T090519Z_e193e562",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1700,9 +1743,9 @@
           "clean": 1440,
           "mart": 1771
         },
-        "started_at": "2026-10-31T00:19:28.800667+00:00",
-        "finished_at": "2026-10-31T00:19:28.912677+00:00",
-        "duration_seconds": 0.112
+        "started_at": "2026-10-31T09:05:19.528262+00:00",
+        "finished_at": "2026-10-31T09:05:19.668935+00:00",
+        "duration_seconds": 0.141
       }
     },
     {
@@ -1713,7 +1756,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001930Z_02b64c7f",
+        "run_id": "20261031T090521Z_f7a2478f",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1731,9 +1774,9 @@
           "clean": 975,
           "mart": 1329
         },
-        "started_at": "2026-10-31T00:19:30.290061+00:00",
-        "finished_at": "2026-10-31T00:19:30.448938+00:00",
-        "duration_seconds": 0.159
+        "started_at": "2026-10-31T09:05:21.361257+00:00",
+        "finished_at": "2026-10-31T09:05:21.494708+00:00",
+        "duration_seconds": 0.133
       }
     },
     {
@@ -1744,27 +1787,27 @@
       "detail": "anni 2015-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001932Z_e993d0dc",
+        "run_id": "20261031T090523Z_12af11dd",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
           "raw": 100,
-          "clean": 95,
+          "clean": 100,
           "mart": 100
         },
         "output_rows": {
-          "raw": 51,
+          "raw": 28,
           "clean": 28,
-          "mart": 10
+          "mart": 21
         },
         "output_bytes": {
-          "raw": 3091,
-          "clean": 2384,
-          "mart": 2248
+          "raw": 2130,
+          "clean": 2465,
+          "mart": 2966
         },
-        "started_at": "2026-10-31T00:19:32.296048+00:00",
-        "finished_at": "2026-10-31T00:19:32.416650+00:00",
-        "duration_seconds": 0.121
+        "started_at": "2026-10-31T09:05:23.950099+00:00",
+        "finished_at": "2026-10-31T09:05:24.112028+00:00",
+        "duration_seconds": 0.162
       }
     },
     {
@@ -1775,7 +1818,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261031T001933Z_374c441f",
+        "run_id": "20261031T090525Z_e1a5b28e",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1793,9 +1836,9 @@
           "clean": 1320,
           "mart": 1637
         },
-        "started_at": "2026-10-31T00:19:33.892543+00:00",
-        "finished_at": "2026-10-31T00:19:34.003355+00:00",
-        "duration_seconds": 0.111
+        "started_at": "2026-10-31T09:05:25.914903+00:00",
+        "finished_at": "2026-10-31T09:05:26.058998+00:00",
+        "duration_seconds": 0.144
       }
     }
   ],
