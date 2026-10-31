@@ -24,6 +24,7 @@ clean:
   sql: "sql/clean.sql"
   required_columns: [anno, area_geografica, numero_impianti, fanghi_t, altri_rs_t, totale_rs_t]
   read:
+    all_varchar: true
     header: true
     delim: ";"
     encoding: "utf-8"

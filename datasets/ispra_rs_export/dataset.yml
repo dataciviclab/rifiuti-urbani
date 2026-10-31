@@ -21,8 +21,9 @@ raw:
 clean:
   sql: "sql/clean.sql"
   required_columns:
-    [anno, regione, rifiuti_non_pericolosi_t, rifiuti_pericolosi_t, totale_t]
+    [anno, regione, is_aggregato, rifiuti_non_pericolosi_t, rifiuti_pericolosi_t, totale_t]
   read:
+    all_varchar: true
     source: auto
     mode: latest
     header: true

@@ -14,5 +14,7 @@ SELECT
         2
     ) AS pct_nazionale
 FROM clean_input
+-- Esclude la riga di totale nazionale: sommarla alle regioni raddoppia i totali.
 WHERE quantita_t > 0
+  AND NOT is_aggregato
 ORDER BY anno, quantita_t DESC
