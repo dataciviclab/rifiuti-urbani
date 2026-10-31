@@ -21,12 +21,30 @@ from lab_connectors.duckdb.queries import (
 from lab_connectors.formatters import fmt_eur, fmt_num, fmt_pct
 from lab_connectors.registry import load_registry
 
+# Superficie pubblica del modulo: le pagine importano i formatter da qui.
+__all__ = [
+    "YEARS",
+    "YEARS_BASE",
+    "YEARS_COSTI",
+    "YEARS_RS",
+    "YEARS_UNIFIED",
+    "SLUGS",
+    "calc_kg_procapite",
+    "fmt_eur",
+    "fmt_num",
+    "fmt_pct",
+    "load_mart",
+    "load_mart_all",
+    "query",
+    "query_mart",
+    "safe_int",
+]
+
 # ── Registry ───────────────────────────────────────────────────────────────
 _REGISTRY_PATH = Path(__file__).parent.parent / "registry" / "registry.json"
 _registry = load_registry(_REGISTRY_PATH)
 
 PREFIX = "rifiuti-urbani/"
-YEARS = list(range(2018, 2025))
 
 SLUGS = {
     "base": "ispra_ru_base",
@@ -48,6 +66,32 @@ SLUGS = {
 def _resolve_slug(slug: str) -> str:
     """Accetta sia alias corti (``base``) che nomi completi (``ispra_ru_base``)."""
     return SLUGS.get(slug, slug)
+
+
+def _years(slug: str, default: list[int]) -> list[int]:
+    """Anni coperti dal dataset secondo il registry pubblicato.
+
+    Ogni famiglia copre anni diversi (produzione 2010+, costi/flussi 2018+,
+    rifiuti speciali 2014+): le pagine scelgono il range giusto invece di
+    assumere una finestra unica. Se il registry non ha il periodo, si usa
+    il default.
+    """
+    full = _resolve_slug(slug)
+    for ds in _registry.datasets:
+        if ds.slug == full:
+            period = ds.period or {}
+            try:
+                return list(range(int(period["start"]), int(period["end"]) + 1))
+            except (KeyError, TypeError, ValueError):
+                break
+    return default
+
+
+YEARS = _years("ispra_ru_flussi", list(range(2018, 2025)))
+YEARS_BASE = _years("ispra_ru_base", list(range(2010, 2025)))
+YEARS_COSTI = _years("ispra_ru_costi_procapite", list(range(2018, 2025)))
+YEARS_RS = _years("ispra_rs_produzione", list(range(2014, 2025)))
+YEARS_UNIFIED = _years("rifiuti_urbani_unified", list(range(2018, 2025)))
 
 
 @st.cache_data(ttl=3600, show_spinner=False)

@@ -2,14 +2,14 @@
 
 import plotly.express as px
 import streamlit as st
-from sources import YEARS, fmt_num, fmt_pct, load_mart, load_mart_all
+from sources import YEARS_BASE, fmt_num, fmt_pct, load_mart, load_mart_all
 
 st.title("🗺️ Benchmark Regionale")
 
 # ── Filtri ─────────────────────────────────────────────────────────────────
 col1, col2 = st.columns([1, 2])
 with col1:
-    year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="regioni_year")
+    year = st.selectbox("Anno", YEARS_BASE, index=len(YEARS_BASE) - 1, key="regioni_year")
 
 df = load_mart("ispra_ru_base", "mart_comuni", year)
 
@@ -78,7 +78,7 @@ st.dataframe(df_display, use_container_width=True, hide_index=True)
 # ── Trend regioni selezionate ─────────────────────────────────────────────
 st.subheader(f"📈 Trend RD% ({', '.join(regioni_selezionate[:5])}{'...' if len(regioni_selezionate) > 5 else ''})")
 
-df_all = load_mart_all("ispra_ru_base", "mart_comuni", tuple(YEARS))
+df_all = load_mart_all("ispra_ru_base", "mart_comuni", tuple(YEARS_BASE))
 if df_all is not None and not df_all.empty:
     df_filtrato_all = df_all[df_all['regione'].isin(regioni_selezionate)]
     df_trend = df_filtrato_all.groupby(['anno', 'regione']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()

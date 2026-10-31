@@ -3,19 +3,25 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from sources import YEARS, fmt_eur, fmt_num, fmt_pct, load_mart, safe_int
+from sources import YEARS_BASE, fmt_eur, fmt_num, fmt_pct, load_mart, safe_int
 
 st.title("🏘️ Benchmark Comunale")
 
 col1, col2 = st.columns([1, 2])
 with col1:
-    year = st.selectbox("Anno", YEARS, index=len(YEARS) - 1, key="comuni_year")
+    year = st.selectbox("Anno", YEARS_BASE, index=len(YEARS_BASE) - 1, key="comuni_year")
 
 df_all = load_mart("ispra_ru_base", "mart_comuni", year)
 
 if df_all is None or df_all.empty:
     st.warning("Nessun dato disponibile.")
     st.stop()
+
+# Il mart include anche le aggregazioni di comuni (dati ISPRA attribuiti a
+# un'unione): qui confrontiamo comuni singoli, quindi le escludiamo dalla
+# ricerca per nome. Restano nei totali regionali delle altre pagine.
+if "tipo_dato" in df_all.columns:
+    df_all = df_all[df_all["tipo_dato"] == "Comune"]
 
 comuni_list = sorted(df_all['comune'].unique().tolist())
 with col2:
