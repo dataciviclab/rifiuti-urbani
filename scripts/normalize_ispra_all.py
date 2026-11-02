@@ -65,6 +65,27 @@ def canonical_region(name: str) -> str:
     return _REGIONI.get(key, name.strip())
 
 
+def _decode_html_entities(text: str) -> str:
+    """Decodifica le entità HTML che ISPRA usa dentro i CSV.
+
+    L'entità ``&apos;`` contiene un ``;``: con delimitatore ``;`` la riga
+    ``VALLE D&apos;AOSTA;5;...`` veniva spezzata in due colonne e
+    ``numero_impianti`` finiva su ``AOSTA`` (2 NULL in validazione, 2022).
+    """
+    for entity, char in (
+        ("&apos;", "'"),
+        ("&#39;", "'"),
+        ("&#x27;", "'"),
+        ("&quot;", '"'),
+        ("&nbsp;", " "),
+        ("&lt;", "<"),
+        ("&gt;", ">"),
+        ("&amp;", "&"),
+    ):
+        text = text.replace(entity, char)
+    return text
+
+
 def detect_type(lines: list[str]) -> str:
     """Detect ISPRA CSV type from raw lines."""
     # Find first non-empty, non-title, non-subtitle line
@@ -777,6 +798,8 @@ def normalize_csv(input_path: Path, output_path: Path, csv_type: str = "auto", y
         text = raw.decode("utf-8")
     except UnicodeDecodeError:
         text = raw.decode("latin-1")
+
+    text = _decode_html_entities(text)
 
     lines = text.splitlines()
     if not lines:

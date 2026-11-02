@@ -12,6 +12,7 @@ I file regionali hanno tre trappole già viste nei dataset nazionali:
 
 from __future__ import annotations
 
+import csv
 import pathlib
 import sys
 
@@ -25,6 +26,7 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from normalize_ispra_all import (  # noqa: E402
     canonical_region,
+    normalize_csv,
     normalize_gestione_rs_regione,
     normalize_gestione_ru_impianto,
     normalize_gestione_ru_regione,
@@ -129,3 +131,23 @@ def test_impianti_regione_reads_both_geo_headers():
     assert set(by_area) == {"Lombardia", "Italia", "Piemonte"}
     assert by_area["Lombardia"]["numero_impianti"] == "24"
     assert by_area["Piemonte"]["tipo_impianto"] == "Impianti di stoccaggio"
+
+
+@pytest.mark.pure_unit
+def test_html_entity_apostrophe_does_not_shift_columns(tmp_path):
+    """`&apos;` contiene un ';' e spezzava il CSV (regressione 2022)."""
+    raw = tmp_path / "in.csv"
+    raw.write_text(
+        "Censimento impianti di gestione dei rifiuti speciali - anno 2022 (ISPRA);\n"
+        "Demolitori veicoli (d.lgs 209/2003)\n"
+        "Area geografica;Numero impianti;Veicoli (t)\n"
+        "VALLE D&apos;AOSTA;5;3.216;\n",
+        encoding="utf-8",
+    )
+    out = tmp_path / "out.csv"
+    normalize_csv(raw, out, "impianti_regione", 2022)
+    rows = list(csv.DictReader(out.open(encoding="utf-8"), delimiter=";"))
+    assert len(rows) == 1
+    assert rows[0]["area_geografica"] == "Valle d'Aosta"
+    assert rows[0]["numero_impianti"] == "5"
+    assert rows[0]["totale_t"] == "3.216"
