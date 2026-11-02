@@ -29,6 +29,42 @@ def normalize_header_cell(cell: str) -> str:
     return re.sub(r"\s+", " ", cell.strip().strip("\t")).strip()
 
 
+_REGIONI = {
+    "abruzzo": "Abruzzo",
+    "basilicata": "Basilicata",
+    "calabria": "Calabria",
+    "campania": "Campania",
+    "emilia romagna": "Emilia-Romagna",
+    "friuli venezia giulia": "Friuli-Venezia Giulia",
+    "lazio": "Lazio",
+    "liguria": "Liguria",
+    "lombardia": "Lombardia",
+    "marche": "Marche",
+    "molise": "Molise",
+    "piemonte": "Piemonte",
+    "puglia": "Puglia",
+    "sardegna": "Sardegna",
+    "sicilia": "Sicilia",
+    "toscana": "Toscana",
+    "trentino alto adige": "Trentino-Alto Adige",
+    "umbria": "Umbria",
+    "valle d'aosta": "Valle d'Aosta",
+    "veneto": "Veneto",
+    "italia": "Italia",
+}
+
+
+def canonical_region(name: str) -> str:
+    """Normalizza il nome regione ISPRA (maiuscolo, senza trattini) al canonico.
+
+    I file regionali usano "PIEMONTE", "TRENTINO ALTO ADIGE",
+    "FRIULI VENEZIA GIULIA": senza questa mappa i join con costi/ru_base
+    (che usano "Trentino-Alto Adige") si perdono in silenzio.
+    """
+    key = re.sub(r"\s+", " ", name.strip()).lower().replace("-", " ")
+    return _REGIONI.get(key, name.strip())
+
+
 def detect_type(lines: list[str]) -> str:
     """Detect ISPRA CSV type from raw lines."""
     # Find first non-empty, non-title, non-subtitle line
@@ -352,11 +388,15 @@ def _title_kind(title: str) -> str:
     return "totale"
 
 
-def normalize_impianti(lines: list[str]) -> list[dict]:
-    """ISPRA RS impianti: una riga per (tipo impianto, area).
+def _impianti_rows(
+    lines: list[str],
+    geo_candidates: tuple[str, ...],
+    allowed: set[str] | None,
+) -> list[dict]:
+    """Righe (tipo impianto, area) dai file multi-blocco degli impianti.
 
-    Salta il blocco "Riepilogo" (conteggio ufficiale per tipologia, usato
-    come ancora di validazione nei test) e le legende.
+    ``allowed`` limita le aree (Nord/Centro/Sud/Italia per il file nazionale);
+    ``None`` accetta qualsiasi area non totale (file regionale).
     """
     rows: list[dict] = []
     for block in parse_blocks(lines):
@@ -366,14 +406,14 @@ def normalize_impianti(lines: list[str]) -> list[dict]:
         if "riepilogo" in low_title or "legenda" in low_title:
             continue
 
-        i_area = _col_index(header, "area geografica")
+        i_area = _first_index(header, *[(c,) for c in geo_candidates])
         i_tipo = _col_index(header, "tipologia")
         i_num = _col_index(header, "numero impianti")
         if i_area is None or i_num is None:
             continue
 
         i_np = _col_index(header, "non pericolosi")
-        i_p = _col_index(header, "pericolosi") if i_np != _col_index(header, "pericolosi") else None
+        i_p = _col_index(header, "pericolosi")
         i_tot = _col_index(header, "totale")
         # Incenerimento/Coincenerimento: "rifiuti combustibili" + "altri RS NP"
         i_altri_np = _col_index(header, "altri rs non pericolosi")
@@ -384,26 +424,77 @@ def normalize_impianti(lines: list[str]) -> list[dict]:
 
         for row in block["rows"]:
             area = _cell(row, i_area)
-            if area.lower() not in ("nord", "centro", "sud", "italia"):
+            if allowed is not None:
+                if area.lower() not in allowed:
+                    continue
+            elif not area or area.strip().lower().startswith("totale"):
                 continue
             tipo = _cell(row, i_tipo) or title
             if tipo.strip().lower().startswith("totale"):
-                continue  # riga di totale del blocco: è l'ancora di validazione, non un dato
+                continue  # riga di totale del blocco: è l'ancora di validazione
             np_val = _cell(row, i_altri_np) or _cell(row, i_np)
-            p_val = _cell(row, i_rs_p) or (_cell(row, i_p) if i_p not in (i_np, None) else "")
-            # "non pericolosi"/"pericolosi" generici (discarica, altre tipologie)
-            if i_np is not None and i_np == _col_index(header, "non pericolosi"):
-                np_val = np_val or _cell(row, i_np)
+            p_val = _cell(row, i_rs_p) or (
+                _cell(row, i_p) if i_p not in (i_np, None) else ""
+            )
             totale = _cell(row, i_tot) or _cell(row, i_unica)
             rows.append({
                 "tipo_impianto": tipo,
-                "area_geografica": area,
+                "area_geografica": canonical_region(area),
                 "numero_impianti": _cell(row, i_num),
                 "rs_non_pericolosi_t": np_val,
                 "rs_pericolosi_t": p_val,
                 "totale_t": totale,
             })
     return rows
+
+
+def normalize_impianti(lines: list[str]) -> list[dict]:
+    """ISPRA RS impianti: una riga per (tipo impianto, area).
+
+    Salta il blocco "Riepilogo" (conteggio ufficiale per tipologia, usato
+    come ancora di validazione nei test) e le legende.
+    """
+    return _impianti_rows(
+        lines, ("area geografica",), {"nord", "centro", "sud", "italia"}
+    )
+
+
+def normalize_impianti_regione(lines: list[str]) -> list[dict]:
+    """ISPRA RS impianti regionali: una riga per (tipo impianto, regione).
+
+    Stesso schema del file nazionale — `area_geografica` porta il nome della
+    regione (canonico) — così clean e mart nazionali restano validi.
+    """
+    return _impianti_rows(lines, ("area geografica", "regione"), None)
+
+
+def _gestione_ru_indices(header: list[str], title: str) -> dict[str, object]:
+    """Indici delle colonne condivisi dai blocchi di gestione RU."""
+    return {
+        "frazione": _first_index(header, ("frazione umida",), ("frazione organica",)),
+        "verde": _col_index(header, "verde"),
+        "ru": _first_index(header, ("tot. ru",), ("ru indiff",)),
+        "fanghi": _col_index(header, "fanghi"),
+        "altro": _col_index(header, "altro"),
+        # "Totale (t)" dove c'è; altrimenti "Tot. RU e tratt. RU (t)".
+        "totale": _first_index(header, ("totale",), ("tot.",)),
+        # TMB nazionale: il 7° valore (fanghi) non ha header.
+        "extra_fanghi": len(header) == 6 and "tmb" in title.lower(),
+    }
+
+
+def _gestione_ru_values(row: list[str], idx: dict[str, object]) -> dict[str, str]:
+    fanghi = _cell(row, idx["fanghi"])  # type: ignore[arg-type]
+    if not fanghi and idx["extra_fanghi"]:
+        fanghi = row[6].strip() if len(row) > 6 else ""
+    return {
+        "frazione_umida_t": _cell(row, idx["frazione"]),  # type: ignore[arg-type]
+        "verde_t": _cell(row, idx["verde"]),  # type: ignore[arg-type]
+        "tot_ru_t": _cell(row, idx["ru"]),  # type: ignore[arg-type]
+        "fanghi_t": fanghi,
+        "altro_t": _cell(row, idx["altro"]),  # type: ignore[arg-type]
+        "totale_t": _cell(row, idx["totale"]),  # type: ignore[arg-type]
+    }
 
 
 def normalize_gestione_ru(lines: list[str]) -> list[dict]:
@@ -421,33 +512,85 @@ def normalize_gestione_ru(lines: list[str]) -> list[dict]:
         if i_area is None or i_num is None:
             continue
 
-        i_frazione = _first_index(header, ("frazione umida",), ("frazione organica",))
-        i_verde = _col_index(header, "verde")
-        i_ru = _first_index(header, ("tot. ru",), ("ru indiff",))
-        i_fanghi = _col_index(header, "fanghi")
-        i_altro = _col_index(header, "altro")
-        # "Totale (t)" dove c'è; altrimenti "Tot. RU e tratt. RU (t)" (TMB, incenerimento…)
-        i_tot = _first_index(header, ("totale",), ("tot.",))
-        # TMB: il 7° valore (fanghi) non ha header
-        extra_fanghi = len(header) == 6 and "tmb" in low_title
-
+        idx = _gestione_ru_indices(header, title)
         for row in block["rows"]:
             area = _cell(row, i_area)
             if area.lower() not in ("nord", "centro", "sud", "italia"):
                 continue
-            fanghi = _cell(row, i_fanghi)
-            if not fanghi and extra_fanghi:
-                fanghi = row[6].strip() if len(row) > 6 else ""
             rows.append({
                 "tipo_impianto": title,
                 "area_geografica": area,
                 "numero_impianti": _cell(row, i_num),
-                "frazione_umida_t": _cell(row, i_frazione),
-                "verde_t": _cell(row, i_verde),
-                "tot_ru_t": _cell(row, i_ru),
-                "fanghi_t": fanghi,
-                "altro_t": _cell(row, i_altro),
-                "totale_t": _cell(row, i_tot),
+                **_gestione_ru_values(row, idx),
+            })
+    return rows
+
+
+def normalize_gestione_ru_regione(lines: list[str]) -> list[dict]:
+    """ISPRA RU gestione per regione: stesso schema, area = regione canonica.
+
+    Riusa clean/mart di `ispra_ru_gestione`: la riga Italia resta l'ancora
+    per le quote per tipologia.
+    """
+    rows: list[dict] = []
+    for block in parse_blocks(lines):
+        title = block["title"]
+        header = block["header"]
+        low_title = title.lower()
+        if "andamento" in low_title or "legenda" in low_title:
+            continue
+
+        i_reg = _col_index(header, "regione")
+        i_num = _col_index(header, "numero impianti")
+        if i_reg is None or i_num is None:
+            continue
+
+        idx = _gestione_ru_indices(header, title)
+        for row in block["rows"]:
+            regione = _cell(row, i_reg)
+            if not regione or regione.strip().lower().startswith("totale"):
+                continue
+            rows.append({
+                "tipo_impianto": title,
+                "area_geografica": canonical_region(regione),
+                "numero_impianti": _cell(row, i_num),
+                **_gestione_ru_values(row, idx),
+            })
+    return rows
+
+
+def normalize_gestione_ru_impianto(lines: list[str]) -> list[dict]:
+    """ISPRA RU gestione per impianto/comune: regione + provincia + comune."""
+    rows: list[dict] = []
+    for block in parse_blocks(lines):
+        title = block["title"]
+        header = block["header"]
+        low_title = title.lower()
+        if "andamento" in low_title or "legenda" in low_title:
+            continue
+
+        i_reg = _col_index(header, "regione")
+        i_prov = _col_index(header, "provincia")
+        i_com = _col_index(header, "comune")
+        if i_reg is None or i_com is None:
+            continue
+
+        idx = _gestione_ru_indices(header, title)
+        for row in block["rows"]:
+            regione = _cell(row, i_reg)
+            comune = _cell(row, i_com)
+            if (
+                not regione
+                or not comune
+                or regione.strip().lower() in ("totale", "italia")
+            ):
+                continue
+            rows.append({
+                "tipo_impianto": title,
+                "regione": canonical_region(regione),
+                "provincia": _cell(row, i_prov),
+                "comune": comune,
+                **_gestione_ru_values(row, idx),
             })
     return rows
 
@@ -455,19 +598,19 @@ def normalize_gestione_ru(lines: list[str]) -> list[dict]:
 _OPERAZIONE = re.compile(r"^(R\d+|D\d+)(\s*al 31/12)?\s*(\(t\))?$", re.IGNORECASE)
 
 
-def normalize_gestione_rs(lines: list[str]) -> list[dict]:
-    """ISPRA RS gestione: forma lunga (area × ripartizione × operazione).
-
-    R13/D15 sono giacenze a fine anno, non flussi: vanno marcate, altrimenti
-    sommarle ai flussi gonfia i totali.
-    """
+def _gestione_rs_rows(
+    lines: list[str],
+    geo_candidates: tuple[str, ...],
+    allowed: set[str] | None,
+) -> list[dict]:
+    """Forma lunga (area × ripartizione × operazione) dai blocchi RS gestione."""
     rows: list[dict] = []
     for block in parse_blocks(lines):
         title = block["title"]
         header = block["header"]
         if "legenda" in title.lower():
             continue
-        i_area = _col_index(header, "area geografica")
+        i_area = _first_index(header, *[(c,) for c in geo_candidates])
         if i_area is None:
             continue
 
@@ -475,9 +618,11 @@ def normalize_gestione_rs(lines: list[str]) -> list[dict]:
         # Il blocco "sintesi" aggrega R1-R12 / D1-D14 e ripeterebbe i dati
         # dei blocchi di dettaglio: si salta (le sue colonne di range non
         # matchano il regex dei codici singoli, ma R13/D15 sì).
-        if any(re.match(r"^[RD]\d+\s*-\s*[RD]?\d+", col.strip(), re.IGNORECASE) for col in header):
+        if any(
+            re.match(r"^[RD]\d+\s*-\s*[RD]?\d+", col.strip(), re.IGNORECASE)
+            for col in header
+        ):
             continue
-        # blocchi "sintesi" (R1-R12, D1-D14 aggregati) non hanno operazioni singole
         operazioni = []
         for i, col in enumerate(header):
             m = _OPERAZIONE.match(col.strip())
@@ -490,17 +635,66 @@ def normalize_gestione_rs(lines: list[str]) -> list[dict]:
 
         for row in block["rows"]:
             area = _cell(row, i_area)
-            if area.lower() not in ("nord", "centro", "sud", "italia"):
+            if allowed is not None:
+                if area.lower() not in allowed:
+                    continue
+            elif not area or area.strip().lower().startswith("totale"):
                 continue
             for idx, codice, natura in operazioni:
                 rows.append({
-                    "area_geografica": area,
+                    "area_geografica": canonical_region(area),
                     "ripartizione": ripartizione,
                     "tipo_operazione": "recupero" if codice.startswith("R") else "smaltimento",
                     "codice": codice,
                     "natura": natura,
                     "quantita_t": _cell(row, idx),
                 })
+    return rows
+
+
+def normalize_gestione_rs(lines: list[str]) -> list[dict]:
+    """ISPRA RS gestione: forma lunga (area × ripartizione × operazione).
+
+    R13/D15 sono giacenze a fine anno, non flussi: vanno marcate, altrimenti
+    sommarle ai flussi gonfia i totali.
+    """
+    return _gestione_rs_rows(
+        lines, ("area geografica",), {"nord", "centro", "sud", "italia"}
+    )
+
+
+def normalize_gestione_rs_regione(lines: list[str]) -> list[dict]:
+    """ISPRA RS gestione per regione: stessa forma lunga, area = regione."""
+    return _gestione_rs_rows(lines, ("area geografica", "regione"), None)
+
+
+def normalize_rs_produzione_regione(lines: list[str]) -> list[dict]:
+    """ISPRA RS produzione regionale: forma lunga compatibile con rs_produzione."""
+    rows: list[dict] = []
+    for block in parse_blocks(lines):
+        header = block["header"]
+        i_reg = _col_index(header, "regione")
+        if i_reg is None:
+            continue
+        i_np = _col_index(header, "rs np")
+        i_p = _col_index(header, "rs p")
+        i_nd = _col_index(header, "cer nd")
+        i_tot = _col_index(header, "totale")
+        for row in block["rows"]:
+            regione = _cell(row, i_reg)
+            if not regione or regione.strip().lower().startswith("totale"):
+                continue
+            regione = canonical_region(regione)
+            rows.append({
+                "dimensione": "area",
+                "etichetta": regione,
+                "area_geografica": regione,
+                "ripartizione": "totale",
+                "np_t": _cell(row, i_np),
+                "p_t": _cell(row, i_p),
+                "cer_nd_t": _cell(row, i_nd),
+                "totale_t": _cell(row, i_tot),
+            })
     return rows
 
 
@@ -640,6 +834,36 @@ def normalize_csv(input_path: Path, output_path: Path, csv_type: str = "auto", y
             return "empty"
         out_cols = ["dimensione", "etichetta", "area_geografica", "ripartizione",
                     "np_t", "p_t", "cer_nd_t", "totale_t"]
+    elif detected == "gestione_ru_regione":
+        rows = normalize_gestione_ru_regione(lines)
+        if not rows:
+            return "empty"
+        out_cols = ["tipo_impianto", "area_geografica", "numero_impianti", "frazione_umida_t",
+                    "verde_t", "tot_ru_t", "fanghi_t", "altro_t", "totale_t"]
+    elif detected == "gestione_ru_impianto":
+        rows = normalize_gestione_ru_impianto(lines)
+        if not rows:
+            return "empty"
+        out_cols = ["tipo_impianto", "regione", "provincia", "comune", "frazione_umida_t",
+                    "verde_t", "tot_ru_t", "fanghi_t", "altro_t", "totale_t"]
+    elif detected == "impianti_regione":
+        rows = normalize_impianti_regione(lines)
+        if not rows:
+            return "empty"
+        out_cols = ["tipo_impianto", "area_geografica", "numero_impianti",
+                    "rs_non_pericolosi_t", "rs_pericolosi_t", "totale_t"]
+    elif detected == "gestione_rs_regione":
+        rows = normalize_gestione_rs_regione(lines)
+        if not rows:
+            return "empty"
+        out_cols = ["area_geografica", "ripartizione", "tipo_operazione", "codice",
+                    "natura", "quantita_t"]
+    elif detected == "produzione_rs_regione":
+        rows = normalize_rs_produzione_regione(lines)
+        if not rows:
+            return "empty"
+        out_cols = ["dimensione", "etichetta", "area_geografica", "ripartizione",
+                    "np_t", "p_t", "cer_nd_t", "totale_t"]
     else:
         # Unknown type: pass through with minimal normalization
         rows = []
@@ -670,7 +894,9 @@ def main():
     parser.add_argument("--type", "-t", default="auto",
                         choices=["auto", "costi", "flussi", "import", "export",
                                  "rs_region", "sezione", "impianti", "gestione_ru",
-                                 "gestione_rs", "produzione_rs"],
+                                 "gestione_rs", "produzione_rs", "gestione_ru_regione",
+                                 "gestione_ru_impianto", "impianti_regione",
+                                 "gestione_rs_regione", "produzione_rs_regione"],
                         help="CSV type (default: auto-detect)")
     parser.add_argument("--year", "-y", type=int, default=0, help="Year (for auto-naming)")
     parser.add_argument("--batch", action="store_true", help="Batch mode: process directory")

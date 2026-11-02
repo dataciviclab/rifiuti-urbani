@@ -1,0 +1,68 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_rs_gestione_regionale"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, rs, gestione, regione]
+  category: ambiente
+  description: "Gestione dei rifiuti speciali per regione (ISPRA): operazioni di recupero R1-R13 e smaltimento D1-D15, con flussi e giacenze separati."
+  years: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage:
+    start_year: 2014
+    end_year: 2024
+
+raw:
+  sources:
+    - name: "ispra_rs_gestione_regionale_local"
+      type: "local_file"
+      args:
+        path: "../../normalized/rs_gestione_regionale/ispra_rs_gestione_regionale_{year}.csv"
+      primary: true
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns:
+    - "anno"
+    - "area_geografica"
+    - "ripartizione"
+    - "tipo_operazione"
+    - "codice"
+    - "natura"
+    - "quantita_t"
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+    columns:
+      area_geografica: VARCHAR
+      ripartizione: VARCHAR
+      tipo_operazione: VARCHAR
+      codice: VARCHAR
+      natura: VARCHAR
+      quantita_t: VARCHAR
+  validate:
+    min_rows: 500
+    primary_key: [anno, area_geografica, ripartizione, codice]
+    not_null: [anno, area_geografica, ripartizione, codice]
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_gestione"
+      sql: "sql/mart.sql"
+  required_tables: [mart_gestione]
+  validate:
+    table_rules:
+      mart_gestione:
+        primary_key: [anno, area_geografica, ripartizione, tipo_operazione]
+        min_rows: 100
+
+validation:
+  fail_on_error: true

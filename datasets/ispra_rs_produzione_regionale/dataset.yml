@@ -1,0 +1,69 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_rs_produzione_regionale"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, rs, produzione, regione]
+  category: ambiente
+  description: "Produzione di rifiuti speciali per regione (ISPRA): non pericolosi, pericolosi e CER non determinato."
+  years: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage:
+    start_year: 2014
+    end_year: 2024
+
+raw:
+  sources:
+    - name: "ispra_rs_produzione_regionale_local"
+      type: "local_file"
+      args:
+        path: "../../normalized/rs_produzione_regionale/ispra_rs_produzione_regionale_{year}.csv"
+      primary: true
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns:
+    - "anno"
+    - "dimensione"
+    - "etichetta"
+    - "area_geografica"
+    - "ripartizione"
+    - "totale_t"
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+    columns:
+      dimensione: VARCHAR
+      etichetta: VARCHAR
+      area_geografica: VARCHAR
+      ripartizione: VARCHAR
+      np_t: VARCHAR
+      p_t: VARCHAR
+      cer_nd_t: VARCHAR
+      totale_t: VARCHAR
+  validate:
+    min_rows: 15
+    primary_key: [anno, dimensione, etichetta, area_geografica, ripartizione]
+    not_null: [anno, dimensione, etichetta, area_geografica, ripartizione]
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_produzione"
+      sql: "sql/mart.sql"
+  required_tables: [mart_produzione]
+  validate:
+    table_rules:
+      mart_produzione:
+        primary_key: [anno, dimensione, etichetta, area_geografica, ripartizione]
+        min_rows: 15
+
+validation:
+  fail_on_error: true
