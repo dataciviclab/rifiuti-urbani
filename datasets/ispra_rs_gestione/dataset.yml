@@ -8,6 +8,9 @@ dataset:
   category: ambiente
   description: "Gestione dei rifiuti speciali per operazione (recupero R1-R13, smaltimento D1-D15), ripartizione merceologica e area geografica."
   years: [2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage:
+    start_year: 2018
+    end_year: 2024
 
 raw:
   sources:

@@ -8,6 +8,9 @@ dataset:
   category: ambiente
   description: "Produzione di rifiuti speciali per attività economica e per capitolo EER, con ripartizione pericolosi/non pericolosi e area geografica."
   years: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage:
+    start_year: 2014
+    end_year: 2024
 
 raw:
   sources:
