@@ -62,12 +62,19 @@ quella per `categoria = 'trattamento_smaltimento'`.
 | `ispra_ru_export` | Regionale | 2018–2024 | local_file |
 | `ispra_ru_import` | Regionale | 2018–2024 | local_file |
 | `ispra_rs_produzione` | Attività / capitolo EER | 2014–2024 | local_file |
-| `ispra_rs_gestione` | Operazione (R/D) | 2014–2024 | local_file |
+| `ispra_rs_gestione` | Operazione (R/D) | 2018–2024 | local_file |
 | `ispra_rs_import` | Regionale | 2018–2024 | local_file |
 | `ispra_rs_export` | Regionale | 2018–2024 | local_file |
 | `ispra_rs_impianti` | Tipo impianto × area | 2018–2024 | local_file |
+| `ispra_ru_gestione_regionale` | Regione × tipo impianto | 2015–2024 | local_file |
+| `ispra_ru_gestione_impianti` | Tipo impianto × comune | 2015–2024 | local_file |
+| `ispra_rs_produzione_regionale` | Regione | 2014–2024 | local_file |
+| `ispra_rs_gestione_regionale` | Operazione (R/D) × regione | 2014–2024 | local_file |
+| `ispra_rs_impianti_regionali` | Tipo impianto × regione | 2018–2024 | local_file |
 
 **Compose:** `rifiuti_urbani_unified` — JOIN ru_base + costi_procapite + costi_kg (2018–2024), con `mart_costi_fase` per la composizione del costo (CTS/CTR, recupero vs smaltimento)
+
+**Compose regionale:** `rifiuti_regioni` — regione × anno con RD%, costi, mix impiantistico, movimentazione e rifiuti speciali
 
 ## Costi del servizio
 

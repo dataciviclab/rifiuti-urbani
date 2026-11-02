@@ -15,7 +15,12 @@ YEARS       = $(shell seq $(YEAR_START) $(YEAR_END))
 
 # --- Dataset discovery ------------------------------------------------------
 DATASETS := $(shell find datasets -name dataset.yml 2>/dev/null | sort)
-COMPOSE  := $(shell find compose -name dataset.yml 2>/dev/null | sort)
+# Ordine dei compose: chi produce un mart usato come raw da un altro compose
+# deve girare prima. `rifiuti_regioni` legge il mart di
+# `rifiuti_urbani_unified` come raw: l'unified va per primo.
+_COMPOSE_ALL := $(shell find compose -name dataset.yml 2>/dev/null | sort)
+COMPOSE := $(filter %/rifiuti-urbani-unified/dataset.yml,$(_COMPOSE_ALL)) \
+           $(filter-out %/rifiuti-urbani-unified/dataset.yml,$(_COMPOSE_ALL))
 
 # --- Standard interface (ADR-001, workflows.md) ------------------------------
 
@@ -85,6 +90,11 @@ normalize:
 		[ -f "$$src/rs_produzione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_produzione.csv" -o "normalized/rs_produzione/ispra_rs_produzione_$$year.csv" -t produzione_rs -y $$year 2>/dev/null; \
 		[ -f "$$src/rs_gestione.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_gestione.csv" -o "normalized/rs_gestione/ispra_rs_gestione_$$year.csv" -t gestione_rs -y $$year 2>/dev/null; \
 		[ -f "$$src/rs_impianti.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_impianti.csv" -o "normalized/rs_impianti/ispra_rs_impianti_$$year.csv" -t impianti -y $$year 2>/dev/null; \
+		[ -f "$$src/ru_gestione_regionale.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/ru_gestione_regionale.csv" -o "normalized/ru_gestione_regionale/ispra_ru_gestione_regionale_$$year.csv" -t gestione_ru_regione -y $$year 2>/dev/null; \
+		[ -f "$$src/ru_gestione_impianti.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/ru_gestione_impianti.csv" -o "normalized/ru_gestione_impianti/ispra_ru_gestione_impianti_$$year.csv" -t gestione_ru_impianto -y $$year 2>/dev/null; \
+		[ -f "$$src/rs_produzione_regionale.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_produzione_regionale.csv" -o "normalized/rs_produzione_regionale/ispra_rs_produzione_regionale_$$year.csv" -t produzione_rs_regione -y $$year 2>/dev/null; \
+		[ -f "$$src/rs_gestione_regionale.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_gestione_regionale.csv" -o "normalized/rs_gestione_regionale/ispra_rs_gestione_regionale_$$year.csv" -t gestione_rs_regione -y $$year 2>/dev/null; \
+		[ -f "$$src/rs_impianti_regionali.csv" ] && $(PYTHON) scripts/normalize_ispra_all.py -i "$$src/rs_impianti_regionali.csv" -o "normalized/rs_impianti_regionali/ispra_rs_impianti_regionali_$$year.csv" -t impianti_regione -y $$year 2>/dev/null; \
 	done
 
 # --- Status / diagnostics ----------------------------------------------------

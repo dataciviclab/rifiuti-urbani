@@ -1,0 +1,62 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "ispra_ru_gestione_impianti"
+  source_id: "ispra_linked_data"
+  tags: [ambiente, ispra, ru, impianti, gestione, comune]
+  category: ambiente
+  description: "Elenco completo degli impianti che trattano rifiuti urbani (ISPRA), aggregato per tipo impianto e comune: tonnellate trattate per frazione."
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage:
+    start_year: 2015
+    end_year: 2024
+
+raw:
+  sources:
+    - name: "ispra_ru_gestione_impianti_local"
+      type: "local_file"
+      args:
+        path: "../../normalized/ru_gestione_impianti/ispra_ru_gestione_impianti_{year}.csv"
+      primary: true
+  read:
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+
+clean:
+  sql: "sql/clean.sql"
+  required_columns:
+    - "anno"
+    - "tipo_impianto"
+    - "regione"
+    - "provincia"
+    - "comune"
+    - "n_impianti"
+    - "totale_t"
+  read:
+    all_varchar: true
+    header: true
+    delim: ";"
+    encoding: "utf-8"
+  validate:
+    min_rows: 400
+    primary_key: [anno, tipo_impianto, regione, provincia, comune]
+    not_null: [anno, tipo_impianto, regione, comune]
+    promotion:
+      max_row_drop_pct: 35
+      fail_on_row_drop_exceeded: false
+
+mart:
+  tables:
+    - name: "mart_impianti"
+      sql: "sql/mart.sql"
+  required_tables: [mart_impianti]
+  validate:
+    table_rules:
+      mart_impianti:
+        primary_key: [anno, tipo_impianto, regione, provincia, comune]
+        min_rows: 400
+
+validation:
+  fail_on_error: true
