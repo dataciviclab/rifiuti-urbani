@@ -74,6 +74,8 @@ quella per `categoria = 'trattamento_smaltimento'`.
 
 **Compose:** `rifiuti_urbani_unified` — JOIN ru_base + costi_procapite + costi_kg (2018–2024), con `mart_costi_fase` per la composizione del costo (CTS/CTR, recupero vs smaltimento)
 
+**Compose regionale:** `rifiuti_regioni` — regione × anno con RD%, costi, mix impiantistico, movimentazione e rifiuti speciali
+
 ## Costi del servizio
 
 `ispra_ru_costi_procapite` espone lo schema di costo ISPRA/ARERA: `CRT`

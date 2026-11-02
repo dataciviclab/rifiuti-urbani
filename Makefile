@@ -15,7 +15,12 @@ YEARS       = $(shell seq $(YEAR_START) $(YEAR_END))
 
 # --- Dataset discovery ------------------------------------------------------
 DATASETS := $(shell find datasets -name dataset.yml 2>/dev/null | sort)
-COMPOSE  := $(shell find compose -name dataset.yml 2>/dev/null | sort)
+# Ordine dei compose: chi produce un mart usato come raw da un altro compose
+# deve girare prima. `rifiuti_regioni` legge il mart di
+# `rifiuti_urbani_unified` come raw: l'unified va per primo.
+_COMPOSE_ALL := $(shell find compose -name dataset.yml 2>/dev/null | sort)
+COMPOSE := $(filter %/rifiuti-urbani-unified/dataset.yml,$(_COMPOSE_ALL)) \
+           $(filter-out %/rifiuti-urbani-unified/dataset.yml,$(_COMPOSE_ALL))
 
 # --- Standard interface (ADR-001, workflows.md) ------------------------------
 
