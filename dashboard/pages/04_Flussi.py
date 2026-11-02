@@ -3,7 +3,7 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-from sources import YEARS, load_mart, load_mart_all
+from sources import YEARS, YEARS_REGIONI, load_mart, load_mart_all
 
 st.title("🚛 Flussi Rifiuti")
 
@@ -91,5 +91,38 @@ try:
             st.plotly_chart(fig_trend, width="stretch")
 except Exception:
     st.info("Trend non disponibile.")
+
+# ── Export sulla produzione ────────────────────────────────────────────────
+st.subheader("📤 Export sulla produzione")
+
+anno_reg = st.selectbox(
+    "Anno (vista regionale)",
+    YEARS_REGIONI,
+    index=len(YEARS_REGIONI) - 1,
+    key="flussi_reg_year",
+)
+df_reg = load_mart("regioni", "mart_regioni", anno_reg)
+
+if df_reg is not None and not df_reg.empty:
+    reg = df_reg[["regione", "export_t", "export_su_prodotto_pct"]].sort_values(
+        "export_su_prodotto_pct", ascending=False
+    )
+    fig_share = px.bar(
+        reg,
+        x="regione",
+        y="export_su_prodotto_pct",
+        color="export_su_prodotto_pct",
+        color_continuous_scale="Blues",
+        title="Export RU sulla produzione (%)",
+        labels={"export_su_prodotto_pct": "% del prodotto", "regione": "Regione"},
+    )
+    fig_share.update_layout(height=400, xaxis_tickangle=-45)
+    st.plotly_chart(fig_share, width="stretch")
+    st.caption(
+        "Quota dei RU prodotta inviata fuori regione. Fonte: compose regionale "
+        "`rifiuti_regioni`."
+    )
+else:
+    st.info("Vista regionale non disponibile.")
 
 st.caption(f"Dati: ISPRA Catasto Rifiuti Nazionale · Anno {year} · CC BY 4.0")

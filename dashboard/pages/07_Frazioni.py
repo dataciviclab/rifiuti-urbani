@@ -131,6 +131,6 @@ st.subheader("📋 Dettaglio Frazioni Nazionali")
 df_display = df_frazioni.copy()
 df_display['Tonnellate'] = df_display['Tonnellate'].apply(lambda x: f"{fmt_num(int(x))} t")
 df_display['Perc'] = df_display['Perc'].apply(lambda x: f"{x:.1f}%")
-st.dataframe(df_display, use_container_width=True, hide_index=True)
+st.dataframe(df_display, width="stretch", hide_index=True)
 
 st.caption(f"Dati: ISPRA Catasto Rifiuti Nazionale · Anno {year} · CC BY 4.0")
