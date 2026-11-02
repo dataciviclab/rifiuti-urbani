@@ -143,6 +143,79 @@
       ]
     },
     {
+      "slug": "ispra_rs_gestione_regionale",
+      "name": "Ispra Rs Gestione Regionale",
+      "description": "Gestione dei rifiuti speciali per regione (ISPRA): operazioni di recupero R1-R13 e smaltimento D1-D15, con flussi e giacenze separati.",
+      "source": "",
+      "source_id": "ispra_linked_data",
+      "period": {
+        "start": 2014,
+        "end": 2024
+      },
+      "tags": [
+        "ambiente",
+        "ispra",
+        "rs",
+        "gestione",
+        "regione"
+      ],
+      "category": "ambiente",
+      "columns": [
+        {
+          "name": "anno",
+          "type": "INTEGER",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "year"
+        },
+        {
+          "name": "area_geografica",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "ripartizione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "tipo_operazione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "codice",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "natura",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "quantita_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        }
+      ],
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-clean/rifiuti-urbani/ispra_rs_gestione_regionale/*/ispra_rs_gestione_regionale_*_clean.parquet",
+        "multi_file": true
+      },
+      "stage": "incubating",
+      "mart_refs": [
+        "ispra_rs_gestione_regionale__mart_gestione"
+      ]
+    },
+    {
       "slug": "ispra_rs_impianti",
       "name": "Ispra Rs Impianti",
       "description": "Censimento ISPRA degli impianti che gestiscono rifiuti speciali: impianti e rifiuti trattati per tipologia e ripartizione geografica.",
@@ -221,6 +294,85 @@
       ]
     },
     {
+      "slug": "ispra_rs_impianti_regionali",
+      "name": "Ispra Rs Impianti Regionali",
+      "description": "Censimento ISPRA degli impianti che gestiscono rifiuti speciali per regione: numero impianti e rifiuti trattati per tipologia.",
+      "source": "",
+      "source_id": "ispra_linked_data",
+      "period": {
+        "start": 2018,
+        "end": 2024
+      },
+      "tags": [
+        "ambiente",
+        "ispra",
+        "rs",
+        "impianti",
+        "regione"
+      ],
+      "category": "ambiente",
+      "columns": [
+        {
+          "name": "anno",
+          "type": "INTEGER",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "year"
+        },
+        {
+          "name": "tipo_impianto",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "categoria",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "area_geografica",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "numero_impianti",
+          "type": "INTEGER",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_non_pericolosi_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_pericolosi_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "totale_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        }
+      ],
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-clean/rifiuti-urbani/ispra_rs_impianti_regionali/*/ispra_rs_impianti_regionali_*_clean.parquet",
+        "multi_file": true
+      },
+      "stage": "incubating",
+      "mart_refs": [
+        "ispra_rs_impianti_regionali__mart_impianti"
+      ]
+    },
+    {
       "slug": "ispra_rs_import",
       "name": "Ispra Rs Import",
       "description": "",
@@ -293,7 +445,7 @@
       "source": "",
       "source_id": "ispra_linked_data",
       "period": {
-        "start": 2018,
+        "start": 2014,
         "end": 2024
       },
       "tags": [
@@ -371,13 +523,98 @@
       ]
     },
     {
+      "slug": "ispra_rs_produzione_regionale",
+      "name": "Ispra Rs Produzione Regionale",
+      "description": "Produzione di rifiuti speciali per regione (ISPRA): non pericolosi, pericolosi e CER non determinato.",
+      "source": "",
+      "source_id": "ispra_linked_data",
+      "period": {
+        "start": 2014,
+        "end": 2024
+      },
+      "tags": [
+        "ambiente",
+        "ispra",
+        "rs",
+        "produzione",
+        "regione"
+      ],
+      "category": "ambiente",
+      "columns": [
+        {
+          "name": "anno",
+          "type": "INTEGER",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "year"
+        },
+        {
+          "name": "dimensione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "etichetta",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "area_geografica",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "ripartizione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "np_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "p_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "cer_nd_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "totale_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        }
+      ],
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-clean/rifiuti-urbani/ispra_rs_produzione_regionale/*/ispra_rs_produzione_regionale_*_clean.parquet",
+        "multi_file": true
+      },
+      "stage": "incubating",
+      "mart_refs": [
+        "ispra_rs_produzione_regionale__mart_produzione"
+      ]
+    },
+    {
       "slug": "ispra_ru_base",
       "name": "Ispra Ru Base",
       "description": "",
       "source": "",
       "source_id": "ispra_linked_data",
       "period": {
-        "start": 2018,
+        "start": 2010,
         "end": 2024
       },
       "tags": [
@@ -922,7 +1159,7 @@
       "source": "",
       "source_id": "ispra_linked_data",
       "period": {
-        "start": 2018,
+        "start": 2015,
         "end": 2024
       },
       "tags": [
@@ -1007,6 +1244,205 @@
       ]
     },
     {
+      "slug": "ispra_ru_gestione_impianti",
+      "name": "Ispra Ru Gestione Impianti",
+      "description": "Elenco completo degli impianti che trattano rifiuti urbani (ISPRA), aggregato per tipo impianto e comune: tonnellate trattate per frazione.",
+      "source": "",
+      "source_id": "ispra_linked_data",
+      "period": {
+        "start": 2015,
+        "end": 2024
+      },
+      "tags": [
+        "ambiente",
+        "ispra",
+        "ru",
+        "impianti",
+        "gestione",
+        "comune"
+      ],
+      "category": "ambiente",
+      "columns": [
+        {
+          "name": "anno",
+          "type": "INTEGER",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "year"
+        },
+        {
+          "name": "tipo_impianto",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "regione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "region_code"
+        },
+        {
+          "name": "provincia",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "province_code"
+        },
+        {
+          "name": "comune",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "municipality_name"
+        },
+        {
+          "name": "n_impianti",
+          "type": "BIGINT",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "frazione_umida_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "verde_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "tot_ru_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "fanghi_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "altro_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "totale_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        }
+      ],
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-clean/rifiuti-urbani/ispra_ru_gestione_impianti/*/ispra_ru_gestione_impianti_*_clean.parquet",
+        "multi_file": true
+      },
+      "stage": "incubating",
+      "mart_refs": [
+        "ispra_ru_gestione_impianti__mart_impianti"
+      ]
+    },
+    {
+      "slug": "ispra_ru_gestione_regionale",
+      "name": "Ispra Ru Gestione Regionale",
+      "description": "Impianti che trattano rifiuti urbani (ISPRA) per regione: numero impianti e rifiuti trattati per tipologia impianto.",
+      "source": "",
+      "source_id": "ispra_linked_data",
+      "period": {
+        "start": 2015,
+        "end": 2024
+      },
+      "tags": [
+        "ambiente",
+        "ispra",
+        "ru",
+        "impianti",
+        "gestione",
+        "regione"
+      ],
+      "category": "ambiente",
+      "columns": [
+        {
+          "name": "anno",
+          "type": "INTEGER",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "year"
+        },
+        {
+          "name": "tipo_impianto",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "area_geografica",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": ""
+        },
+        {
+          "name": "numero_impianti",
+          "type": "INTEGER",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "frazione_umida_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "verde_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "tot_ru_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "fanghi_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "altro_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "totale_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        }
+      ],
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-clean/rifiuti-urbani/ispra_ru_gestione_regionale/*/ispra_ru_gestione_regionale_*_clean.parquet",
+        "multi_file": true
+      },
+      "stage": "incubating",
+      "mart_refs": [
+        "ispra_ru_gestione_regionale__mart_gestione"
+      ]
+    },
+    {
       "slug": "ispra_ru_import",
       "name": "Ispra Ru Import",
       "description": "",
@@ -1070,6 +1506,315 @@
       "stage": "incubating",
       "mart_refs": [
         "ispra_ru_import__mart_import"
+      ]
+    },
+    {
+      "slug": "rifiuti_regioni",
+      "name": "Rifiuti Regioni",
+      "description": "Compose regionale: RD%, costi, mix impiantistico, movimentazione e rifiuti speciali per regione e anno.",
+      "source": "",
+      "source_id": "dataciviclab_composite",
+      "period": {
+        "start": 2018,
+        "end": 2024
+      },
+      "tags": [
+        "ambiente",
+        "ispra",
+        "ru",
+        "rs",
+        "compose",
+        "regione"
+      ],
+      "category": "ambiente",
+      "columns": [
+        {
+          "name": "anno",
+          "type": "INTEGER",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "year"
+        },
+        {
+          "name": "regione",
+          "type": "VARCHAR",
+          "role": "dimension",
+          "description": "",
+          "semantic_type": "region_code"
+        },
+        {
+          "name": "n_comuni",
+          "type": "BIGINT",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "popolazione",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "totale_ru_tonnellate",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "totale_rd_tonnellate",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "percentuale_rd",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "kg_ru_per_abitante",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "kg_rd_per_abitante",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "ctot_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "crt_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "cts_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "crd_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "ctr_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "csl_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "cc_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "ck_euro_ab",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "quota_cts_pct",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "quota_ctr_pct",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "quota_costo_fisso_pct",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rapporto_recupero_smaltimento",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "costo_per_punto_rd_euro",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "costo_per_tonnellata_euro",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "n_impianti",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "discarica_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "incenerimento_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "coincenerimento_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "tmb_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "compostaggio_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "trattamento_integrato_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "digestione_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "trattamenti_finali_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "pct_discarica_su_trattamenti_finali",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "pct_riciclo_organico_su_trattamenti_finali",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "import_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "export_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "saldo_export_import_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "export_su_prodotto_pct",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "flussi_extraregionali_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_np_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_p_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_totale_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_recupero_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_smaltimento_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_giacenza_t",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        },
+        {
+          "name": "rs_recupero_su_gestito_pct",
+          "type": "DOUBLE",
+          "role": "metric",
+          "description": ""
+        }
+      ],
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-clean/rifiuti-urbani/rifiuti_regioni/*/rifiuti_regioni_*_clean.parquet",
+        "multi_file": true
+      },
+      "stage": "incubating",
+      "mart_refs": [
+        "rifiuti_regioni__mart_regioni"
       ]
     },
     {
@@ -1312,12 +2057,32 @@
       }
     },
     {
+      "slug": "ispra_rs_gestione_regionale__mart_gestione",
+      "dataset": "ispra_rs_gestione_regionale",
+      "table": "mart_gestione",
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_gestione_regionale/*/mart_gestione.parquet",
+        "multi_file": true
+      }
+    },
+    {
       "slug": "ispra_rs_impianti__mart_impianti",
       "dataset": "ispra_rs_impianti",
       "table": "mart_impianti",
       "location": {
         "type": "gcs",
         "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_impianti/*/mart_impianti.parquet",
+        "multi_file": true
+      }
+    },
+    {
+      "slug": "ispra_rs_impianti_regionali__mart_impianti",
+      "dataset": "ispra_rs_impianti_regionali",
+      "table": "mart_impianti",
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_impianti_regionali/*/mart_impianti.parquet",
         "multi_file": true
       }
     },
@@ -1338,6 +2103,16 @@
       "location": {
         "type": "gcs",
         "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_produzione/*/mart_produzione.parquet",
+        "multi_file": true
+      }
+    },
+    {
+      "slug": "ispra_rs_produzione_regionale__mart_produzione",
+      "dataset": "ispra_rs_produzione_regionale",
+      "table": "mart_produzione",
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_rs_produzione_regionale/*/mart_produzione.parquet",
         "multi_file": true
       }
     },
@@ -1422,12 +2197,42 @@
       }
     },
     {
+      "slug": "ispra_ru_gestione_impianti__mart_impianti",
+      "dataset": "ispra_ru_gestione_impianti",
+      "table": "mart_impianti",
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_gestione_impianti/*/mart_impianti.parquet",
+        "multi_file": true
+      }
+    },
+    {
+      "slug": "ispra_ru_gestione_regionale__mart_gestione",
+      "dataset": "ispra_ru_gestione_regionale",
+      "table": "mart_gestione",
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_gestione_regionale/*/mart_gestione.parquet",
+        "multi_file": true
+      }
+    },
+    {
       "slug": "ispra_ru_import__mart_import",
       "dataset": "ispra_ru_import",
       "table": "mart_import",
       "location": {
         "type": "gcs",
         "path": "gs://dataciviclab-mart/rifiuti-urbani/ispra_ru_import/*/mart_import.parquet",
+        "multi_file": true
+      }
+    },
+    {
+      "slug": "rifiuti_regioni__mart_regioni",
+      "dataset": "rifiuti_regioni",
+      "table": "mart_regioni",
+      "location": {
+        "type": "gcs",
+        "path": "gs://dataciviclab-mart/rifiuti-urbani/rifiuti_regioni/*/mart_regioni.parquet",
         "multi_file": true
       }
     },
@@ -1464,6 +2269,36 @@
   ],
   "signals": [
     {
+      "id": "compose:rifiuti_regioni",
+      "source_id": "dataciviclab_composite",
+      "status": "ok",
+      "label": "rifiuti_regioni",
+      "detail": "anni 2018-2024 — mart: si",
+      "action": "",
+      "run": {
+        "run_id": "20261102T174547Z_885f2124",
+        "year": 2024,
+        "status": "SUCCESS",
+        "quality_score": {
+          "raw": 100,
+          "clean": 100,
+          "mart": 100
+        },
+        "output_rows": {
+          "clean": 20,
+          "mart": 20
+        },
+        "output_bytes": {
+          "raw": 525174,
+          "clean": 12237,
+          "mart": 14358
+        },
+        "started_at": "2026-11-02T17:45:47.120356+00:00",
+        "finished_at": "2026-11-02T17:45:47.290624+00:00",
+        "duration_seconds": 0.17
+      }
+    },
+    {
       "id": "compose:rifiuti_urbani_unified",
       "source_id": "dataciviclab_composite",
       "status": "ok",
@@ -1471,7 +2306,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162637Z_513b1b2e",
+        "run_id": "20261102T174545Z_bff28f1b",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1484,13 +2319,13 @@
           "mart": 14451
         },
         "output_bytes": {
-          "raw": 786242,
+          "raw": 786161,
           "clean": 524563,
           "mart": 1105758
         },
-        "started_at": "2026-11-02T16:26:37.260726+00:00",
-        "finished_at": "2026-11-02T16:26:37.577684+00:00",
-        "duration_seconds": 0.317
+        "started_at": "2026-11-02T17:45:45.049271+00:00",
+        "finished_at": "2026-11-02T17:45:45.264408+00:00",
+        "duration_seconds": 0.215
       }
     },
     {
@@ -1501,7 +2336,7 @@
       "detail": "anni 2010-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162600Z_b8fe022b",
+        "run_id": "20261102T174510Z_f8fa01bb",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1515,12 +2350,12 @@
         },
         "output_bytes": {
           "raw": 3038451,
-          "clean": 584652,
-          "mart": 799636
+          "clean": 584762,
+          "mart": 799556
         },
-        "started_at": "2026-11-02T16:26:00.879193+00:00",
-        "finished_at": "2026-11-02T16:26:05.135875+00:00",
-        "duration_seconds": 4.257
+        "started_at": "2026-11-02T17:45:10.299644+00:00",
+        "finished_at": "2026-11-02T17:45:13.656381+00:00",
+        "duration_seconds": 3.357
       }
     },
     {
@@ -1531,7 +2366,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162608Z_1a28bbed",
+        "run_id": "20261102T174515Z_0f2ddd8d",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1547,11 +2382,11 @@
         "output_bytes": {
           "raw": 486505,
           "clean": 177215,
-          "mart": 252762
+          "mart": 252756
         },
-        "started_at": "2026-11-02T16:26:08.766108+00:00",
-        "finished_at": "2026-11-02T16:26:09.231232+00:00",
-        "duration_seconds": 0.465
+        "started_at": "2026-11-02T17:45:15.977364+00:00",
+        "finished_at": "2026-11-02T17:45:16.281585+00:00",
+        "duration_seconds": 0.304
       }
     },
     {
@@ -1562,7 +2397,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162612Z_38bbd635",
+        "run_id": "20261102T174518Z_73ef607c",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1580,9 +2415,9 @@
           "clean": 231509,
           "mart": 309093
         },
-        "started_at": "2026-11-02T16:26:12.823910+00:00",
-        "finished_at": "2026-11-02T16:26:13.321008+00:00",
-        "duration_seconds": 0.497
+        "started_at": "2026-11-02T17:45:18.578238+00:00",
+        "finished_at": "2026-11-02T17:45:18.890101+00:00",
+        "duration_seconds": 0.312
       }
     },
     {
@@ -1593,7 +2428,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162615Z_733880c2",
+        "run_id": "20261102T174520Z_96f589f9",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1611,9 +2446,9 @@
           "clean": 1510,
           "mart": 1849
         },
-        "started_at": "2026-11-02T16:26:15.223449+00:00",
-        "finished_at": "2026-11-02T16:26:15.384808+00:00",
-        "duration_seconds": 0.161
+        "started_at": "2026-11-02T17:45:20.082794+00:00",
+        "finished_at": "2026-11-02T17:45:20.178113+00:00",
+        "duration_seconds": 0.095
       }
     },
     {
@@ -1624,7 +2459,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162617Z_3cf073f1",
+        "run_id": "20261102T174521Z_3b937037",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1642,9 +2477,40 @@
           "clean": 2822,
           "mart": 2419
         },
-        "started_at": "2026-11-02T16:26:17.448964+00:00",
-        "finished_at": "2026-11-02T16:26:17.623977+00:00",
-        "duration_seconds": 0.175
+        "started_at": "2026-11-02T17:45:21.502911+00:00",
+        "finished_at": "2026-11-02T17:45:21.654659+00:00",
+        "duration_seconds": 0.152
+      }
+    },
+    {
+      "id": "ispra_rs_gestione_regionale",
+      "source_id": "ispra_linked_data",
+      "status": "ok",
+      "label": "ispra_rs_gestione_regionale",
+      "detail": "anni 2014-2024 — mart: si",
+      "action": "",
+      "run": {
+        "run_id": "20261102T174524Z_03feab52",
+        "year": 2024,
+        "status": "SUCCESS",
+        "quality_score": {
+          "raw": 100,
+          "clean": 100,
+          "mart": 100
+        },
+        "output_rows": {
+          "raw": 1449,
+          "clean": 1449,
+          "mart": 120
+        },
+        "output_bytes": {
+          "raw": 59355,
+          "clean": 5609,
+          "mart": 4214
+        },
+        "started_at": "2026-11-02T17:45:24.062856+00:00",
+        "finished_at": "2026-11-02T17:45:24.230325+00:00",
+        "duration_seconds": 0.167
       }
     },
     {
@@ -1655,7 +2521,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162619Z_20fd64d8",
+        "run_id": "20261102T174525Z_a0da5428",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1673,9 +2539,40 @@
           "clean": 2600,
           "mart": 3266
         },
-        "started_at": "2026-11-02T16:26:19.500656+00:00",
-        "finished_at": "2026-11-02T16:26:19.655822+00:00",
-        "duration_seconds": 0.155
+        "started_at": "2026-11-02T17:45:25.502683+00:00",
+        "finished_at": "2026-11-02T17:45:25.617963+00:00",
+        "duration_seconds": 0.115
+      }
+    },
+    {
+      "id": "ispra_rs_impianti_regionali",
+      "source_id": "ispra_linked_data",
+      "status": "ok",
+      "label": "ispra_rs_impianti_regionali",
+      "detail": "anni 2018-2024 — mart: si",
+      "action": "",
+      "run": {
+        "run_id": "20261102T174526Z_d1ffab83",
+        "year": 2024,
+        "status": "SUCCESS",
+        "quality_score": {
+          "raw": 100,
+          "clean": 100,
+          "mart": 100
+        },
+        "output_rows": {
+          "raw": 240,
+          "clean": 240,
+          "mart": 226
+        },
+        "output_bytes": {
+          "raw": 14221,
+          "clean": 4260,
+          "mart": 5728
+        },
+        "started_at": "2026-11-02T17:45:26.957703+00:00",
+        "finished_at": "2026-11-02T17:45:27.083023+00:00",
+        "duration_seconds": 0.125
       }
     },
     {
@@ -1686,7 +2583,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162621Z_25853477",
+        "run_id": "20261102T174528Z_6c5ed891",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1704,9 +2601,9 @@
           "clean": 1426,
           "mart": 1766
         },
-        "started_at": "2026-11-02T16:26:21.452565+00:00",
-        "finished_at": "2026-11-02T16:26:21.602159+00:00",
-        "duration_seconds": 0.15
+        "started_at": "2026-11-02T17:45:28.383640+00:00",
+        "finished_at": "2026-11-02T17:45:28.484029+00:00",
+        "duration_seconds": 0.1
       }
     },
     {
@@ -1717,7 +2614,7 @@
       "detail": "anni 2014-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162625Z_538801b2",
+        "run_id": "20261102T174531Z_139acd94",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1735,9 +2632,40 @@
           "clean": 9837,
           "mart": 16437
         },
-        "started_at": "2026-11-02T16:26:25.502766+00:00",
-        "finished_at": "2026-11-02T16:26:25.781067+00:00",
-        "duration_seconds": 0.278
+        "started_at": "2026-11-02T17:45:31.000494+00:00",
+        "finished_at": "2026-11-02T17:45:31.223978+00:00",
+        "duration_seconds": 0.223
+      }
+    },
+    {
+      "id": "ispra_rs_produzione_regionale",
+      "source_id": "ispra_linked_data",
+      "status": "ok",
+      "label": "ispra_rs_produzione_regionale",
+      "detail": "anni 2014-2024 — mart: si",
+      "action": "",
+      "run": {
+        "run_id": "20261102T174533Z_bc3b7ee5",
+        "year": 2024,
+        "status": "SUCCESS",
+        "quality_score": {
+          "raw": 100,
+          "clean": 100,
+          "mart": 100
+        },
+        "output_rows": {
+          "raw": 21,
+          "clean": 21,
+          "mart": 20
+        },
+        "output_bytes": {
+          "raw": 1417,
+          "clean": 2360,
+          "mart": 3287
+        },
+        "started_at": "2026-11-02T17:45:33.011420+00:00",
+        "finished_at": "2026-11-02T17:45:33.128914+00:00",
+        "duration_seconds": 0.117
       }
     },
     {
@@ -1748,7 +2676,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162627Z_631e345a",
+        "run_id": "20261102T174534Z_59de3d75",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1766,9 +2694,9 @@
           "clean": 1440,
           "mart": 1771
         },
-        "started_at": "2026-11-02T16:26:27.587938+00:00",
-        "finished_at": "2026-11-02T16:26:27.738756+00:00",
-        "duration_seconds": 0.151
+        "started_at": "2026-11-02T17:45:34.336275+00:00",
+        "finished_at": "2026-11-02T17:45:34.435651+00:00",
+        "duration_seconds": 0.099
       }
     },
     {
@@ -1779,7 +2707,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162629Z_c72af74d",
+        "run_id": "20261102T174535Z_fb39fa9e",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1797,9 +2725,9 @@
           "clean": 975,
           "mart": 1329
         },
-        "started_at": "2026-11-02T16:26:29.528992+00:00",
-        "finished_at": "2026-11-02T16:26:29.680559+00:00",
-        "duration_seconds": 0.152
+        "started_at": "2026-11-02T17:45:35.583012+00:00",
+        "finished_at": "2026-11-02T17:45:35.682340+00:00",
+        "duration_seconds": 0.099
       }
     },
     {
@@ -1810,7 +2738,7 @@
       "detail": "anni 2015-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162632Z_a960f970",
+        "run_id": "20261102T174537Z_a082e566",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1828,9 +2756,71 @@
           "clean": 2465,
           "mart": 2966
         },
-        "started_at": "2026-11-02T16:26:32.324959+00:00",
-        "finished_at": "2026-11-02T16:26:32.493064+00:00",
-        "duration_seconds": 0.168
+        "started_at": "2026-11-02T17:45:37.396861+00:00",
+        "finished_at": "2026-11-02T17:45:37.511184+00:00",
+        "duration_seconds": 0.114
+      }
+    },
+    {
+      "id": "ispra_ru_gestione_impianti",
+      "source_id": "ispra_linked_data",
+      "status": "ok",
+      "label": "ispra_ru_gestione_impianti",
+      "detail": "anni 2015-2024 — mart: si",
+      "action": "",
+      "run": {
+        "run_id": "20261102T174539Z_ccfe5c8d",
+        "year": 2024,
+        "status": "SUCCESS",
+        "quality_score": {
+          "raw": 100,
+          "clean": 100,
+          "mart": 100
+        },
+        "output_rows": {
+          "raw": 625,
+          "clean": 580,
+          "mart": 580
+        },
+        "output_bytes": {
+          "raw": 53313,
+          "clean": 15107,
+          "mart": 19808
+        },
+        "started_at": "2026-11-02T17:45:39.626494+00:00",
+        "finished_at": "2026-11-02T17:45:39.783163+00:00",
+        "duration_seconds": 0.157
+      }
+    },
+    {
+      "id": "ispra_ru_gestione_regionale",
+      "source_id": "ispra_linked_data",
+      "status": "ok",
+      "label": "ispra_ru_gestione_regionale",
+      "detail": "anni 2015-2024 — mart: si",
+      "action": "",
+      "run": {
+        "run_id": "20261102T174541Z_adbce15c",
+        "year": 2024,
+        "status": "SUCCESS",
+        "quality_score": {
+          "raw": 100,
+          "clean": 100,
+          "mart": 100
+        },
+        "output_rows": {
+          "raw": 108,
+          "clean": 108,
+          "mart": 101
+        },
+        "output_bytes": {
+          "raw": 8018,
+          "clean": 4011,
+          "mart": 4955
+        },
+        "started_at": "2026-11-02T17:45:41.561357+00:00",
+        "finished_at": "2026-11-02T17:45:41.676135+00:00",
+        "duration_seconds": 0.115
       }
     },
     {
@@ -1841,7 +2831,7 @@
       "detail": "anni 2018-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T162634Z_bddf2c8e",
+        "run_id": "20261102T174542Z_38e289c0",
         "year": 2024,
         "status": "SUCCESS",
         "quality_score": {
@@ -1859,9 +2849,9 @@
           "clean": 1320,
           "mart": 1637
         },
-        "started_at": "2026-11-02T16:26:34.319315+00:00",
-        "finished_at": "2026-11-02T16:26:34.474837+00:00",
-        "duration_seconds": 0.156
+        "started_at": "2026-11-02T17:45:42.965818+00:00",
+        "finished_at": "2026-11-02T17:45:43.071094+00:00",
+        "duration_seconds": 0.105
       }
     }
   ],
@@ -1897,6 +2887,12 @@
             "semantic_type": "municipality_code"
           },
           {
+            "slug": "ispra_ru_gestione_impianti",
+            "name": "Ispra Ru Gestione Impianti",
+            "column": "comune",
+            "semantic_type": "municipality_name"
+          },
+          {
             "slug": "rifiuti_urbani_unified",
             "name": "Rifiuti Urbani Unified",
             "column": "codice_comune_istat",
@@ -1911,7 +2907,7 @@
         ],
         "types": {
           "municipality_code": 4,
-          "municipality_name": 2
+          "municipality_name": 3
         }
       },
       "Provincia": {
@@ -1937,6 +2933,12 @@
             "semantic_type": "province_code"
           },
           {
+            "slug": "ispra_ru_gestione_impianti",
+            "name": "Ispra Ru Gestione Impianti",
+            "column": "provincia",
+            "semantic_type": "province_code"
+          },
+          {
             "slug": "rifiuti_urbani_unified",
             "name": "Rifiuti Urbani Unified",
             "column": "provincia",
@@ -1944,7 +2946,7 @@
           }
         ],
         "types": {
-          "province_code": 4
+          "province_code": 5
         }
       },
       "Regione": {
@@ -1982,8 +2984,20 @@
             "semantic_type": "region_code"
           },
           {
+            "slug": "ispra_ru_gestione_impianti",
+            "name": "Ispra Ru Gestione Impianti",
+            "column": "regione",
+            "semantic_type": "region_code"
+          },
+          {
             "slug": "ispra_ru_import",
             "name": "Ispra Ru Import",
+            "column": "regione",
+            "semantic_type": "region_code"
+          },
+          {
+            "slug": "rifiuti_regioni",
+            "name": "Rifiuti Regioni",
             "column": "regione",
             "semantic_type": "region_code"
           },
@@ -1995,7 +3009,7 @@
           }
         ],
         "types": {
-          "region_code": 7
+          "region_code": 9
         }
       },
       "Tempo": {
@@ -2015,8 +3029,20 @@
             "semantic_type": "year"
           },
           {
+            "slug": "ispra_rs_gestione_regionale",
+            "name": "Ispra Rs Gestione Regionale",
+            "column": "anno",
+            "semantic_type": "year"
+          },
+          {
             "slug": "ispra_rs_impianti",
             "name": "Ispra Rs Impianti",
+            "column": "anno",
+            "semantic_type": "year"
+          },
+          {
+            "slug": "ispra_rs_impianti_regionali",
+            "name": "Ispra Rs Impianti Regionali",
             "column": "anno",
             "semantic_type": "year"
           },
@@ -2029,6 +3055,12 @@
           {
             "slug": "ispra_rs_produzione",
             "name": "Ispra Rs Produzione",
+            "column": "anno",
+            "semantic_type": "year"
+          },
+          {
+            "slug": "ispra_rs_produzione_regionale",
+            "name": "Ispra Rs Produzione Regionale",
             "column": "anno",
             "semantic_type": "year"
           },
@@ -2069,8 +3101,26 @@
             "semantic_type": "year"
           },
           {
+            "slug": "ispra_ru_gestione_impianti",
+            "name": "Ispra Ru Gestione Impianti",
+            "column": "anno",
+            "semantic_type": "year"
+          },
+          {
+            "slug": "ispra_ru_gestione_regionale",
+            "name": "Ispra Ru Gestione Regionale",
+            "column": "anno",
+            "semantic_type": "year"
+          },
+          {
             "slug": "ispra_ru_import",
             "name": "Ispra Ru Import",
+            "column": "anno",
+            "semantic_type": "year"
+          },
+          {
+            "slug": "rifiuti_regioni",
+            "name": "Rifiuti Regioni",
             "column": "anno",
             "semantic_type": "year"
           },
@@ -2082,7 +3132,7 @@
           }
         ],
         "types": {
-          "year": 13
+          "year": 19
         }
       }
     },
