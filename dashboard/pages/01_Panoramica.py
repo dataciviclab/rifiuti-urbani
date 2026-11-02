@@ -41,6 +41,7 @@ kg_procapite = calc_kg_procapite(df)
 k5.metric("Procapite", f"{kg_procapite:.1f} kg/ab")
 k6.metric("Comuni", fmt_num(len(df)))
 
+costi = None
 try:
     costi = load_mart("ispra_ru_costi_procapite", "mart_comuni", year)
     if costi is not None and not costi.empty:
@@ -59,6 +60,15 @@ st.caption(
     "Il target UE del 65% al 2035 è sul **riciclo effettivo**, non sulla RD%: "
     "ISPRA riporta 52,3% di riciclo nel 2024. La RD% qui è pesata sulla produzione."
 )
+if costi is not None and not costi.empty:
+    base_pop = df['popolazione'].sum()
+    pop_costi = costi['popolazione'].sum()
+    copertura = pop_costi / base_pop * 100 if base_pop else float('nan')
+    st.caption(
+        f"Copertura costi: {copertura:.1f}% della popolazione "
+        f"({fmt_num(int(pop_costi))} abitanti su {fmt_num(int(base_pop))}). "
+        "La media è calcolata solo sui comuni che dichiarano il costo."
+    )
 
 st.divider()
 

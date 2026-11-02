@@ -141,6 +141,12 @@ if df_reg is not None and not df_reg.empty:
         "Recupero R1-R12 vs smaltimento D1-D14, soli flussi (giacenze R13/D15 "
         "escluse). Fonte: compose regionale `rifiuti_regioni`."
     )
+    st.caption(
+        "⚠️ Il bilancio produzione vs gestione non è chiudibile con questi dati: "
+        "l'import/export RS è **internazionale**, non inter-regionale. Un divario "
+        "tra produzione e gestione in regione (es. Calabria) indica flussi verso "
+        "altre regioni, non un errore."
+    )
 
 st.divider()
 

@@ -50,6 +50,12 @@ if df is None or df.empty:
 
 df = df.copy()
 df["macroarea"] = df["regione"].apply(macroarea)
+df["organico_t"] = (
+    df["compostaggio_t"].fillna(0)
+    + df["trattamento_integrato_t"].fillna(0)
+    + df["digestione_t"].fillna(0)
+)
+df["senza_organico"] = df["organico_t"] <= 0
 
 # ── KPI nazionali ──────────────────────────────────────────────────────────
 pop = df["popolazione"].sum()
@@ -71,7 +77,7 @@ costo = (df["ctot_euro_ab"] * df["popolazione"]).sum() / pop if pop else float("
 k1, k2, k3, k4 = st.columns(4)
 k1.metric("RD% (pesata)", fmt_pct(rd_pct, signed=False))
 k2.metric(
-    "Discarica sui trattamenti finali",
+    "Discarica sui sink finali (TMB escluso)",
     fmt_pct(discarica / trattamenti * 100 if trattamenti else float("nan"), signed=False),
 )
 k3.metric("Incenerimento", f"{incenerimento / 1e6:.2f} Mt")
@@ -110,11 +116,13 @@ tab = df[
         "percentuale_rd",
         "kg_ru_per_abitante",
         "pct_discarica_su_trattamenti_finali",
+        "tmb_t",
         "incenerimento_t",
         "export_su_prodotto_pct",
         "ctot_euro_ab",
         "costo_per_punto_rd_euro",
         "rs_recupero_su_gestito_pct",
+        "senza_organico",
     ]
 ].sort_values("percentuale_rd", ascending=False)
 
@@ -128,8 +136,9 @@ st.dataframe(
         "percentuale_rd": st.column_config.NumberColumn("RD%", format="%.1f"),
         "kg_ru_per_abitante": st.column_config.NumberColumn("kg/ab", format="%.0f"),
         "pct_discarica_su_trattamenti_finali": st.column_config.NumberColumn(
-            "Discarica %", format="%.1f"
+            "Discarica % (sink finali)", format="%.1f"
         ),
+        "tmb_t": st.column_config.NumberColumn("TMB t (pre-tratt.)", format="%.0f"),
         "incenerimento_t": st.column_config.NumberColumn("Incenerimento t", format="%.0f"),
         "export_su_prodotto_pct": st.column_config.NumberColumn("Export %", format="%.1f"),
         "ctot_euro_ab": st.column_config.NumberColumn("Costo €/ab", format="%.0f"),
@@ -139,8 +148,18 @@ st.dataframe(
         "rs_recupero_su_gestito_pct": st.column_config.NumberColumn(
             "RS recupero %", format="%.1f"
         ),
+        "senza_organico": st.column_config.CheckboxColumn("Senza organico"),
     },
 )
+
+senza = df.loc[df["organico_t"] <= 0, "regione"].tolist()
+if senza:
+    st.caption(
+        f"⚠️ Senza impianto organico in regione nel {year}: {', '.join(senza)}. "
+        "Raccolgono comunque frazione organica (export dichiarato ~0): il mix "
+        "non spiega dove viene trattata. La quota discarica è calcolata sui soli "
+        "sink finali, TMB escluso."
+    )
 
 st.divider()
 
