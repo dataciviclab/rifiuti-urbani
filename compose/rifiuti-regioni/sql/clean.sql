@@ -28,15 +28,46 @@ WITH base AS (
         SUM(popolazione) AS popolazione,
         SUM(totale_ru_tonnellate) AS totale_ru_tonnellate,
         SUM(totale_rd_tonnellate) AS totale_rd_tonnellate,
-        SUM(percentuale_rd * popolazione) / NULLIF(SUM(popolazione), 0) AS percentuale_rd,
-        SUM(crt_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS crt_euro_ab,
-        SUM(cts_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS cts_euro_ab,
-        SUM(crd_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS crd_euro_ab,
-        SUM(ctr_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS ctr_euro_ab,
-        SUM(csl_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS csl_euro_ab,
-        SUM(cc_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS cc_euro_ab,
-        SUM(ck_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS ck_euro_ab,
-        SUM(ctot_euro_ab * popolazione) / NULLIF(SUM(popolazione), 0) AS ctot_euro_ab
+        SUM(CASE WHEN percentuale_rd IS NOT NULL
+                 THEN percentuale_rd * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN percentuale_rd IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS percentuale_rd,
+        -- I costi si mediano solo sui comuni che li dichiarano: usare tutta
+        -- la popolazione diluirebbe la media (i comuni senza costo entrano
+        -- nel denominatore ma non nel numeratore).
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL THEN popolazione ELSE 0 END) AS pop_costi,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN coalesce(crt_euro_ab, 0) * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS crt_euro_ab,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN coalesce(cts_euro_ab, 0) * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS cts_euro_ab,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN coalesce(crd_euro_ab, 0) * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS crd_euro_ab,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN coalesce(ctr_euro_ab, 0) * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS ctr_euro_ab,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN coalesce(csl_euro_ab, 0) * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS csl_euro_ab,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN coalesce(cc_euro_ab, 0) * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS cc_euro_ab,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN coalesce(ck_euro_ab, 0) * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS ck_euro_ab,
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN ctot_euro_ab * popolazione ELSE 0 END)
+            / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                              THEN popolazione ELSE 0 END), 0) AS ctot_euro_ab
     FROM raw_input
     WHERE popolazione > 0
     GROUP BY anno, regione

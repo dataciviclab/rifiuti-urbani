@@ -56,6 +56,14 @@ class TestComposeRegioniContract:
             "'PIEMONTE' e 'Piemonte' sono la stessa regione"
         )
 
+    def test_cost_average_uses_reporting_population(self):
+        sql = CLEAN_SQL.read_text()
+        assert "ctot_euro_ab IS NOT NULL" in sql, (
+            "la media dei costi deve escludere i comuni che non dichiarano il "
+            "costo: altrimenti la popolazione senza dato diluisce la media"
+        )
+        assert "pop_costi" in sql
+
     def test_dataset_declares_regional_mart(self):
         cfg = yaml.safe_load(DATASET_YML.read_text())
         assert cfg["dataset"]["name"] == "rifiuti_regioni"
