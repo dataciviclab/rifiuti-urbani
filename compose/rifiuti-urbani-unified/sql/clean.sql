@@ -70,9 +70,14 @@ SELECT
     b.percentile_nazionale,
     b.fascia_rd,
     -- Costi pro capite
+    -- CTS (trattamento e smaltimento) e CTR (trattamento e recupero) sono
+    -- l'unica coppia che separa il costo dello smaltimento da quello del
+    -- recupero: senza, il compose non può rispondere a "costi o benefici?".
     c.ctot_euro_ab,
     c.crt_euro_ab,
+    c.cts_euro_ab,
     c.crd_euro_ab,
+    c.ctr_euro_ab,
     c.csl_euro_ab,
     c.cc_euro_ab,
     c.ck_euro_ab,

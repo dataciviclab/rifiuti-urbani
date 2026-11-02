@@ -46,6 +46,8 @@ clean:
     - "percentuale_rd"
     - "kg_ru_per_abitante"
     - "ctot_euro_ab"
+    - "cts_euro_ab"
+    - "ctr_euro_ab"
     - "ctot_cent_kg"
   validate:
     not_null:
@@ -59,15 +61,26 @@ mart:
       sql: "sql/mart_comuni.sql"
     - name: "mart_sintesi"
       sql: "sql/mart_sintesi.sql"
+    - name: "mart_costi_fase"
+      sql: "sql/mart_costi_fase.sql"
   required_tables:
     - mart_comuni
     - mart_sintesi
+    - mart_costi_fase
   validate:
     table_rules:
       mart_comuni:
         min_rows: 5000
       mart_sintesi:
         min_rows: 50
+      mart_costi_fase:
+        primary_key: [anno, codice_comune_istat]
+        min_rows: 4000
+        required_columns:
+          - "quota_cts_pct"
+          - "quota_ctr_pct"
+          - "rapporto_recupero_smaltimento"
+          - "costo_per_punto_rd_euro"
 
 validation:
   fail_on_error: true
