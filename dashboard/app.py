@@ -32,6 +32,7 @@ pages = {
     ],
     "Esplorazione": [
         st.Page("pages/04_Flussi.py", title="Flussi", icon="🚛"),
+        st.Page("pages/09_Impianti.py", title="Impianti", icon="🏗️"),
         st.Page("pages/05_SQL.py", title="Query SQL", icon="🧪"),
     ],
 }

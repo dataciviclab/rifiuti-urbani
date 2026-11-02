@@ -76,7 +76,7 @@ df_display['rd'] = df_display['rd'].apply(lambda x: f"{fmt_num(int(x))} t")
 df_display['popolazione'] = df_display['popolazione'].apply(lambda x: fmt_num(int(x)))
 df_display['rd_pct'] = df_display['rd_pct'].apply(lambda x: fmt_pct(x, signed=False))
 df_display['kg_procapite'] = df_display['kg_procapite'].apply(lambda x: f"{x:.1f}")
-st.dataframe(df_display, use_container_width=True, hide_index=True)
+st.dataframe(df_display, width="stretch", hide_index=True)
 
 # ── Trend regioni selezionate ─────────────────────────────────────────────
 st.subheader(f"📈 Trend RD% ({', '.join(regioni_selezionate[:5])}{'...' if len(regioni_selezionate) > 5 else ''})")

@@ -175,4 +175,4 @@ if df_compose is not None and not df_compose.empty:
         st.plotly_chart(fig2, width="stretch")
 
     # Table
-    st.dataframe(df_classi, use_container_width=True, hide_index=True)
+    st.dataframe(df_classi, width="stretch", hide_index=True)

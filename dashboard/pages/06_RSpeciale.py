@@ -3,7 +3,7 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from sources import YEARS_RS, fmt_num, load_mart, load_mart_all
+from sources import YEARS_REGIONI, YEARS_RS, fmt_num, load_mart, load_mart_all
 
 st.title("🏭 Rifiuti Speciali")
 
@@ -100,6 +100,46 @@ if df_gest is not None and not df_gest.empty:
     st.caption(
         "R13 e D15 sono giacenze a fine anno, non flussi: sono tenute separate "
         "nella colonna `giacenza_t`."
+    )
+
+st.divider()
+
+# ── Vista regionale RS ────────────────────────────────────────────────────
+st.subheader("🗺️ Recupero vs smaltimento per regione")
+
+anno_reg = st.selectbox(
+    "Anno (vista regionale)",
+    YEARS_REGIONI,
+    index=len(YEARS_REGIONI) - 1,
+    key="rs_reg_year",
+)
+df_reg = load_mart("regioni", "mart_regioni", anno_reg)
+
+if df_reg is not None and not df_reg.empty:
+    reg = df_reg[
+        ["regione", "rs_recupero_t", "rs_smaltimento_t", "rs_recupero_su_gestito_pct"]
+    ].sort_values("rs_recupero_su_gestito_pct")
+
+    if not reg.empty:
+        fig_reg = px.bar(
+            reg,
+            x="rs_recupero_su_gestito_pct",
+            y="regione",
+            orientation="h",
+            color="rs_recupero_su_gestito_pct",
+            color_continuous_scale="Greens",
+            title="Quota di recupero sul gestito (%)",
+            labels={
+                "rs_recupero_su_gestito_pct": "% recupero",
+                "regione": "",
+            },
+        )
+        fig_reg.update_layout(height=520)
+        st.plotly_chart(fig_reg, width="stretch")
+
+    st.caption(
+        "Recupero R1-R12 vs smaltimento D1-D14, soli flussi (giacenze R13/D15 "
+        "escluse). Fonte: compose regionale `rifiuti_regioni`."
     )
 
 st.divider()
