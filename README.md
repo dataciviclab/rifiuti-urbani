@@ -67,7 +67,17 @@ quella per `categoria = 'trattamento_smaltimento'`.
 | `ispra_rs_export` | Regionale | 2018–2024 | local_file |
 | `ispra_rs_impianti` | Tipo impianto × area | 2018–2024 | local_file |
 
-**Compose:** `rifiuti_urbani_unified` — JOIN ru_base + costi_procapite + costi_kg (2018–2024)
+**Compose:** `rifiuti_urbani_unified` — JOIN ru_base + costi_procapite + costi_kg (2018–2024), con `mart_costi_fase` per la composizione del costo (CTS/CTR, recupero vs smaltimento)
+
+## Costi del servizio
+
+`ispra_ru_costi_procapite` espone lo schema di costo ISPRA/ARERA: `CRT`
+(raccolta indifferenziato), `CRD` (raccolta differenziata), `CTS`
+(trattamento e smaltimento), `CTR` (trattamento e recupero), `CSL`
+(spazzamento e lavaggio), `CC` (costi comuni), `CK` (costi d'uso del
+capitale). Il compose `rifiuti_urbani_unified` propaga anche `CTS` e `CTR`:
+il mart `mart_costi_fase` ne ricava quote %, `rapporto_recupero_smaltimento`,
+`costo_per_punto_rd_euro` e `costo_per_tonnellata_euro`.
 
 ## Struttura
 
