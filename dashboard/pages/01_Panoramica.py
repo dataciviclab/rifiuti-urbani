@@ -30,7 +30,11 @@ k1, k2, k3, k4 = st.columns(4)
 k1.metric("Popolazione", fmt_num(df['popolazione'].sum()))
 k2.metric("Produzione RU", f"{fmt_num(int(df['totale_ru_tonnellate'].sum()))} t")
 k3.metric("Raccolta Differenziata", f"{fmt_num(int(df['totale_rd_tonnellate'].sum()))} t")
-k4.metric("RD%", fmt_pct(df['percentuale_rd'].mean(), signed=False))
+rd_pct_naz = (
+    df['totale_rd_tonnellate'].sum() / df['totale_ru_tonnellate'].sum() * 100
+    if df['totale_ru_tonnellate'].sum() else float('nan')
+)
+k4.metric("RD% (pesata)", fmt_pct(rd_pct_naz, signed=False))
 
 k5, k6, k7, k8 = st.columns(4)
 kg_procapite = calc_kg_procapite(df)
@@ -40,15 +44,21 @@ k6.metric("Comuni", fmt_num(len(df)))
 try:
     costi = load_mart("ispra_ru_costi_procapite", "mart_comuni", year)
     if costi is not None and not costi.empty:
-        k7.metric("Costo Medio", fmt_eur(costi['ctot_euro_ab'].mean()))
+        costo_pesato = (
+            (costi['ctot_euro_ab'] * costi['popolazione']).sum()
+            / costi['popolazione'].sum()
+        )
+        k7.metric("Costo Medio", fmt_eur(costo_pesato))
     else:
         k7.metric("Costo Medio", "N/A")
 except Exception:
     k7.metric("Costo Medio", "N/A")
 
-rd_pct = df['percentuale_rd'].mean()
-gap_ue = rd_pct - 65.0
-k8.metric("Obiettivo UE 65%", f"{gap_ue:+.1f}pp", delta="raggiunto" if gap_ue >= 0 else "manca")
+k8.metric("Indifferenziato", f"{fmt_num(int(df['indifferenziato_t'].sum()))} t")
+st.caption(
+    "Il target UE del 65% al 2035 è sul **riciclo effettivo**, non sulla RD%: "
+    "ISPRA riporta 52,3% di riciclo nel 2024. La RD% qui è pesata sulla produzione."
+)
 
 st.divider()
 
@@ -63,15 +73,25 @@ df_compose = load_mart("rifiuti_urbani_unified", "mart_comuni", year) if year in
 insights = []
 
 if df_trend_all is not None and not df_trend_all.empty:
-    # Trend RD%
-    trend = df_trend_all.groupby('anno').agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
+    # Trend RD% (pesata sulla produzione)
+    trend = df_trend_all.groupby('anno').agg(
+        ru=('totale_ru_tonnellate', 'sum'),
+        rd=('totale_rd_tonnellate', 'sum'),
+    ).reset_index()
+    trend['rd_pct'] = trend['rd'] / trend['ru'] * 100
     rd_first = trend['rd_pct'].iloc[0]
     rd_last = trend['rd_pct'].iloc[-1]
     rd_delta = rd_last - rd_first
 
-    # Trend costi
+    # Trend costi (pesato sulla popolazione)
     if df_costi_all is not None and not df_costi_all.empty:
-        trend_costi = df_costi_all.groupby('anno').agg(costo=('ctot_euro_ab', 'mean')).reset_index()
+        trend_costi = df_costi_all.assign(
+            costo_w=df_costi_all['ctot_euro_ab'] * df_costi_all['popolazione']
+        ).groupby('anno').agg(
+            costo_w=('costo_w', 'sum'),
+            popolazione=('popolazione', 'sum'),
+        ).reset_index()
+        trend_costi['costo'] = trend_costi['costo_w'] / trend_costi['popolazione']
         cost_first = trend_costi['costo'].iloc[0]
         cost_last = trend_costi['costo'].iloc[-1]
         efficiency_first = cost_first / rd_first
@@ -98,7 +118,11 @@ if df_trend_all is not None and not df_trend_all.empty:
         lambda x: 'NORD' if x in ['Piemonte', "Valle d'Aosta", 'Lombardia', 'Trentino-Alto Adige', 'Veneto', 'Friuli-Venezia Giulia', 'Liguria', 'Emilia-Romagna']
         else ('SUD' if x in ['Calabria', 'Basilicata', 'Sicilia', 'Sardegna', 'Campania', 'Puglia', 'Molise'] else 'CENTRO')
     )
-    gap_trend = gap_data.groupby(['anno', 'macroarea']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
+    gap_trend = gap_data.groupby(['anno', 'macroarea']).agg(
+        ru=('totale_ru_tonnellate', 'sum'),
+        rd=('totale_rd_tonnellate', 'sum'),
+    ).reset_index()
+    gap_trend['rd_pct'] = gap_trend['rd'] / gap_trend['ru'] * 100
     gap_nord = gap_trend[gap_trend['macroarea'] == 'NORD'].set_index('anno')['rd_pct']
     gap_sud = gap_trend[gap_trend['macroarea'] == 'SUD'].set_index('anno')['rd_pct']
 
@@ -155,14 +179,13 @@ if df_trend_all is not None and not df_trend_all.empty:
     df_trend = df_trend_all.groupby('anno').agg(
         produzione=('totale_ru_tonnellate', 'sum'),
         rd=('totale_rd_tonnellate', 'sum'),
-        rd_pct=('percentuale_rd', 'mean'),
     ).reset_index()
+    df_trend['rd_pct'] = df_trend['rd'] / df_trend['produzione'] * 100
 
     col1, col2 = st.columns(2)
     with col1:
         fig_rd = px.line(df_trend, x='anno', y='rd_pct', markers=True,
-                         title="RD% Nazionale", labels={'rd_pct': 'RD%', 'anno': 'Anno'})
-        fig_rd.add_hline(y=65, line_dash="dash", line_color="red", annotation_text="Obiettivo UE 65%")
+                         title="RD% Nazionale (pesata)", labels={'rd_pct': 'RD%', 'anno': 'Anno'})
         fig_rd.update_layout(height=350)
         st.plotly_chart(fig_rd, width="stretch")
     with col2:
@@ -174,14 +197,36 @@ if df_trend_all is not None and not df_trend_all.empty:
 
     st.subheader("💰 Trend Costi Gestione")
     if df_costi_all is not None and not df_costi_all.empty:
-        df_costi_trend = df_costi_all.groupby('anno').agg(
-            media=('ctot_euro_ab', 'mean'),
+        df_costi_trend = df_costi_all.assign(
+            costo_w=df_costi_all['ctot_euro_ab'] * df_costi_all['popolazione']
+        ).groupby('anno').agg(
+            costo_w=('costo_w', 'sum'),
+            popolazione=('popolazione', 'sum'),
             mediana=('ctot_euro_ab', 'median'),
         ).reset_index()
+        df_costi_trend['media'] = (
+            df_costi_trend['costo_w'] / df_costi_trend['popolazione']
+        )
         fig_costi = px.line(df_costi_trend, x='anno', y=['media', 'mediana'], markers=True,
                             title="Costo Gestione per Abitante",
                             labels={'value': 'EUR/ab', 'anno': 'Anno', 'variable': 'Metrica'})
         fig_costi.update_layout(height=350)
         st.plotly_chart(fig_costi, width="stretch")
+
+        st.subheader("♻️ Costo: recupero vs smaltimento")
+        quota = df_costi_all.assign(
+            cts_w=df_costi_all['cts_euro_ab'] * df_costi_all['popolazione'],
+            ctr_w=df_costi_all['ctr_euro_ab'] * df_costi_all['popolazione'],
+            ctot_w=df_costi_all['ctot_euro_ab'] * df_costi_all['popolazione'],
+        ).groupby('anno')[['cts_w', 'ctr_w', 'ctot_w']].sum().reset_index()
+        quota['Quota CTS (smaltimento)'] = quota['cts_w'] / quota['ctot_w'] * 100
+        quota['Quota CTR (recupero)'] = quota['ctr_w'] / quota['ctot_w'] * 100
+        fig_quota = px.line(
+            quota, x='anno', y=['Quota CTS (smaltimento)', 'Quota CTR (recupero)'],
+            markers=True, title="Quota del costo: smaltimento vs recupero",
+            labels={'value': '% del costo totale', 'anno': 'Anno'},
+        )
+        fig_quota.update_layout(height=350)
+        st.plotly_chart(fig_quota, width="stretch")
 
 st.caption(f"Dati: ISPRA Catasto Rifiuti Nazionale · Anno {year} · CC BY 4.0")

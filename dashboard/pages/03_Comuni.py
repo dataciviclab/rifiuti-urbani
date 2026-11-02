@@ -5,6 +5,13 @@ import plotly.graph_objects as go
 import streamlit as st
 from sources import YEARS_BASE, fmt_eur, fmt_num, fmt_pct, load_mart, safe_int
 
+
+def _rd_pesata(frame) -> float:
+    """RD% pesata sulla produzione: la media semplice dei comuni non è la RD% reale."""
+    ru = frame['totale_ru_tonnellate'].sum()
+    return frame['totale_rd_tonnellate'].sum() / ru * 100 if ru else float('nan')
+
+
 st.title("🏘️ Benchmark Comunale")
 
 col1, col2 = st.columns([1, 2])
@@ -48,10 +55,11 @@ try:
     if costi is not None and not costi.empty:
         c = costi[costi['codice_comune_istat'] == row['codice_comune_istat']]
         if not c.empty:
-            k5, k6, k7 = st.columns(3)
+            k5, k6, k7, k8 = st.columns(4)
             k5.metric("Costo Totale", fmt_eur(c['ctot_euro_ab'].iloc[0]))
-            k6.metric("Raccolta", fmt_eur(c['crt_euro_ab'].iloc[0]))
-            k7.metric("Smaltimento", fmt_eur(c['crd_euro_ab'].iloc[0]))
+            k6.metric("Raccolta indiff.", fmt_eur(c['crt_euro_ab'].iloc[0]))
+            k7.metric("Smaltimento", fmt_eur(c['cts_euro_ab'].iloc[0]))
+            k8.metric("Raccolta diff.", fmt_eur(c['crd_euro_ab'].iloc[0]))
 except Exception:
     pass
 
@@ -63,9 +71,9 @@ provincia = row['provincia']
 regione = row['regione']
 rd_comune = row['percentuale_rd']
 
-rd_prov = df_all[df_all['provincia'] == provincia]['percentuale_rd'].mean()
-rd_reg = df_all[df_all['regione'] == regione]['percentuale_rd'].mean()
-rd_naz = df_all['percentuale_rd'].mean()
+rd_prov = _rd_pesata(df_all[df_all['provincia'] == provincia])
+rd_reg = _rd_pesata(df_all[df_all['regione'] == regione])
+rd_naz = _rd_pesata(df_all)
 
 col1, col2, col3 = st.columns(3)
 with col1:

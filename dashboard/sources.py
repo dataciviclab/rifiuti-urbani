@@ -28,6 +28,9 @@ __all__ = [
     "YEARS_COSTI",
     "YEARS_RS",
     "YEARS_UNIFIED",
+    "YEARS_REGIONI",
+    "YEARS_IMPIANTI",
+    "REGISTRY_UPDATED_AT",
     "SLUGS",
     "calc_kg_procapite",
     "fmt_eur",
@@ -43,6 +46,7 @@ __all__ = [
 # ── Registry ───────────────────────────────────────────────────────────────
 _REGISTRY_PATH = Path(__file__).parent.parent / "registry" / "registry.json"
 _registry = load_registry(_REGISTRY_PATH)
+REGISTRY_UPDATED_AT = _registry.updated_at
 
 PREFIX = "rifiuti-urbani/"
 
@@ -60,6 +64,13 @@ SLUGS = {
     "gestione_rs": "ispra_rs_gestione",
     "impianti_rs": "ispra_rs_impianti",
     "unified": "rifiuti_urbani_unified",
+    # Viste regionali e per impianto (pubblicate dopo la PR #13).
+    "regioni": "rifiuti_regioni",
+    "ru_gestione_regionale": "ispra_ru_gestione_regionale",
+    "ru_gestione_impianti": "ispra_ru_gestione_impianti",
+    "rs_produzione_regionale": "ispra_rs_produzione_regionale",
+    "rs_gestione_regionale": "ispra_rs_gestione_regionale",
+    "rs_impianti_regionali": "ispra_rs_impianti_regionali",
 }
 
 
@@ -92,6 +103,8 @@ YEARS_BASE = _years("ispra_ru_base", list(range(2010, 2025)))
 YEARS_COSTI = _years("ispra_ru_costi_procapite", list(range(2018, 2025)))
 YEARS_RS = _years("ispra_rs_produzione", list(range(2014, 2025)))
 YEARS_UNIFIED = _years("rifiuti_urbani_unified", list(range(2018, 2025)))
+YEARS_REGIONI = _years("rifiuti_regioni", list(range(2018, 2025)))
+YEARS_IMPIANTI = _years("ispra_ru_gestione_impianti", list(range(2015, 2025)))
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
@@ -113,16 +126,15 @@ def query(slug: str, sql: str, years: tuple[int, ...] = tuple(YEARS)):
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
-def query_mart(slug: str, sql: str, year: int = 2024):
-    """Esegue SQL sul mart layer (cached 1h)."""
+def query_mart(slug: str, sql: str, year: int = 2024, table: str = "mart_comuni"):
+    """Esegue SQL sul mart layer (cached 1h). La tabella si chiama ``mart_input``."""
     import duckdb
-    df = _load_mart_table(_resolve_slug(slug), "mart_comuni", year, prefix=PREFIX)
+    df = _load_mart_table(_resolve_slug(slug), table, year, prefix=PREFIX)
     if df is None or df.empty:
         return pd.DataFrame()
     con = duckdb.connect()
     con.register("mart_input", df)
-    result = con.execute(sql.replace("mart_input", "mart_input")).fetchdf()
-    return result
+    return con.execute(sql).fetchdf()
 
 
 def calc_kg_procapite(df, ton_col="totale_ru_tonnellate", pop_col="popolazione"):

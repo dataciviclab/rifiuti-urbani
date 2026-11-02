@@ -5,6 +5,7 @@ Monitoraggio, esplorazione e benchmark dei rifiuti urbani e speciali in Italia.
 
 import streamlit as st
 from lab_connectors.branding import apply_branding
+from sources import REGISTRY_UPDATED_AT
 
 st.set_page_config(
     page_title="ISPRA Rifiuti Urbani · Dashboard",
@@ -25,6 +26,7 @@ pages = {
         st.Page("pages/06_RSpeciale.py", title="Rifiuti Speciali", icon="🏭"),
     ],
     "Benchmark": [
+        st.Page("pages/08_Destino.py", title="Destino & Costi", icon="♻️"),
         st.Page("pages/02_Regioni.py", title="Regioni", icon="🗺️"),
         st.Page("pages/03_Comuni.py", title="Comuni", icon="🏘️"),
     ],
@@ -37,5 +39,6 @@ pages = {
 pg = st.navigation(pages, position="sidebar")
 
 st.sidebar.caption("Dati: ISPRA Catasto Rifiuti Nazionale · CC BY 4.0")
+st.sidebar.caption(f"Registry aggiornato: {REGISTRY_UPDATED_AT}")
 
 pg.run()

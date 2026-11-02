@@ -36,14 +36,17 @@ df_filtrato = df[df['regione'].isin(regioni_selezionate)]
 st.subheader("📊 Classifica Regioni per RD%")
 
 df_reg = df_filtrato.groupby('regione').agg(
-    rd_pct=('percentuale_rd', 'mean'),
     produzione=('totale_ru_tonnellate', 'sum'),
     rd=('totale_rd_tonnellate', 'sum'),
     popolazione=('popolazione', 'sum'),
-).reset_index().sort_values('rd_pct', ascending=False)
-
+).reset_index()
+df_reg['rd_pct'] = df_reg['rd'] / df_reg['produzione'] * 100
+df_reg = df_reg.sort_values('rd_pct', ascending=False)
 df_reg['kg_procapite'] = df_reg['produzione'] * 1000 / df_reg['popolazione']
-rd_nazionale = df_filtrato['percentuale_rd'].mean()
+rd_nazionale = (
+    df_filtrato['totale_rd_tonnellate'].sum()
+    / df_filtrato['totale_ru_tonnellate'].sum() * 100
+)
 
 col1, col2 = st.columns(2)
 
@@ -81,7 +84,11 @@ st.subheader(f"📈 Trend RD% ({', '.join(regioni_selezionate[:5])}{'...' if len
 df_all = load_mart_all("ispra_ru_base", "mart_comuni", tuple(YEARS_BASE))
 if df_all is not None and not df_all.empty:
     df_filtrato_all = df_all[df_all['regione'].isin(regioni_selezionate)]
-    df_trend = df_filtrato_all.groupby(['anno', 'regione']).agg(rd_pct=('percentuale_rd', 'mean')).reset_index()
+    df_trend = df_filtrato_all.groupby(['anno', 'regione']).agg(
+        ru=('totale_ru_tonnellate', 'sum'),
+        rd=('totale_rd_tonnellate', 'sum'),
+    ).reset_index()
+    df_trend['rd_pct'] = df_trend['rd'] / df_trend['ru'] * 100
 
     if not df_trend.empty:
         fig_trend = px.line(df_trend, x='anno', y='rd_pct', color='regione', markers=True,
