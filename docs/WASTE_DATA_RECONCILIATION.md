@@ -99,7 +99,16 @@ spezza tra raccolta e impianto.
   seconda. La gestione è disponibile per area geografica × tipo di impianto,
   non per impianto singolo con bacino di utenza.
 - **Gli scarti degli impianti** e la qualità del riciclo.
-- **Il costo riconosciuto** (PEF) e la **tariffa pagata**: richiedono ARERA.
+- **Il costo riconosciuto** (PEF) e la **tariffa pagata**. Non sono open data:
+  le predisposizioni tariffarie si trasmettono ad ARERA via piattaforma
+  autenticata e diventano pubbliche solo come delibere PDF per comune, sul
+  portale del federalismo fiscale del MEF.
+- **Chi gestisce il servizio in ciascun comune.** L'Anagrafica Territoriale
+  Rifiuti (ATRIF) di ARERA contiene esattamente questo dato, è obbligatoria
+  dal 2023, ma non ha un export: è accessibile solo come ricerca web. Una
+  ricostruzione parziale arriva dalle partecipate MEF (comune azionista →
+  società → servizio affidato), che coprono però il 43,7% dei comuni e sono
+  concentrate al Nord: misurano il modello in-house, non il servizio.
 
 ## Test riproducibili
 
