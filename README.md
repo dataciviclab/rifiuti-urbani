@@ -166,6 +166,10 @@ I CSV ISPRA sono multi-sezione con formati variabili tra anni. `scripts/normaliz
 - **RU comunale**: download HTTP diretto da ISPRA (http_file)
 - **RU costi/flussi/gestione + RS**: da CSV normalizzati locali (local_file)
 
+Le download sono validate: una risposta HTTP di errore o una pagina HTML al
+posto del CSV vengono scartate e il comando termina con errore. Senza questa
+guardia una 404 viene salvata come file di dati e conta come "scaricata".
+
 ## Segnali di qualita
 
 - [CI pipeline](.github/workflows/pipeline.yml): lint + test + run + GCS sync
