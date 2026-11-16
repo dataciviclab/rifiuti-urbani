@@ -76,6 +76,9 @@ quella per `categoria = 'trattamento_smaltimento'`.
 
 **Compose regionale:** `rifiuti_regioni` — regione × anno con RD%, costi, mix impiantistico, movimentazione e rifiuti speciali
 
+Quali numeri sono verificati, quali trappole evitare e cosa i dati non permettono
+di dire: [`docs/WASTE_DATA_RECONCILIATION.md`](docs/WASTE_DATA_RECONCILIATION.md).
+
 ## Import/export: commercio estero
 
 `ispra_ru_import`/`ispra_ru_export` e `ispra_rs_import`/`ispra_rs_export` non

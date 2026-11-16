@@ -64,6 +64,17 @@ class TestComposeRegioniContract:
         )
         assert "pop_costi" in sql
 
+    def test_costo_totale_non_deriva_dalla_media(self):
+        """`ctot_euro_ab * popolazione` non è il totale di regione.
+
+        La media è calcolata sui soli comuni che dichiarano il costo: applicarla
+        alla popolazione intera gonfia il totale (2024: +9,9% nazionale).
+        """
+        sql = CLEAN_SQL.read_text()
+        assert "ctot_mln" in sql, "manca il totale calcolato sui comuni dichiaranti"
+        assert "ru_t_costi" in sql, "il costo per tonnellata va rapportato alle tonnellate dichiaranti"
+        assert "ctot_euro_ab * popolazione / NULLIF(totale_ru_tonnellate" not in sql
+
     def test_flussi_scomposti_per_tipo(self):
         """Sommare organico + incenerimento + discarica dà una grandezza che
         la fonte non pubblica: i tre flussi restano colonne distinte."""
