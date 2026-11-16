@@ -89,7 +89,7 @@ stesso totale in tutti gli anni verificati, quindi **non vanno sommate tra
 loro**: la colonna `dimensione` (`regione` / `paese`) le distingue.
 
 I movimenti tra regioni italiane stanno invece in `ispra_ru_flussi` (sezione
-precedente). Nel compose `rifiuti_regioni` le colonne sono nominate di
+successiva). Nel compose `rifiuti_regioni` le colonne sono nominate di
 conseguenza: `import_estero_t`, `export_estero_t`, `saldo_estero_t`,
 `export_estero_su_prodotto_pct`.
 

@@ -71,7 +71,8 @@ class TestComposeRegioniContract:
         alla popolazione intera gonfia il totale (2024: +9,9% nazionale).
         """
         sql = CLEAN_SQL.read_text()
-        assert "ctot_mln" in sql, "manca il totale calcolato sui comuni dichiaranti"
+        assert "ctot_totale_eur" in sql, "manca il totale calcolato sui comuni dichiaranti"
+        assert "costo_totale_mln" in sql, "il mart deve esporre il totale di regione"
         assert "ru_t_costi" in sql, "il costo per tonnellata va rapportato alle tonnellate dichiaranti"
         assert "ctot_euro_ab * popolazione / NULLIF(totale_ru_tonnellate" not in sql
 

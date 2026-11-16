@@ -72,7 +72,7 @@ WITH base AS (
         -- moltiplicare la media per la popolazione intera gonfia il totale
         -- (nel 2024 +9,9% a livello nazionale, +25,6% in Sicilia).
         SUM(CASE WHEN ctot_euro_ab IS NOT NULL
-                 THEN ctot_euro_ab * popolazione ELSE 0 END) AS ctot_mln,
+                 THEN ctot_euro_ab * popolazione ELSE 0 END) AS ctot_totale_eur,
         -- Tonnellate dei soli comuni che dichiarano il costo: il costo per
         -- tonnellata va rapportato a quelle, non a tutte le tonnellate della
         -- regione.
@@ -133,7 +133,7 @@ flussi_ru AS (
         -- non pubblica.
         SUM(CASE WHEN tipo_flusso = 'organico' THEN quantita_t ELSE 0 END) AS flussi_organico_t,
         SUM(CASE WHEN tipo_flusso = 'incenerimento' THEN quantita_t ELSE 0 END) AS flussi_incenerimento_t,
-        SUM(CASE WHEN tipo_flusso = 'discarica' THEN quantita_t ELSE 0 END) AS flussi_discarica_t,
+        SUM(CASE WHEN tipo_flusso = 'discarica' THEN quantita_t ELSE 0 END) AS flussi_discarica_t
     FROM read_parquet('{support.ru_flussi.clean}')
     WHERE NOT is_aggregato
     GROUP BY 1, 2
@@ -175,7 +175,7 @@ unito AS (
         b.n_comuni,
         b.popolazione,
         b.pop_costi,
-        b.ctot_mln,
+        b.ctot_totale_eur,
         b.ru_t_costi,
         b.totale_ru_tonnellate,
         b.totale_rd_tonnellate,
@@ -244,7 +244,7 @@ SELECT
     -- Totale di regione sui soli comuni che dichiarano il costo, e la
     -- popolazione su cui è calcolata. `ctot_euro_ab * popolazione` non è il
     -- totale: applica la media anche a chi non ha dichiarato.
-    ROUND(ctot_mln / 1e6, 3) AS costo_totale_mln,
+    ROUND(ctot_totale_eur / 1e6, 3) AS costo_totale_mln,
     pop_costi,
     ROUND(crt_euro_ab, 2) AS crt_euro_ab,
     ROUND(cts_euro_ab, 2) AS cts_euro_ab,
@@ -259,7 +259,7 @@ SELECT
         AS quota_costo_fisso_pct,
     ROUND(ctr_euro_ab / NULLIF(cts_euro_ab, 0), 3) AS rapporto_recupero_smaltimento,
     ROUND(ctot_euro_ab / NULLIF(percentuale_rd, 0), 2) AS costo_per_punto_rd_euro,
-    ROUND(ctot_mln / NULLIF(ru_t_costi, 0), 2) AS costo_per_tonnellata_euro,
+    ROUND(ctot_totale_eur / NULLIF(ru_t_costi, 0), 2) AS costo_per_tonnellata_euro,
 
     -- Mix impiantistico (tonnellate; TMB è pre-trattamento, non un sink)
     n_impianti,
