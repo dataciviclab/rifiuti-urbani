@@ -76,6 +76,29 @@ quella per `categoria = 'trattamento_smaltimento'`.
 
 **Compose regionale:** `rifiuti_regioni` — regione × anno con RD%, costi, mix impiantistico, movimentazione e rifiuti speciali
 
+## Flussi fuori regione
+
+`ispra_ru_flussi` non è una tabella sola: la fonte pubblica un blocco per tipo
+di flusso, e la composizione cambia tra anni.
+
+| Anno | Blocchi |
+|---|---|
+| 2018–2019 | frazione organica, discarica |
+| 2020–2024 | frazione organica, incenerimento, discarica |
+
+Il tipo è parte della chiave (`anno`, `tipo_flusso`, `regione`). Leggere solo
+il primo blocco — il comportamento precedente — teneva la frazione organica e
+perdeva il resto: nel 2024, 954.933 t a incenerimento e 629.086 t a discarica
+a livello nazionale — 1,58 Mt su 3,70 Mt di uscite fuori regione tracciate
+dalla fonte, cioè il 43%.
+
+Le tre grandezze **non si sommano a una grandezza ufficiale**: un rifiuto
+organico avviato fuori regione può generare scarti che escono di nuovo, e la
+fonte non lo riconcilia. Il compose espone le colonne separate
+(`flussi_organico_t`, `flussi_incenerimento_t`, `flussi_discarica_t`) e un
+`uscite_fuori_regione_su_prodotto_pct` come indicatore, non come bilancio.
+`flussi_extraregionali_t` resta come alias dell'organico ed è deprecato.
+
 ## Costi del servizio
 
 `ispra_ru_costi_procapite` espone lo schema di costo ISPRA/ARERA: `CRT`

@@ -20,6 +20,7 @@ RAW = ROOT / "rifiuti-ispra-raw" / "raw-2024"
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from normalize_ispra_all import (  # noqa: E402
+    normalize_flussi_multiplo,
     normalize_gestione_rs,
     normalize_gestione_ru,
     normalize_impianti,
@@ -142,6 +143,47 @@ class TestGestioneRS:
                 and r["tipo_operazione"] == "recupero"
             )
         assert somma("np") + somma("p") == somma("totale")
+
+
+@pytest.mark.contract
+class TestFlussi:
+    """Il file ru_flussi ha un blocco per tipo di flusso.
+
+    Regressione reale: `normalize_region_level` si fermava al primo blocco e
+    ingeriva solo la frazione organica, perdendo incenerimento e discarica
+    (954.933 t e 629.086 t a livello Italia nel 2024).
+    """
+
+    def test_tutti_i_tipi_di_flusso_sono_letti(self):
+        rows = normalize_flussi_multiplo(_lines("ru_flussi"))
+        assert {r["tipo_flusso"] for r in rows} == {"organico", "incenerimento", "discarica"}
+
+    def test_nessuna_riga_di_blocco_persa(self):
+        lines = _lines("ru_flussi")
+        blocchi = [
+            b for b in parse_blocks(lines)
+            if len(b["rows"]) >= 2 and "andamento" not in b["title"].lower()
+        ]
+        attese = sum(len(b["rows"]) for b in blocchi)
+        assert len(normalize_flussi_multiplo(lines)) == attese
+
+    def test_regioni_sommano_alla_riga_italia(self):
+        rows = normalize_flussi_multiplo(_lines("ru_flussi"))
+        per_tipo: dict[str, dict[str, float]] = {}
+        for r in rows:
+            per_tipo.setdefault(r["tipo_flusso"], {})[r["regione"]] = _num(r["quantita_t"])
+        for tipo, regioni in per_tipo.items():
+            italia = regioni["Italia"]
+            somma = sum(v for k, v in regioni.items() if k != "Italia")
+            # scarto ammesso: arrotondamento della fonte sulle righe regionali
+            assert abs(somma - italia) < 1, f"{tipo}: regioni {somma} != Italia {italia}"
+
+    def test_blocchi_andamento_esclusi(self):
+        rows = normalize_flussi_multiplo(_lines("ru_flussi"))
+        assert len({r["anno"] for r in rows}) == 1, (
+            "i blocchi 'Andamento' ripetono la serie storica e non sono dati "
+            "regionali: non devono entrare nel normalizzato"
+        )
 
 
 @pytest.mark.contract

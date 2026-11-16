@@ -277,6 +277,77 @@ def normalize_region_level(lines: list[str], year: int, out_cols: list[str]) -> 
     return rows
 
 
+# Il file RU flussi non è una tabella sola: è una sequenza di blocchi con la
+# stessa forma (regione × quantitativo), ognuno per un tipo di flusso. Leggere
+# solo il primo blocco (comportamento di `normalize_region_level`) perdeva
+# incenerimento e discarica: nel 2024, 954.933 t e 629.086 t a livello Italia.
+_FLUSSO_TITOLO = (
+    ("frazione organica", "organico"),
+    ("incenerimento", "incenerimento"),
+    ("discarica", "discarica"),
+)
+
+
+def _flusso_da_titolo(title: str) -> str | None:
+    """Tipo di flusso dedotto dal titolo del blocco.
+
+    I blocchi "Andamento ..." ripetono la serie storica del totale: non sono
+    dati regionali e vanno esclusi prima di guardare le parole chiave.
+    """
+    low = title.lower()
+    if "andamento" in low:
+        return None
+    for keyword, tipo in _FLUSSO_TITOLO:
+        if keyword in low:
+            return tipo
+    return None
+
+
+def is_flussi_multiplo(lines: list[str]) -> bool:
+    """True se il file contiene più blocchi di flusso distinti."""
+    tipi = {
+        _flusso_da_titolo(block["title"])
+        for block in parse_blocks(lines)
+        if len(block["rows"]) >= 2
+    }
+    tipi.discard(None)
+    return len(tipi) >= 2
+
+
+def normalize_flussi_multiplo(lines: list[str]) -> list[dict]:
+    """RU flussi: una riga per (anno, tipo_flusso, regione).
+
+    La fonte non è stabile tra anni: 2018-2019 hanno organico + discarica,
+    dal 2020 compare anche l'incenerimento. Il tipo si deduce dal titolo, non
+    dalla posizione del blocco, così l'aggiunta di un flusso non sposta gli
+    altri.
+    """
+    rows: list[dict] = []
+    for block in parse_blocks(lines):
+        if len(block["rows"]) < 2:
+            continue
+        tipo_flusso = _flusso_da_titolo(block["title"])
+        if tipo_flusso is None:
+            continue
+        header = block["header"]
+        i_anno = _col_index(header, "anno")
+        i_regione = _col_index(header, "regione")
+        i_quantita = _col_index(header, "quantitativ")
+        if i_regione is None or i_quantita is None:
+            continue
+        for row in block["rows"]:
+            regione = _cell(row, i_regione)
+            if not regione:
+                continue
+            rows.append({
+                "anno": _cell(row, i_anno),
+                "regione": canonical_region(regione),
+                "tipo_flusso": tipo_flusso,
+                "quantita_t": _cell(row, i_quantita),
+            })
+    return rows
+
+
 def normalize_rs_region(lines: list[str], year: int) -> list[dict]:
     """Normalize RS import/export CSVs (header+data, no title)."""
     header_idx = None
@@ -819,7 +890,12 @@ def normalize_csv(input_path: Path, output_path: Path, csv_type: str = "auto", y
         out_cols = ["istat_comune", "comune", "provincia", "numero_comuni",
                     "popolazione", "crt", "cts", "crd", "ctr", "csl", "cc", "ck", "ctot"]
     elif detected in ("flussi", "import", "export", "regione"):
-        rows = normalize_region_level(lines, year, [])
+        # `flussi` copre sia i file regionali a tabella singola (rs_export)
+        # sia ru_flussi, che ha un blocco per tipo di flusso.
+        if detected == "flussi" and is_flussi_multiplo(lines):
+            rows = normalize_flussi_multiplo(lines)
+        else:
+            rows = normalize_region_level(lines, year, [])
         if not rows:
             return "empty"
         out_cols = list(rows[0].keys())

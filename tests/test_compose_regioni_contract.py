@@ -64,6 +64,16 @@ class TestComposeRegioniContract:
         )
         assert "pop_costi" in sql
 
+    def test_flussi_scomposti_per_tipo(self):
+        """Sommare organico + incenerimento + discarica dà una grandezza che
+        la fonte non pubblica: i tre flussi restano colonne distinte."""
+        sql = CLEAN_SQL.read_text()
+        for tipo in ("organico", "incenerimento", "discarica"):
+            assert f"tipo_flusso = '{tipo}'" in sql, (
+                f"il compose non distingue il flusso '{tipo}'"
+            )
+        assert "uscite_fuori_regione_su_prodotto_pct" in sql
+
     def test_dataset_declares_regional_mart(self):
         cfg = yaml.safe_load(DATASET_YML.read_text())
         assert cfg["dataset"]["name"] == "rifiuti_regioni"

@@ -114,7 +114,13 @@ flussi_ru AS (
     SELECT
         anno,
         lower(replace(regione, '-', ' ')) AS regione_key,
-        SUM(quantita_t) AS flussi_extraregionali_t
+        -- Un flusso per colonna: sommarli darebbe una grandezza che la fonte
+        -- non pubblica. `flussi_extraregionali_t` resta l'organico per
+        -- compatibilità (nome storico, ambiguo) e va deprecato.
+        SUM(CASE WHEN tipo_flusso = 'organico' THEN quantita_t ELSE 0 END) AS flussi_organico_t,
+        SUM(CASE WHEN tipo_flusso = 'incenerimento' THEN quantita_t ELSE 0 END) AS flussi_incenerimento_t,
+        SUM(CASE WHEN tipo_flusso = 'discarica' THEN quantita_t ELSE 0 END) AS flussi_discarica_t,
+        SUM(CASE WHEN tipo_flusso = 'organico' THEN quantita_t ELSE 0 END) AS flussi_extraregionali_t
     FROM read_parquet('{support.ru_flussi.clean}')
     WHERE NOT is_aggregato
     GROUP BY 1, 2
@@ -176,6 +182,9 @@ unito AS (
         g.digestione_t,
         i.import_t,
         e.export_t,
+        f.flussi_organico_t,
+        f.flussi_incenerimento_t,
+        f.flussi_discarica_t,
         f.flussi_extraregionali_t,
         p.rs_np_t,
         p.rs_p_t,
@@ -265,7 +274,15 @@ SELECT
     ROUND(coalesce(export_t, 0), 1) AS export_t,
     ROUND(coalesce(export_t, 0) - coalesce(import_t, 0), 1) AS saldo_export_import_t,
     ROUND(coalesce(export_t, 0) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2) AS export_su_prodotto_pct,
+    ROUND(coalesce(flussi_organico_t, 0), 1) AS flussi_organico_t,
+    ROUND(coalesce(flussi_incenerimento_t, 0), 1) AS flussi_incenerimento_t,
+    ROUND(coalesce(flussi_discarica_t, 0), 1) AS flussi_discarica_t,
+    -- Deprecato: alias storico dell'organico. Usare flussi_organico_t.
     ROUND(coalesce(flussi_extraregionali_t, 0), 1) AS flussi_extraregionali_t,
+    ROUND(
+        (coalesce(flussi_organico_t, 0) + coalesce(flussi_incenerimento_t, 0)
+         + coalesce(flussi_discarica_t, 0)) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2
+    ) AS uscite_fuori_regione_su_prodotto_pct,
 
     -- Rifiuti speciali
     ROUND(rs_np_t, 1) AS rs_np_t,
