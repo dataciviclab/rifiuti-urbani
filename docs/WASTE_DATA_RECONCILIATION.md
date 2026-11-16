@@ -65,11 +65,18 @@ spezza tra raccolta e impianto.
    €/ab è calcolata sui soli comuni che dichiarano (6.562 su 7.782 nel 2024).
    Applicarla a tutti dà 12.676 mln invece di 11.535: **+9,9%** a livello
    nazionale, **+25,6%** in Sicilia. Usare `costo_totale_mln` e `pop_costi`.
-3. **Dividere per la popolazione sbagliata.** `sum(ctot × pop) / sum(pop)`
-   con la popolazione intera (58,93 M) dà 195,73 €/ab invece di 214,94.
+3. **Dividere per la popolazione sbagliata.** Sul mart comunale
+   (`rifiuti_urbani_unified`) `sum(ctot × pop) / sum(pop)` su tutte le 7.782
+   unità dà **195,73** €/ab invece di **214,94**: il denominatore include i
+   1.220 comuni che non dichiarano il costo. Sul mart regionale l'errore è
+   trascurabile (215,09 contro 214,94, **+0,07%**) perché la media di regione
+   è già calcolata sui dichiaranti: il denominatore sbagliato pesa dove i dati
+   mancano, comune per comune.
 4. **Sommare i tre flussi fuori regione.** Organico, incenerimento e discarica
    sono tre grandezze distinte: la fonte non pubblica il loro totale e un
-   rifiuto può uscire due volte (organico → scarti → discarica).
+   rifiuto può uscire due volte (organico → scarti → discarica). Il compose
+   espone `somma_flussi_fuori_regione_su_prodotto_pct` come indicatore di
+   pressione esterna: non è un bilancio, e non va sommato a `export_estero_t`.
 5. **Sommare throughput e rifiuti trattati.** Negli impianti il tonnellaggio
    delle "altre tipologie" è transito, non trattamento: non va sommato.
 6. **Trattare R13/D15 come flussi.** Sono **giacenze** al 31/12: sommarle ai

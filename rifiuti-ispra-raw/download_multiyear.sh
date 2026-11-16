@@ -17,8 +17,9 @@ curl -s -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/index.php?pg=&advice=si" -o /
 FAILED=()
 
 # Scarica e valida. Senza `curl -f` una pagina 404 viene salvata come CSV: è
-# già successo (11 file `ru_gestione_comunale.csv` erano tutti HTML). Meglio un
-# file mancante che un file che sembra dati.
+# già successo con `ru_gestione_comunale.csv`, che era una pagina HTML in tutti
+# gli anni presenti in `raw/` (quel file non è più nella lista dei download).
+# Meglio un file mancante che un file che sembra dati.
 dl() {
   local url="$1"
   local outdir="$2"

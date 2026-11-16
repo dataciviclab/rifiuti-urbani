@@ -84,7 +84,7 @@ class TestComposeRegioniContract:
             assert f"tipo_flusso = '{tipo}'" in sql, (
                 f"il compose non distingue il flusso '{tipo}'"
             )
-        assert "uscite_fuori_regione_su_prodotto_pct" in sql
+        assert "somma_flussi_fuori_regione_su_prodotto_pct" in sql
 
     def test_dataset_declares_regional_mart(self):
         cfg = yaml.safe_load(DATASET_YML.read_text())

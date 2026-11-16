@@ -297,10 +297,13 @@ SELECT
     ROUND(coalesce(flussi_organico_t, 0), 1) AS flussi_organico_t,
     ROUND(coalesce(flussi_incenerimento_t, 0), 1) AS flussi_incenerimento_t,
     ROUND(coalesce(flussi_discarica_t, 0), 1) AS flussi_discarica_t,
+    -- Somma dei tre flussi tracciati, non un totale: la fonte non ne pubblica
+    -- uno e lo stesso rifiuto può uscire due volte (organico → scarti →
+    -- discarica). Indicatore di pressione esterna, non bilancio di massa.
     ROUND(
         (coalesce(flussi_organico_t, 0) + coalesce(flussi_incenerimento_t, 0)
          + coalesce(flussi_discarica_t, 0)) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2
-    ) AS uscite_fuori_regione_su_prodotto_pct,
+    ) AS somma_flussi_fuori_regione_su_prodotto_pct,
 
     -- Rifiuti speciali
     ROUND(rs_np_t, 1) AS rs_np_t,
