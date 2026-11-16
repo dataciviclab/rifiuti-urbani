@@ -2,7 +2,7 @@
   "schema_version": 1,
   "repo": "rifiuti-urbani",
   "source_repo": "dataciviclab/rifiuti-urbani",
-  "updated_at": "2026-11-02",
+  "updated_at": "2026-11-16",
   "datasets": [
     {
       "slug": "ispra_rs_export",
@@ -2336,26 +2336,18 @@
       "detail": "anni 2010-2024 — mart: si",
       "action": "",
       "run": {
-        "run_id": "20261102T174510Z_f8fa01bb",
-        "year": 2024,
-        "status": "SUCCESS",
+        "run_id": "20261116T141725Z_9953b97c",
+        "year": 2010,
+        "status": "FAILED",
         "quality_score": {
-          "raw": 100,
-          "clean": 100,
-          "mart": 100
-        },
-        "output_rows": {
-          "clean": 7782,
-          "mart": 8020
+          "raw": 100
         },
         "output_bytes": {
-          "raw": 3038451,
-          "clean": 584762,
-          "mart": 799556
+          "raw": 2688948
         },
-        "started_at": "2026-11-02T17:45:10.299644+00:00",
-        "finished_at": "2026-11-02T17:45:13.656381+00:00",
-        "duration_seconds": 3.357
+        "started_at": "2026-11-16T14:17:25.191339+00:00",
+        "finished_at": "2026-11-16T14:17:27.948656+00:00",
+        "duration_seconds": 2.757
       }
     },
     {
