@@ -348,6 +348,80 @@ def normalize_flussi_multiplo(lines: list[str]) -> list[dict]:
     return rows
 
 
+# I file import/export hanno la stessa grandezza partizionata due volte: per
+# regione italiana (origine/destinazione) e per Paese estero. I due blocchi
+# sommano allo stesso totale in tutti gli anni verificati: sono commercio
+# estero, non movimenti tra regioni (quelli stanno in `ru_flussi`).
+_DIMENSIONE_TITOLO = (
+    ("paese", "paese"),
+    ("regione", "regione"),
+)
+
+
+def _dimensione_da_titolo(title: str) -> str | None:
+    """Dimensione del blocco import/export: 'regione' o 'paese'."""
+    low = title.lower()
+    if "andamento" in low:
+        return None
+    for keyword, dimensione in _DIMENSIONE_TITOLO:
+        if keyword in low:
+            return dimensione
+    return None
+
+
+def is_import_export_multiplo(lines: list[str]) -> bool:
+    """True se il file contiene sia il blocco regioni sia il blocco Paesi."""
+    dimensioni = {
+        _dimensione_da_titolo(block["title"])
+        for block in parse_blocks(lines)
+        if len(block["rows"]) >= 2
+    }
+    return {"regione", "paese"} <= dimensioni
+
+
+def normalize_import_export(lines: list[str]) -> list[dict]:
+    """RU/RS import-export: una riga per (anno, dimensione, territorio).
+
+    Il blocco per Paese non è un dettaglio: è l'unica vista sulla destinazione
+    o provenienza estera. Prima veniva scartato insieme al blocco "Andamento".
+    """
+    rows: list[dict] = []
+    for block in parse_blocks(lines):
+        if len(block["rows"]) < 2:
+            continue
+        dimensione = _dimensione_da_titolo(block["title"])
+        if dimensione is None:
+            continue
+        header = block["header"]
+        i_anno = _col_index(header, "anno")
+        i_territorio = _col_index(header, dimensione)
+        if i_territorio is None:
+            continue
+        i_non_pericolosi = _col_index(header, "non pericol")
+        i_totale = _col_index(header, "totale")
+        # "pericolosi" da solo matcherebbe anche "non pericolosi": va escluso.
+        i_pericolosi = next(
+            (
+                i for i, col in enumerate(header)
+                if "pericol" in col.lower() and "non pericol" not in col.lower()
+            ),
+            None,
+        )
+        for row in block["rows"]:
+            territorio = _cell(row, i_territorio)
+            if not territorio:
+                continue
+            rows.append({
+                "anno": _cell(row, i_anno) or "",
+                "dimensione": dimensione,
+                "territorio": territorio if dimensione == "paese" else canonical_region(territorio),
+                "non_pericolosi_t": _cell(row, i_non_pericolosi),
+                "pericolosi_t": _cell(row, i_pericolosi),
+                "totale_t": _cell(row, i_totale),
+            })
+    return rows
+
+
 def normalize_rs_region(lines: list[str], year: int) -> list[dict]:
     """Normalize RS import/export CSVs (header+data, no title)."""
     header_idx = None
@@ -890,10 +964,14 @@ def normalize_csv(input_path: Path, output_path: Path, csv_type: str = "auto", y
         out_cols = ["istat_comune", "comune", "provincia", "numero_comuni",
                     "popolazione", "crt", "cts", "crd", "ctr", "csl", "cc", "ck", "ctot"]
     elif detected in ("flussi", "import", "export", "regione"):
-        # `flussi` copre sia i file regionali a tabella singola (rs_export)
-        # sia ru_flussi, che ha un blocco per tipo di flusso.
+        # Tre famiglie di file regionali, tre forme diverse:
+        # - ru_flussi: un blocco per tipo di flusso
+        # - ru/rs import-export: stessa grandezza per regione e per Paese
+        # - rs_export e simili a tabella singola: un blocco
         if detected == "flussi" and is_flussi_multiplo(lines):
             rows = normalize_flussi_multiplo(lines)
+        elif is_import_export_multiplo(lines):
+            rows = normalize_import_export(lines)
         else:
             rows = normalize_region_level(lines, year, [])
         if not rows:

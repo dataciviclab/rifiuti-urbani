@@ -76,6 +76,24 @@ quella per `categoria = 'trattamento_smaltimento'`.
 
 **Compose regionale:** `rifiuti_regioni` — regione × anno con RD%, costi, mix impiantistico, movimentazione e rifiuti speciali
 
+## Import/export: commercio estero
+
+`ispra_ru_import`/`ispra_ru_export` e `ispra_rs_import`/`ispra_rs_export` non
+sono movimenti tra regioni: sono **scambi con l'estero**. Ogni file contiene la
+stessa grandezza partizionata due volte — per regione italiana (destinazione
+dell'import, origine dell'export) e per Paese estero. Le due viste sommano allo
+stesso totale in tutti gli anni verificati, quindi **non vanno sommate tra
+loro**: la colonna `dimensione` (`regione` / `paese`) le distingue.
+
+I movimenti tra regioni italiane stanno invece in `ispra_ru_flussi` (sezione
+precedente). Nel compose `rifiuti_regioni` le colonne sono nominate di
+conseguenza: `import_estero_t`, `export_estero_t`, `saldo_estero_t`,
+`export_estero_su_prodotto_pct`.
+
+Nel 2024 l'Italia esporta 1,30 Mt di RU (Danimarca, Paesi Bassi, Austria in
+testa) e ne importa 0,22 Mt. Per i rifiuti speciali: 5,07 Mt esportate e
+7,04 Mt importate.
+
 ## Flussi fuori regione
 
 `ispra_ru_flussi` non è una tabella sola: la fonte pubblica un blocco per tipo
@@ -97,7 +115,10 @@ organico avviato fuori regione può generare scarti che escono di nuovo, e la
 fonte non lo riconcilia. Il compose espone le colonne separate
 (`flussi_organico_t`, `flussi_incenerimento_t`, `flussi_discarica_t`) e un
 `uscite_fuori_regione_su_prodotto_pct` come indicatore, non come bilancio.
-`flussi_extraregionali_t` resta come alias dell'organico ed è deprecato.
+
+Non è verificato che "fuori regione" escluda l'estero: l'export è contato in
+una tabella separata (`ispra_ru_export`). Le due grandezze non vanno sommate
+senza averlo accertato.
 
 ## Costi del servizio
 

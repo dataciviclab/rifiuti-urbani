@@ -90,23 +90,28 @@ gestione AS (
     GROUP BY 1, 2
 ),
 
+-- Commercio estero: import/export verso l'estero, non movimenti tra regioni.
+-- I file import/export hanno due dimensioni (regione italiana, Paese estero)
+-- che descrivono la stessa grandezza: qui serve solo la vista regionale.
 import_ru AS (
     SELECT
         anno,
-        lower(replace(regione, '-', ' ')) AS regione_key,
-        SUM(totale_t) AS import_t
+        lower(replace(territorio, '-', ' ')) AS regione_key,
+        SUM(totale_t) AS import_estero_t
     FROM read_parquet('{support.ru_import.clean}')
     WHERE NOT is_aggregato
+      AND dimensione = 'regione'
     GROUP BY 1, 2
 ),
 
 export_ru AS (
     SELECT
         anno,
-        lower(replace(regione, '-', ' ')) AS regione_key,
-        SUM(totale_t) AS export_t
+        lower(replace(territorio, '-', ' ')) AS regione_key,
+        SUM(totale_t) AS export_estero_t
     FROM read_parquet('{support.ru_export.clean}')
     WHERE NOT is_aggregato
+      AND dimensione = 'regione'
     GROUP BY 1, 2
 ),
 
@@ -115,12 +120,10 @@ flussi_ru AS (
         anno,
         lower(replace(regione, '-', ' ')) AS regione_key,
         -- Un flusso per colonna: sommarli darebbe una grandezza che la fonte
-        -- non pubblica. `flussi_extraregionali_t` resta l'organico per
-        -- compatibilità (nome storico, ambiguo) e va deprecato.
+        -- non pubblica.
         SUM(CASE WHEN tipo_flusso = 'organico' THEN quantita_t ELSE 0 END) AS flussi_organico_t,
         SUM(CASE WHEN tipo_flusso = 'incenerimento' THEN quantita_t ELSE 0 END) AS flussi_incenerimento_t,
         SUM(CASE WHEN tipo_flusso = 'discarica' THEN quantita_t ELSE 0 END) AS flussi_discarica_t,
-        SUM(CASE WHEN tipo_flusso = 'organico' THEN quantita_t ELSE 0 END) AS flussi_extraregionali_t
     FROM read_parquet('{support.ru_flussi.clean}')
     WHERE NOT is_aggregato
     GROUP BY 1, 2
@@ -180,12 +183,11 @@ unito AS (
         g.compostaggio_t,
         g.trattamento_integrato_t,
         g.digestione_t,
-        i.import_t,
-        e.export_t,
+        i.import_estero_t,
+        e.export_estero_t,
         f.flussi_organico_t,
         f.flussi_incenerimento_t,
         f.flussi_discarica_t,
-        f.flussi_extraregionali_t,
         p.rs_np_t,
         p.rs_p_t,
         p.rs_totale_t,
@@ -270,15 +272,14 @@ SELECT
         AS pct_riciclo_organico_su_trattamenti_finali,
 
     -- Movimentazione (0 dove la fonte non riporta la regione)
-    ROUND(coalesce(import_t, 0), 1) AS import_t,
-    ROUND(coalesce(export_t, 0), 1) AS export_t,
-    ROUND(coalesce(export_t, 0) - coalesce(import_t, 0), 1) AS saldo_export_import_t,
-    ROUND(coalesce(export_t, 0) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2) AS export_su_prodotto_pct,
+    -- Commercio estero: import/export con l'estero, non tra regioni.
+    ROUND(coalesce(import_estero_t, 0), 1) AS import_estero_t,
+    ROUND(coalesce(export_estero_t, 0), 1) AS export_estero_t,
+    ROUND(coalesce(export_estero_t, 0) - coalesce(import_estero_t, 0), 1) AS saldo_estero_t,
+    ROUND(coalesce(export_estero_t, 0) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2) AS export_estero_su_prodotto_pct,
     ROUND(coalesce(flussi_organico_t, 0), 1) AS flussi_organico_t,
     ROUND(coalesce(flussi_incenerimento_t, 0), 1) AS flussi_incenerimento_t,
     ROUND(coalesce(flussi_discarica_t, 0), 1) AS flussi_discarica_t,
-    -- Deprecato: alias storico dell'organico. Usare flussi_organico_t.
-    ROUND(coalesce(flussi_extraregionali_t, 0), 1) AS flussi_extraregionali_t,
     ROUND(
         (coalesce(flussi_organico_t, 0) + coalesce(flussi_incenerimento_t, 0)
          + coalesce(flussi_discarica_t, 0)) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2

@@ -25,16 +25,16 @@ raw:
 
 clean:
   sql: "sql/clean.sql"
-  required_columns: [anno, regione, is_aggregato, rifiuti_non_pericolosi_t, rifiuti_pericolosi_t, totale_t]
+  required_columns: [anno, dimensione, territorio, is_aggregato, rifiuti_non_pericolosi_t, rifiuti_pericolosi_t, totale_t]
   read:
     all_varchar: true
     header: true
     delim: ";"
     encoding: "utf-8"
   validate:
-    min_rows: 15
-    primary_key: [anno, regione]
-    not_null: [anno, regione]
+    min_rows: 80
+    primary_key: [anno, dimensione, territorio]
+    not_null: [anno, dimensione, territorio]
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -47,8 +47,8 @@ mart:
   validate:
     table_rules:
       mart_import:
-        primary_key: [anno, regione]
-        min_rows: 15
+        primary_key: [anno, dimensione, territorio]
+        min_rows: 80
 
 validation:
   fail_on_error: true
