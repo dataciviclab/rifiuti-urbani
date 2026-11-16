@@ -30,6 +30,20 @@ clean:
     delim: ";"
     encoding: "utf-8"
     trim_whitespace: true
+    # Le righe dei comuni aderenti a un'aggregazione hanno 21 campi invece di
+    # 26: portano solo popolazione e "Dato riferito a", e servono a ricostruire
+    # la popolazione dell'unità (vedi clean.sql). Con strict_mode DuckDB
+    # rifiuta l'intero file: "Error when sniffing", non una riga.
+    # Il file non contiene virgolette (verificato 2010-2024), quindi
+    # null_padding + strict_mode=false non espone al rischio che il toolkit
+    # evita di default (campi quotati con virgolette interne e newline).
+    # Provato: 8.095 righe lette, 106 aderenti conservati (2010).
+    # Serve anche ignore_errors: la riga finale di nota ("Note: (1) ...") non ha
+    # delimitatori e senza questa opzione il parser rifiuta il file comunque.
+    # Le righe scartate sono loggate dal toolkit.
+    strict_mode: false
+    null_padding: true
+    ignore_errors: true
     columns:
       IstatComune: VARCHAR
       Regione: VARCHAR

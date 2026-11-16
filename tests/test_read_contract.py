@@ -124,3 +124,69 @@ class TestAggregateRowsContract:
                 f"{name}/{table['name']}: mart somma anche la riga di totale "
                 f"nazionale (manca NOT is_aggregato)"
             )
+
+
+@pytest.mark.contract
+class TestShortRowReadContract:
+    """`ispra_ru_base` contiene righe più corte del resto del file.
+
+    I comuni aderenti a un'aggregazione (`Vedi aggregazione: ...`) portano 21
+    campi invece di 26: hanno solo codice, anagrafica, popolazione e
+    riferimento, senza metriche. Servono a ricostruire la popolazione
+    dell'unità (vedi clean.sql), quindi non si possono scartare.
+
+    Con `strict_mode` attivo DuckDB rifiuta l'intero file invece della riga;
+    con `null_padding` disattivo scarta la riga in silenzio. Serve la
+    combinazione null_padding + strict_mode=false + ignore_errors (la nota
+    finale del file non ha delimitatori).
+    """
+
+    def _config(self) -> dict:
+        cfg = _load(DATASETS_DIR / "ispra-ru-base")
+        return cfg["clean"]["read"]
+
+    def test_config_dichiara_le_tre_opzioni(self):
+        read = self._config()
+        assert read.get("null_padding") is True, (
+            "senza null_padding le righe degli aderenti vengono scartate"
+        )
+        assert read.get("strict_mode") is False, (
+            "con strict_mode il parser rifiuta l'intero file, non la riga"
+        )
+        assert read.get("ignore_errors") is True, (
+            "la riga di nota finale non ha delimitatori: serve ignore_errors"
+        )
+
+    def test_legge_la_riga_corta(self, tmp_path):
+        import duckdb
+
+        read = self._config()
+        n_cols = len(read["columns"])
+        full = ["1"] + ["x"] * (n_cols - 1)
+        short = ["2", "Valle d'Aosta", "Aosta", "AVISE", "340", "Vedi aggregazione: X"]
+        righe = [
+            "\t\tTitolo del file;",
+            ";".join(read["columns"]),
+            ";".join(full),
+            ";".join(short),
+            "Note: (1) nota finale senza delimitatori",
+        ]
+        csv_path = tmp_path / "raw.csv"
+        csv_path.write_text("\r\n".join(righe) + "\r\n", encoding="utf-8")
+
+        con = duckdb.connect()
+        cols = ", ".join(f"'{c}': 'VARCHAR'" for c in read["columns"])
+        query = (
+            f"SELECT \"Dato riferito a\", \"Popolazione\" FROM read_csv('{csv_path}', "
+            f"delim=';', header=false, skip=2, columns={{{cols}}}, null_padding=true, "
+            f"strict_mode=false, ignore_errors=true)"
+        )
+        righe_lette = con.execute(query).fetchall()
+        con.close()
+
+        aderenti = [r for r in righe_lette if (r[0] or "").startswith("Vedi aggregazione")]
+        assert len(aderenti) == 1, (
+            "la riga corta degli aderenti viene persa: la popolazione delle "
+            "aggregazioni risulterebbe sottostimata"
+        )
+        assert aderenti[0][1] == "340", "la popolazione dell'aderente non viene letta"
