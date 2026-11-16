@@ -76,6 +76,54 @@ quella per `categoria = 'trattamento_smaltimento'`.
 
 **Compose regionale:** `rifiuti_regioni` — regione × anno con RD%, costi, mix impiantistico, movimentazione e rifiuti speciali
 
+Quali numeri sono verificati, quali trappole evitare e cosa i dati non permettono
+di dire: [`docs/WASTE_DATA_RECONCILIATION.md`](docs/WASTE_DATA_RECONCILIATION.md).
+
+## Import/export: commercio estero
+
+`ispra_ru_import`/`ispra_ru_export` e `ispra_rs_import`/`ispra_rs_export` non
+sono movimenti tra regioni: sono **scambi con l'estero**. Ogni file contiene la
+stessa grandezza partizionata due volte — per regione italiana (destinazione
+dell'import, origine dell'export) e per Paese estero. Le due viste sommano allo
+stesso totale in tutti gli anni verificati, quindi **non vanno sommate tra
+loro**: la colonna `dimensione` (`regione` / `paese`) le distingue.
+
+I movimenti tra regioni italiane stanno invece in `ispra_ru_flussi` (sezione
+successiva). Nel compose `rifiuti_regioni` le colonne sono nominate di
+conseguenza: `import_estero_t`, `export_estero_t`, `saldo_estero_t`,
+`export_estero_su_prodotto_pct`.
+
+Nel 2024 l'Italia esporta 1,30 Mt di RU (Danimarca, Paesi Bassi, Austria in
+testa) e ne importa 0,22 Mt. Per i rifiuti speciali: 5,07 Mt esportate e
+7,04 Mt importate.
+
+## Flussi fuori regione
+
+`ispra_ru_flussi` non è una tabella sola: la fonte pubblica un blocco per tipo
+di flusso, e la composizione cambia tra anni.
+
+| Anno | Blocchi |
+|---|---|
+| 2018–2019 | frazione organica, discarica |
+| 2020–2024 | frazione organica, incenerimento, discarica |
+
+Il tipo è parte della chiave (`anno`, `tipo_flusso`, `regione`). Leggere solo
+il primo blocco — il comportamento precedente — teneva la frazione organica e
+perdeva il resto: nel 2024, 954.933 t a incenerimento e 629.086 t a discarica
+a livello nazionale — 1,58 Mt su 3,70 Mt della somma dei tre flussi tracciati
+(cioè il 43%, e la somma può contare due volte lo stesso rifiuto).
+
+Le tre grandezze **non si sommano a una grandezza ufficiale**: un rifiuto
+organico avviato fuori regione può generare scarti che escono di nuovo, e la
+fonte non lo riconcilia. Il compose espone le colonne separate
+(`flussi_organico_t`, `flussi_incenerimento_t`, `flussi_discarica_t`) e un
+`somma_flussi_fuori_regione_su_prodotto_pct` come indicatore di pressione esterna,
+non come bilancio di massa.
+
+Non è verificato che "fuori regione" escluda l'estero: l'export è contato in
+una tabella separata (`ispra_ru_export`). Le due grandezze non vanno sommate
+senza averlo accertato.
+
 ## Costi del servizio
 
 `ispra_ru_costi_procapite` espone lo schema di costo ISPRA/ARERA: `CRT`
@@ -121,6 +169,10 @@ I CSV ISPRA sono multi-sezione con formati variabili tra anni. `scripts/normaliz
 
 - **RU comunale**: download HTTP diretto da ISPRA (http_file)
 - **RU costi/flussi/gestione + RS**: da CSV normalizzati locali (local_file)
+
+Le download sono validate: una risposta HTTP di errore o una pagina HTML al
+posto del CSV vengono scartate e il comando termina con errore. Senza questa
+guardia una 404 viene salvata come file di dati e conta come "scaricata".
 
 ## Segnali di qualita
 

@@ -71,8 +71,15 @@ organico = (
     + df["trattamento_integrato_t"].sum()
     + df["digestione_t"].sum()
 )
-export = df["export_t"].sum()
-costo = (df["ctot_euro_ab"] * df["popolazione"]).sum() / pop if pop else float("nan")
+export_estero = df["export_estero_t"].sum()
+# La media €/ab è calcolata sui comuni che dichiarano il costo: va pesata
+# sulla loro popolazione. Pesare sulla popolazione intera sovrappesa le
+# regioni con copertura bassa (Sicilia, Campania).
+pop_costi = df["pop_costi"].sum()
+costo = (
+    (df["ctot_euro_ab"] * df["pop_costi"]).sum() / pop_costi
+    if pop_costi else float("nan")
+)
 
 k1, k2, k3, k4 = st.columns(4)
 k1.metric("RD% (pesata)", fmt_pct(rd_pct, signed=False))
@@ -86,9 +93,9 @@ k4.metric("Riciclo organico", f"{organico / 1e6:.2f} Mt")
 k5, k6, k7, k8 = st.columns(4)
 k5.metric("RU prodotti", f"{ru / 1e6:.2f} Mt")
 k6.metric(
-    "Export",
-    f"{export / 1e6:.2f} Mt",
-    delta=f"{export / ru * 100:.1f}% del prodotto" if ru else None,
+    "Export estero",
+    f"{export_estero / 1e6:.2f} Mt",
+    delta=f"{export_estero / ru * 100:.1f}% del prodotto" if ru else None,
     delta_color="off",
 )
 k7.metric("Costo medio", fmt_eur(costo))
@@ -118,7 +125,7 @@ tab = df[
         "pct_discarica_su_trattamenti_finali",
         "tmb_t",
         "incenerimento_t",
-        "export_su_prodotto_pct",
+        "export_estero_su_prodotto_pct",
         "ctot_euro_ab",
         "costo_per_punto_rd_euro",
         "rs_recupero_su_gestito_pct",
@@ -140,7 +147,9 @@ st.dataframe(
         ),
         "tmb_t": st.column_config.NumberColumn("TMB t (pre-tratt.)", format="%.0f"),
         "incenerimento_t": st.column_config.NumberColumn("Incenerimento t", format="%.0f"),
-        "export_su_prodotto_pct": st.column_config.NumberColumn("Export %", format="%.1f"),
+        "export_estero_su_prodotto_pct": st.column_config.NumberColumn(
+            "Export estero %", format="%.1f"
+        ),
         "ctot_euro_ab": st.column_config.NumberColumn("Costo €/ab", format="%.0f"),
         "costo_per_punto_rd_euro": st.column_config.NumberColumn(
             "€ per punto RD", format="%.1f"
@@ -249,27 +258,27 @@ if df_all is not None and not df_all.empty:
             organico=df_all["compostaggio_t"].fillna(0)
             + df_all["trattamento_integrato_t"].fillna(0)
             + df_all["digestione_t"].fillna(0),
-            costo_w=df_all["ctot_euro_ab"] * df_all["popolazione"],
+            costo_w=df_all["ctot_euro_ab"] * df_all["pop_costi"],
         )
         .groupby("anno")
         .agg(
             discarica=("discarica_t", "sum"),
             incenerimento=("incenerimento_t", "sum"),
             organico=("organico", "sum"),
-            export=("export_t", "sum"),
+            export_estero=("export_estero_t", "sum"),
             costo_w=("costo_w", "sum"),
-            popolazione=("popolazione", "sum"),
+            pop_costi=("pop_costi", "sum"),
         )
         .reset_index()
     )
-    trend["costo"] = trend["costo_w"] / trend["popolazione"]
+    trend["costo"] = trend["costo_w"] / trend["pop_costi"]
 
     col1, col2 = st.columns(2)
     with col1:
         fig_trend = px.line(
             trend,
             x="anno",
-            y=["discarica", "incenerimento", "organico", "export"],
+            y=["discarica", "incenerimento", "organico", "export_estero"],
             markers=True,
             title="Tonnellate per destino (Mt)",
             labels={"value": "Tonnellate", "anno": "Anno", "variable": "Voce"},

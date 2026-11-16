@@ -14,12 +14,57 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 COOKIE_JAR="$SCRIPT_DIR/.cookies.txt"
 curl -s -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/index.php?pg=&advice=si" -o /dev/null
 
+FAILED=()
+
+# Scarica e valida. Senza `curl -f` una pagina 404 viene salvata come CSV: è
+# già successo con `ru_gestione_comunale.csv`, che era una pagina HTML in tutti
+# gli anni presenti in `raw/` (quel file non è più nella lista dei download).
+# Meglio un file mancante che un file che sembra dati.
 dl() {
   local url="$1"
   local outdir="$2"
   local fname="$3"
   mkdir -p "$outdir"
-  curl -s -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$url" -o "$outdir/$fname" 2>/dev/null || echo "  WARN: failed $fname"
+  local out="$outdir/$fname"
+
+  if ! curl -sf -b "$COOKIE_JAR" -c "$COOKIE_JAR" "$url" -o "$out" 2>/dev/null; then
+    rm -f "$out"
+    FAILED+=("$fname: HTTP error")
+    echo "  WARN: download fallita $fname"
+    return 0
+  fi
+
+  # Content guard: le risposte di errore ISPRA sono pagine HTML o righe vuote.
+  if head -c 200 "$out" | grep -qi '<html\|<!doctype\|404 not found'; then
+    rm -f "$out"
+    FAILED+=("$fname: risposta HTML")
+    echo "  WARN: risposta HTML al posto del CSV: $fname"
+    return 0
+  fi
+
+  if ! grep -q ';' "$out"; then
+    rm -f "$out"
+    FAILED+=("$fname: nessun delimitatore")
+    echo "  WARN: CSV senza delimitatore ';': $fname"
+    return 0
+  fi
+
+  return 0
+}
+
+# Un file è valido solo se non è una pagina di errore.
+count_valid() {
+  local dir="$1"
+  local n=0
+  local f
+  for f in "$dir"/*.csv; do
+    [ -e "$f" ] || continue
+    if head -c 200 "$f" | grep -qi '<html\|<!doctype\|404 not found'; then
+      continue
+    fi
+    n=$((n + 1))
+  done
+  echo "$n"
 }
 
 for YEAR in $(seq "$START" "$END"); do
@@ -80,7 +125,7 @@ for YEAR in $(seq "$START" "$END"); do
   echo "[17/17] Impianti RS regionali..."
   dl "${BASE}/speciali/getGestioneRSRegionaleCensimentoImp.csv.php?pg=gestregione&aa=${YEAR}&regid=&areaid=Italia" "$OUTDIR" "rs_impianti_regionali.csv"
 
-  FILES=$(find "$OUTDIR" -name "*.csv" -size +100c | wc -l)
+  FILES=$(count_valid "$OUTDIR")
   echo "  Downloaded: $FILES files"
 done
 
@@ -89,6 +134,13 @@ echo "=== DONE ==="
 echo "Years: $START-$END"
 for d in "$SCRIPT_DIR"/raw-*/; do
   year=$(basename "$d")
-  count=$(find "$d" -name "*.csv" -size +100c | wc -l)
+  count=$(count_valid "$d")
   echo "  $year: $count files"
 done
+
+if [ ${#FAILED[@]} -gt 0 ]; then
+  echo ""
+  echo "⚠️  ${#FAILED[@]} download fallite:"
+  printf '  - %s\n' "${FAILED[@]}"
+  exit 1
+fi

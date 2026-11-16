@@ -28,6 +28,7 @@ clean:
   required_columns:
     - "anno"
     - "regione"
+    - "tipo_flusso"
     - "is_aggregato"
     - "quantita_t"
   read:
@@ -36,9 +37,10 @@ clean:
     delim: ";"
     encoding: "utf-8"
   validate:
-    min_rows: 20
-    primary_key: [anno, regione]
-    not_null: [anno, regione]
+    # 20 regioni + riga Italia, per 2 tipi di flusso nel 2018-2019 e 3 dal 2020.
+    min_rows: 40
+    primary_key: [anno, tipo_flusso, regione]
+    not_null: [anno, regione, tipo_flusso]
     promotion:
       max_row_drop_pct: 35
       fail_on_row_drop_exceeded: false
@@ -52,10 +54,11 @@ mart:
   validate:
     table_rules:
       mart_flussi:
-        primary_key: [anno, regione]
-        # 20 regioni meno la riga di totale nazionale (esclusa dal mart)
-        min_rows: 19
-        required_columns: [quantita_t]
+        primary_key: [anno, tipo_flusso, regione]
+        # 19 regioni con quantità > 0 per l'organico e 16 per incenerimento e
+        # discarica: 35 righe nel 2018-2019 (due flussi), 51 dal 2020 (tre).
+        min_rows: 30
+        required_columns: [quantita_t, tipo_flusso]
 
 validation:
   fail_on_error: true

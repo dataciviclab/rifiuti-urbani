@@ -67,7 +67,17 @@ WITH base AS (
         SUM(CASE WHEN ctot_euro_ab IS NOT NULL
                  THEN ctot_euro_ab * popolazione ELSE 0 END)
             / NULLIF(SUM(CASE WHEN ctot_euro_ab IS NOT NULL
-                              THEN popolazione ELSE 0 END), 0) AS ctot_euro_ab
+                              THEN popolazione ELSE 0 END), 0) AS ctot_euro_ab,
+        -- Totale di regione calcolato sui soli comuni che dichiarano il costo:
+        -- moltiplicare la media per la popolazione intera gonfia il totale
+        -- (nel 2024 +9,9% a livello nazionale, +25,6% in Sicilia).
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN ctot_euro_ab * popolazione ELSE 0 END) AS ctot_totale_eur,
+        -- Tonnellate dei soli comuni che dichiarano il costo: il costo per
+        -- tonnellata va rapportato a quelle, non a tutte le tonnellate della
+        -- regione.
+        SUM(CASE WHEN ctot_euro_ab IS NOT NULL
+                 THEN totale_ru_tonnellate ELSE 0 END) AS ru_t_costi
     FROM raw_input
     WHERE popolazione > 0
     GROUP BY anno, regione
@@ -90,23 +100,28 @@ gestione AS (
     GROUP BY 1, 2
 ),
 
+-- Commercio estero: import/export verso l'estero, non movimenti tra regioni.
+-- I file import/export hanno due dimensioni (regione italiana, Paese estero)
+-- che descrivono la stessa grandezza: qui serve solo la vista regionale.
 import_ru AS (
     SELECT
         anno,
-        lower(replace(regione, '-', ' ')) AS regione_key,
-        SUM(totale_t) AS import_t
+        lower(replace(territorio, '-', ' ')) AS regione_key,
+        SUM(totale_t) AS import_estero_t
     FROM read_parquet('{support.ru_import.clean}')
     WHERE NOT is_aggregato
+      AND dimensione = 'regione'
     GROUP BY 1, 2
 ),
 
 export_ru AS (
     SELECT
         anno,
-        lower(replace(regione, '-', ' ')) AS regione_key,
-        SUM(totale_t) AS export_t
+        lower(replace(territorio, '-', ' ')) AS regione_key,
+        SUM(totale_t) AS export_estero_t
     FROM read_parquet('{support.ru_export.clean}')
     WHERE NOT is_aggregato
+      AND dimensione = 'regione'
     GROUP BY 1, 2
 ),
 
@@ -114,7 +129,11 @@ flussi_ru AS (
     SELECT
         anno,
         lower(replace(regione, '-', ' ')) AS regione_key,
-        SUM(quantita_t) AS flussi_extraregionali_t
+        -- Un flusso per colonna: sommarli darebbe una grandezza che la fonte
+        -- non pubblica.
+        SUM(CASE WHEN tipo_flusso = 'organico' THEN quantita_t ELSE 0 END) AS flussi_organico_t,
+        SUM(CASE WHEN tipo_flusso = 'incenerimento' THEN quantita_t ELSE 0 END) AS flussi_incenerimento_t,
+        SUM(CASE WHEN tipo_flusso = 'discarica' THEN quantita_t ELSE 0 END) AS flussi_discarica_t
     FROM read_parquet('{support.ru_flussi.clean}')
     WHERE NOT is_aggregato
     GROUP BY 1, 2
@@ -155,6 +174,9 @@ unito AS (
         b.regione,
         b.n_comuni,
         b.popolazione,
+        b.pop_costi,
+        b.ctot_totale_eur,
+        b.ru_t_costi,
         b.totale_ru_tonnellate,
         b.totale_rd_tonnellate,
         b.percentuale_rd,
@@ -174,9 +196,11 @@ unito AS (
         g.compostaggio_t,
         g.trattamento_integrato_t,
         g.digestione_t,
-        i.import_t,
-        e.export_t,
-        f.flussi_extraregionali_t,
+        i.import_estero_t,
+        e.export_estero_t,
+        f.flussi_organico_t,
+        f.flussi_incenerimento_t,
+        f.flussi_discarica_t,
         p.rs_np_t,
         p.rs_p_t,
         p.rs_totale_t,
@@ -217,6 +241,11 @@ SELECT
 
     -- Costi del servizio (euro/abitante, media pesata sulla popolazione)
     ROUND(ctot_euro_ab, 2) AS ctot_euro_ab,
+    -- Totale di regione sui soli comuni che dichiarano il costo, e la
+    -- popolazione su cui è calcolata. `ctot_euro_ab * popolazione` non è il
+    -- totale: applica la media anche a chi non ha dichiarato.
+    ROUND(ctot_totale_eur / 1e6, 3) AS costo_totale_mln,
+    pop_costi,
     ROUND(crt_euro_ab, 2) AS crt_euro_ab,
     ROUND(cts_euro_ab, 2) AS cts_euro_ab,
     ROUND(crd_euro_ab, 2) AS crd_euro_ab,
@@ -230,8 +259,7 @@ SELECT
         AS quota_costo_fisso_pct,
     ROUND(ctr_euro_ab / NULLIF(cts_euro_ab, 0), 3) AS rapporto_recupero_smaltimento,
     ROUND(ctot_euro_ab / NULLIF(percentuale_rd, 0), 2) AS costo_per_punto_rd_euro,
-    ROUND(ctot_euro_ab * popolazione / NULLIF(totale_ru_tonnellate, 0), 2)
-        AS costo_per_tonnellata_euro,
+    ROUND(ctot_totale_eur / NULLIF(ru_t_costi, 0), 2) AS costo_per_tonnellata_euro,
 
     -- Mix impiantistico (tonnellate; TMB è pre-trattamento, non un sink)
     n_impianti,
@@ -261,11 +289,21 @@ SELECT
         AS pct_riciclo_organico_su_trattamenti_finali,
 
     -- Movimentazione (0 dove la fonte non riporta la regione)
-    ROUND(coalesce(import_t, 0), 1) AS import_t,
-    ROUND(coalesce(export_t, 0), 1) AS export_t,
-    ROUND(coalesce(export_t, 0) - coalesce(import_t, 0), 1) AS saldo_export_import_t,
-    ROUND(coalesce(export_t, 0) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2) AS export_su_prodotto_pct,
-    ROUND(coalesce(flussi_extraregionali_t, 0), 1) AS flussi_extraregionali_t,
+    -- Commercio estero: import/export con l'estero, non tra regioni.
+    ROUND(coalesce(import_estero_t, 0), 1) AS import_estero_t,
+    ROUND(coalesce(export_estero_t, 0), 1) AS export_estero_t,
+    ROUND(coalesce(export_estero_t, 0) - coalesce(import_estero_t, 0), 1) AS saldo_estero_t,
+    ROUND(coalesce(export_estero_t, 0) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2) AS export_estero_su_prodotto_pct,
+    ROUND(coalesce(flussi_organico_t, 0), 1) AS flussi_organico_t,
+    ROUND(coalesce(flussi_incenerimento_t, 0), 1) AS flussi_incenerimento_t,
+    ROUND(coalesce(flussi_discarica_t, 0), 1) AS flussi_discarica_t,
+    -- Somma dei tre flussi tracciati, non un totale: la fonte non ne pubblica
+    -- uno e lo stesso rifiuto può uscire due volte (organico → scarti →
+    -- discarica). Indicatore di pressione esterna, non bilancio di massa.
+    ROUND(
+        (coalesce(flussi_organico_t, 0) + coalesce(flussi_incenerimento_t, 0)
+         + coalesce(flussi_discarica_t, 0)) * 100.0 / NULLIF(totale_ru_tonnellate, 0), 2
+    ) AS somma_flussi_fuori_regione_su_prodotto_pct,
 
     -- Rifiuti speciali
     ROUND(rs_np_t, 1) AS rs_np_t,
